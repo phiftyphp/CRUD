@@ -105,7 +105,9 @@ class BulkCRUD
   ###
   runBulkAction: (action, extraParams, callback) ->
     fullActionName = @namespace + '::Action::Bulk' + action + @model
+    return @runAction(fullActionName, extraParams, callback)
 
+  runAction: (fullActionName, extraParams, callback) ->
     # the item id list
     items = @getSelectedItemValues()
     params = $.extend { items: items }, extraParams

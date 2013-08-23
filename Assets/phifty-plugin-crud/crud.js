@@ -99,7 +99,6 @@ vim:sw=2:ts=2:sts=2:
       this.config = config;
       this.data = data;
       this.config.primaryKey = this.config.primaryKey || "id";
-      console.log(this.config, this.data);
     }
 
     BaseItemView.prototype.createHiddenInput = function(name, val) {

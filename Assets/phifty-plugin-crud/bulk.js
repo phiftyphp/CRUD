@@ -128,8 +128,13 @@ New BulkCRUD:
 
 
     BulkCRUD.prototype.runBulkAction = function(action, extraParams, callback) {
-      var fullActionName, items, params;
+      var fullActionName;
       fullActionName = this.namespace + '::Action::Bulk' + action + this.model;
+      return this.runAction(fullActionName, extraParams, callback);
+    };
+
+    BulkCRUD.prototype.runAction = function(fullActionName, extraParams, callback) {
+      var items, params;
       items = this.getSelectedItemValues();
       params = $.extend({
         items: items
