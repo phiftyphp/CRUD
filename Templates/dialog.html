@@ -1,0 +1,11 @@
+{# dialog create/edit #}
+{# 
+vim:filetype=htmldjango: 
+#}
+{% set frag_serial = random() %}
+<div id="crud-edit-{{ frag_serial }}" title="{% block dialog_title %} {% endblock %}" class="crud-edit crud-dialog crud-edit-{{ CRUD.Record.id|default('create') }}">
+    {% block dialog_body %}
+        <div class="action-result-container"> </div>
+        {{ CRUD.Object.getDialogActionView().render|raw }}
+    {% endblock %}
+</div>

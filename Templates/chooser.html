@@ -1,0 +1,29 @@
+<ul class="chooser" id="{{ Chooser.getId() }}">
+
+</ul>
+<script>
+$(function() {
+    var $dialog = $('<div/>');
+    var $target = $('{{ Chooser.target }}');
+    var collection = {{Collection.toJSON()|raw}};
+    var items = {{Items|json_encode|raw}};
+    var $ul = $('#{{ Chooser.getId() }}');
+    for( var i in items ) {
+        (function(item) {
+            var $li = $('<li/>');
+            var $a = $('<a/>');
+                $a.html( item.label ).appendTo($li).data(item);
+                $a.click(function() {
+                    var data = $(this).data();
+                    $target.val(data.value);
+                    $dialog.dialog('close');
+                    if(window.console)
+                        console.log('Choosed: ' + data.value);
+                });
+            $ul.append($li);
+        })(items[i]);
+    }
+    $(document.body).append($dialog);
+    $dialog.append($ul).dialog();
+});
+</script>

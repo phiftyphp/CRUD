@@ -1,0 +1,13 @@
+<script>
+$(function() {
+    var element = document.getElementById('{{selectInputId}}');
+    new QuickCRUD(element,{
+        deleteAction: '{{deleteAction}}',
+        dataLabelField: '{{dataLabelField}}',
+        dataValueField: '{{dataValueField}}',
+        dialogPath: '{{dialogPath}}'
+    });
+            // coverView = new itemViewClass(config.create, resp.data)
+            // coverView.appendTo $imageContainer
+});
+</script>

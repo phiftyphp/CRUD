@@ -1,0 +1,14 @@
+{% set listRegionId = CRUDHandler.get('listInnerRegion').getRegionId() %}
+{% set widgetId = widget.getSerialId %}
+<div class="toolbar-control">
+    <div class="label">{{widget.label}}</div>
+    {{ widget.render()|raw }}
+    <script>
+    $(function() {
+        $('#{{widgetId}}').change(function() {
+            $('#{{ listRegionId }}').asRegion().refreshWith({ "{{widget.name}}": $(this).val(), page: 1 });
+        });
+    });
+    </script>
+</div>
+<div class="toolbar-divider"> </div>

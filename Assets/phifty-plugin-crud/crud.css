@@ -1,0 +1,10 @@
+ul.chooser {
+    margin: 6px 2px;
+    list-style: none;
+}
+
+ul.chooser li {
+    margin: 2px;
+    padding: 3px 5px;
+    border: 1px solid #ccc;
+}

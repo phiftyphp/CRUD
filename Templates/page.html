@@ -1,0 +1,9 @@
+{% extends '@AdminUI/page.html' %}
+{% block admin_panel %}
+    {{ parent() }}
+    {% if tiles %}
+        {% for tile in tiles %}
+            {{ tile | raw }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}

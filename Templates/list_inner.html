@@ -1,0 +1,178 @@
+<script>
+$(document.body).ready(function() {
+    var $section = $('.section-list-{{CRUD.Object.crudId}}');
+    var $table = $section.find('.crud-list table');
+    var $menu = $section.find('.bulk-menu');
+    bulkCRUD.init({
+        container: $section,
+        table: $table,
+        menu: $menu,
+        namespace: '{{ CRUD.Object.namespace }}',
+        model: '{{ CRUD.Object.modelName }}'
+    });
+
+{# Here comes the generic plugins #}
+{% if CRUD.Object.canBulkEdit %}
+    bulkCRUD.addPlugin(new BulkCRUDDeletePlugin());
+    {% if CRUD.Object.canBulkCopy %}
+        bulkCRUD.addPlugin(new BulkCRUDCopyPlugin());
+    {% endif %}
+{% endif %}
+});
+
+$(function() {
+    // initialize the edit buttons in the list.
+    $('.section-list-{{CRUD.Object.crudId}}').find('.record-edit-btn').click(function(e) {
+        var id = $(this).attr('data-record-id');
+        var s = $(this).parents('.section').get(0);
+        e.stopPropagation();
+        Region.before( s, '{{ CRUD.Object.getEditRegionPath() }}', { id: id } , this );
+    });
+
+    // initialize the delete buttons in the list.
+    $('.section-list-{{CRUD.Object.crudId}}').find('.record-delete-btn').click(function(e) {
+        e.stopPropagation();
+        var id = $(this).attr('data-record-id');
+        runAction( '{{ CRUD.Object.namespace }}::Action::Delete{{ CRUD.Object.modelName }}', 
+            { id: id } , { confirm: '確認刪除? ', removeTr: this } 
+        );
+    });
+});
+</script>
+
+{% block control %}
+
+{% endblock %}
+
+{{CRUD.Pager|raw}}
+
+{# output Collection SQL #}
+{# <pre style="word-wrap: break-word; padding: 0; margin: 10px 0; line-height: 200%;">{{ CRUD.Items }}</pre> #}
+
+{% set order_column = Request.param('_order_column') ? Request.param('_order_column') : 'id' %}
+{% set order_by     = Request.param('_order_by')     ? Request.param('_order_by')     : 'desc' %}
+
+{% block list %}
+
+    <div class="crud-list">
+    {% if CRUD.Items.size() == 0 %}
+        <div class="notice">無資料</div>
+    {% else %}
+    <table class="result" width="100%">
+        <thead>
+            <tr>
+                {# can we insert this from javascript ? #}
+                {% if CRUD.Object.canBulkEdit %}
+                    <th align="center" style="text-align: center;">
+                        <input class="select-all" type="checkbox" value="0"/>
+                    </th>
+                {% endif %}
+
+                {% block prepend_thead %} 
+                {% endblock %}
+
+                {% for column in CRUD.Columns %}
+
+                    <th class="column-header"> 
+                        {% set columnObj = CRUD.Object.model.getColumn(column) %}
+                        {% set label = columnObj.getLabel() %}
+                        <span class="column-name">{{ label }}</span> 
+
+                        {% if columnObj and not columnObj.virtual %}
+                            {% if order_column == column and order_by == "desc" %}
+                                <span title="Sort ascending by {{ label }}" 
+                                    class="column-sort-asc" 
+                                    onclick=" return Phifty.CRUD.columnSortHandler(this, '{{ column }}' , 'asc' );">
+                                </span>
+                            {% else %}
+                                <span title="Sort descending by {{ label }}" 
+                                    class="column-sort-desc" 
+                                    onclick=" return Phifty.CRUD.columnSortHandler(this, '{{ column }}' , 'desc');">
+                                </span>
+                            {% endif %}
+                        {% endif %}
+                    </th>
+                {% endfor %}
+                <th> - - - -  </th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for item in CRUD.Items %}
+
+            {% block row %}
+
+                {% if loop.index is even %} 
+                    <tr class="even"> 
+                {% else %} 
+                    <tr class="old"> 
+                {% endif %}
+
+                    {% if CRUD.Object.canBulkEdit %}
+                        <td>
+                            <input type="checkbox" name="selected[]" value="{{ item.id }}">
+                        </td>
+                    {% endif %}
+
+                    {# this is for sub template to override #}
+                    {% block prepend_tbody %} 
+                    {% endblock %}
+
+                    {# render columns by Model display method #}
+                    {% for column in CRUD.Columns %}
+                        {% if CRUD.Object.hasFormatter(column) %}
+                            <td>{{CRUD.Object.formatColumn(item,column)|raw}} </td>
+                        {% else %}
+                            <td>{{ item.display( column ) }}</td>
+                        {% endif %}
+                    {% endfor %}
+
+                    {# record operation column #}
+                    <td> 
+                        {% if CRUD.Object.canUpdate %}
+                            <input type="button" 
+                                value="{% trans "Edit" %}"
+                                data-record-id="{{ item.id }}"
+                                class="record-edit-btn button-s"/>
+                        {% endif %}
+
+                        {% if CRUD.Object.canDelete %}
+                            <input type="button" 
+                                value="{% trans "Delete" %}"
+                                class="record-delete-btn button-s"
+                                data-record-id="{{ item.id }}"/>
+                        {% endif %}
+
+                        {% if CRUD.Object.canEditInNewWindow %}
+                            <input type="button" 
+                                class="button-s"
+                                value="{% trans "Edit in new window" %}"
+                                onclick=" window.open('{{ CRUD.Object.getEditRegionPath() }}?id={{ item.id }}&in_window=1','Edit {{item.id}}','width=700,height=600'); return false;"/>
+
+                        {% endif %}
+
+                        {% block extra_buttons %} 
+                        {% endblock %}
+                    </td>
+                </tr>
+
+            {% endblock %}
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    </div><!-- crud-list -->
+{% endblock %}
+
+{{ CRUD.Pager|raw }}
+
+{% block script %}
+<script>
+jQuery(document).ready(function($) {
+    $('a[rel*=facebox]').facebox({
+        closeImage: '/assets/facebox/src/closelabel.png',
+        loadingImage: '/assets/facebox/src/loading.gif'
+    });
+})
+</script>
+{% endblock %}

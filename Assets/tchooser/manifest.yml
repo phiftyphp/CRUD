@@ -1,0 +1,9 @@
+---
+collections:
+  - js:
+    - js/tchooser.js
+  - css:
+    - css/tchooser.css
+  - files:
+    - css/images
+

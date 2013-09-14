@@ -1,0 +1,10 @@
+---
+collections:
+  - js:
+    - bulk.js
+    - crud.js
+    - crud_dialog.js
+    - crud_chooser.js
+    - quick_crud.js
+  - css:
+    - crud.css

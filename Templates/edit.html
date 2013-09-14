@@ -1,0 +1,61 @@
+{# 
+vim:filetype=htmldjango: 
+#}
+{% import '@CoreBundle/phifty/forms.html' as forms %}
+{% set frag_serial = random() %}
+{% set editRegionId = "crud-edit-" ~ frag_serial %}
+{% set resultContainerId = "result-container-" ~ frag_serial %}
+
+
+<div id="{{ editRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
+
+{% if Request.param('no_wrapper') %}
+    {{ CRUD.Action.asView('AdminUI\\Action\\View\\StackView',{ 
+        close_button: false, 
+        ajax: true 
+    }).render|raw}}
+{% else %}
+
+    <div class="section w-90p center" id="record-div-{{CRUD.Record.id|default('create')}}">
+        <div class="hd">{{ CRUD.Object.getEditTitle }}</div>
+        <div class="bd">
+            <div class="padding-5">
+                {% block section_body %}
+                    {{ CRUD.Object.getActionView.render|raw }}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+{% endif %}
+</div>
+{% block init_js %}
+<script type="text/javascript">
+$(document.body).ready(function() {
+    // <div id="{{ resultContainerId }}" class="action-result-container"> </div>
+    var $el = $('#{{ editRegionId }}');
+    Region.of($el).getEl().before( $('<div/>').attr('id','{{ resultContainerId }}').addClass('action-result-container') )
+    Phifty.CRUD.initEditRegion($el,{
+        defaultTinyMCE: true,
+        setupAction: function(a) {
+            a.plug( ActionMsgbox,{
+                container: $('#{{ resultContainerId }}')
+            });
+        }
+    });
+
+    // hint js
+    $('.v-field .hint').each(function(i,e) {
+        var $hint = $(this);
+        $hint.hide().css({ position: 'absolute', zIndex: 100 });
+        $hint.parent().css({ position: 'relative' });
+        $hint.prev().hover(function() { 
+            $hint.fadeIn();
+        }, function() { 
+            $hint.fadeOut();
+        });
+    });
+    // $el.find("select, input:checkbox, input:radio, input:file, input:text, input:submit, input:button").uniform();
+});
+</script>
+{% endblock %}

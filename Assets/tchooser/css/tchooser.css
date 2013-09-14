@@ -1,0 +1,72 @@
+
+.chooser-menu { 
+    width: 90%;
+    background-color: #fff;
+}
+.chooser-menu .btn {
+    display: inline-block;
+    border-radius: 5px;
+    padding: 5px 8px;
+    -moz-box-shadow: 0px 1px 0 rgba(255,255,255,.3);
+    -webkit-box-shadow: 0px 1px 0 rgba(255, 255, 255, .3);
+    box-shadow: 0px 1px 0 rgba(255, 255, 255, .3);
+
+    font-family: Helvetica, Arial, sans-serif /*{global-font-family}*/;
+    text-decoration: none;
+    border: 1px solid #111 /*{a-bup-border}*/;
+    background: #333 /*{a-bup-background-color}*/;
+    font-weight: bold;
+    color: white /*{a-bup-color}*/;
+    text-shadow: 0 /*{a-bup-shadow-x}*/ 1px /*{a-bup-shadow-y}*/ 1px /*{a-bup-shadow-radius}*/ #111 /*{a-bup-shadow-color}*/;
+    background-image: -webkit-gradient(linear, left top, left bottom, from( #444 /*{a-bup-background-start}*/), to( #2D2D2D /*{a-bup-background-end}*/));
+    background-image: -webkit-linear-gradient( #444 /*{a-bup-background-start}*/, #2D2D2D /*{a-bup-background-end}*/);
+    background-image: -moz-linear-gradient( #444 /*{a-bup-background-start}*/, #2D2D2D /*{a-bup-background-end}*/);
+    background-image: -ms-linear-gradient( #444 /*{a-bup-background-start}*/, #2D2D2D /*{a-bup-background-end}*/);
+    background-image: -o-linear-gradient( #444 /*{a-bup-background-start}*/, #2D2D2D /*{a-bup-background-end}*/);
+    background-image: linear-gradient( #444 /*{a-bup-background-start}*/, #2D2D2D /*{a-bup-background-end}*/);
+}
+.chooser-menu ul { 
+    margin: 0; 
+    padding: 0;
+    list-style: none;
+}
+.chooser-menu ul li { 
+    position: relative;
+    margin: 0;
+    padding: 10px 5px;
+    border: 1px solid #CCC /*{c-bup-border}*/;
+    background: #EEE /*{c-bup-background-color}*/;
+    font-weight: bold;
+    color: #222 /*{c-bup-color}*/;
+    text-shadow: 0 /*{c-bup-shadow-x}*/ 1px /*{c-bup-shadow-y}*/ 0 /*{c-bup-shadow-radius}*/ white /*{c-bup-shadow-color}*/;
+    background-image: -webkit-gradient(linear, left top, left bottom, from( white /*{c-bup-background-start}*/), to( #F1F1F1 /*{c-bup-background-end}*/));
+    background-image: -webkit-linear-gradient( white /*{c-bup-background-start}*/, #F1F1F1 /*{c-bup-background-end}*/);
+    background-image: -moz-linear-gradient( white /*{c-bup-background-start}*/, #F1F1F1 /*{c-bup-background-end}*/);
+    background-image: -ms-linear-gradient( white /*{c-bup-background-start}*/, #F1F1F1 /*{c-bup-background-end}*/);
+    background-image: -o-linear-gradient( white /*{c-bup-background-start}*/, #F1F1F1 /*{c-bup-background-end}*/);
+    background-image: linear-gradient( white /*{c-bup-background-start}*/, #F1F1F1 /*{c-bup-background-end}*/);
+}
+.chooser-menu ul li.option-hover { 
+    background-image: -webkit-gradient(linear, left top, left bottom, from( white /*{c-bup-background-start}*/), to( #D1D1D1 /*{c-bup-background-end}*/));
+    background-image: -webkit-linear-gradient( white /*{c-bup-background-start}*/, #D1D1D1 /*{c-bup-background-end}*/);
+    background-image: -moz-linear-gradient( white /*{c-bup-background-start}*/, #D1D1D1 /*{c-bup-background-end}*/);
+    background-image: -ms-linear-gradient( white /*{c-bup-background-start}*/, #D1D1D1 /*{c-bup-background-end}*/);
+    background-image: -o-linear-gradient( white /*{c-bup-background-start}*/, #D1D1D1 /*{c-bup-background-end}*/);
+    background-image: linear-gradient( white /*{c-bup-background-start}*/, #D1D1D1 /*{c-bup-background-end}*/);
+}
+.chooser-menu ul li a { 
+    padding: .7em 15px;
+    font-family: Helvetica, Arial, sans-serif /*{global-font-family}*/;
+    color: #2F3E46 /*{c-bup-color}*/;
+    text-decoration: none;
+}
+.chooser-menu ul li a:hover { }
+
+.chooser-menu .next-icon {
+    background-image: url(images/next.png);
+    position: absolute;
+    top: 0px;
+    right: 2px;
+    width: 36px;
+    height: 36px;
+}

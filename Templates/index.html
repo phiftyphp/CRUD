@@ -1,0 +1,31 @@
+{# 
+vim:filetype=htmldjango:
+#}
+{% block top_section %}
+<div class="section">
+{% block crud_control_section %}
+    {% if not Plugin.config.hide_create %}
+
+        {% if CRUD.Object.canCreate %}
+            {# append a region after current parent div.section, if user clicks "Create" #}
+            <input type="button" 
+                class="button record-create-btn"
+                value="{{CRUD.Object.getCreateButtonLabel()}}" 
+                onclick=" 
+                    Region.after(
+                        $(this).parents('.section').get(0), 
+                        '{{ CRUD.Object.getCreateRegionPath() }}'
+                    ); 
+                    return false;"
+            />
+        {% endif %}
+    {% endif %}
+{% endblock %}
+</div>
+{% endblock %}
+
+{% if tiles %}
+    {% for tile in tiles %}
+        {{ tile | raw }}
+    {% endfor %}
+{% endif %}

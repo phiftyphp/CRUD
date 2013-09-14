@@ -1,0 +1,43 @@
+<div class="section section-list-{{CRUD.Object.crudId}}">
+    <div class="hd">
+        {{ CRUD.Object.getListTitle|raw }}
+
+        {% if Kernel.plugin('I18N') %}
+            {% for key, lang in Web.langs %}
+                {% if Request.param('_filter_lang') == key %}
+                    {% trans 'Language' %}: {{ lang }}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="bd">
+        <div class="toolbar">
+            {% block controll %}
+                {% if CRUD.Object.canBulkEdit %}
+                    <div class="toolbar-control">
+                        <select id="select-operation" class="bulk-menu">
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="toolbar-divider"> </div>
+                {% endif %}
+
+                {# render toolbar item here #}
+                {{ CRUD.Object.renderToolbarControls | raw }}
+
+            {% endblock %}{# end control block #}
+
+            {# TODO: refactor this out to an toolbar item controller #}
+            {% if CRUD.Object.quicksearchFields %}
+                {% include '@CRUD/quick_search_filter.html' %}
+            {% endif %}
+
+            <div class="clear"> </div>
+        </div> {# end of toolbar #}
+
+        {{listInnerRegion|raw}}
+    </div>
+</div>
+{% block script %} 
+{% endblock %}
