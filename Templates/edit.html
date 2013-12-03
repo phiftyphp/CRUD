@@ -44,6 +44,12 @@ $(document.body).ready(function() {
         }
     });
 
+    // add lang-switch class name to lang select dropdown to initialize lang
+    // switch feature
+    $el.find('select[name=lang]').addClass('lang-switch');
+    I18N.initLangSwitch($el);
+
+
     // hint js
     $('.v-field .hint').each(function(i,e) {
         var $hint = $(this);
