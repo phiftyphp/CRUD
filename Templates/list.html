@@ -2,7 +2,7 @@
     <div class="hd">
         {{ CRUD.Object.getListTitle|raw }}
 
-        {% if Kernel.plugin('I18N') %}
+        {% if Kernel.bundle('I18N') %}
             {% for key, lang in Web.langs %}
                 {% if Request.param('_filter_lang') == key %}
                     {% trans 'Language' %}: {{ lang }}
