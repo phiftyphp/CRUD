@@ -202,6 +202,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public $formatters = array();
 
+    public $bundle;
 
 
     /**
@@ -556,9 +557,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function isI18NEnabled()
     {
-        return ( kernel()->plugin('I18N')
+        return ( kernel()->bundle('I18N')
             && $langColumn = $this->getModel()->getColumn('lang')
-            && isset($this->plugin) && $this->plugin->config('with_lang') );
+            && isset($this->bundle) && $this->bundle->config('with_lang') );
     }
 
 
@@ -807,8 +808,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public function getActionView()
     {
-        if( isset($this->plugin) ) {
-            if( $this->plugin->config('with_lang') ) {
+        if( isset($this->bundle) ) {
+            if( $this->bundle->config('with_lang') ) {
                 return $this->createActionView($this->currentAction);
             } else {
                 return $this->createActionView($this->currentAction,null,array(
