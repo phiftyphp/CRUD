@@ -4,7 +4,7 @@ vim:filetype=htmldjango:
 {% block top_section %}
 <div class="section">
 {% block crud_control_section %}
-    {% if not Plugin.config.hide_create %}
+    {% if not Bundle.config.hide_create %}
 
         {% if CRUD.Object.canCreate %}
             {# append a region after current parent div.section, if user clicks "Create" #}
