@@ -239,6 +239,14 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function init()
     {
         parent::init();
+        $rclass = new ReflectionClass($this);
+        $ns = $rclass->getNamespaceName();
+
+        // XXX: currently we use FooBundle\FooBundle as the main bundle class.
+        $bundleClass = "$ns\\$ns";
+        $this->bundle = $bundleClass::getInstance();
+
+
         // anyway, we have the model classname, and the namespace, 
         // we should be able to registerCRUD automatically, so we don't have to write the code.
         if ( $this->registerCRUD ) {
