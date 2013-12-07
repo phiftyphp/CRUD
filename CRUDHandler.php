@@ -246,6 +246,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $bundleClass = "$ns\\$ns";
         $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance();
 
+        $this->vars['Handler'] = $this;
 
         // anyway, we have the model classname, and the namespace, 
         // we should be able to registerCRUD automatically, so we don't have to write the code.
