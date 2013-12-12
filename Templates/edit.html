@@ -39,7 +39,8 @@ $(document.body).ready(function() {
         defaultTinyMCE: true,
         setupAction: function(a) {
             a.plug( ActionMsgbox,{
-                container: $('#{{ resultContainerId }}')
+                container: $('#{{ resultContainerId }}'),
+                fadeOut: true
             });
         }
     });
