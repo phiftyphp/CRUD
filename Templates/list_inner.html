@@ -73,9 +73,9 @@ $(function() {
 
                 {% for column in CRUD.Columns %}
 
-                    <th class="column-header"> 
-                        {% set columnObj = CRUD.Object.model.getColumn(column) %}
-                        {% set label = columnObj.getLabel() %}
+                    {% set columnObj = CRUD.Object.model.getColumn(column) %}
+                    {% set label = columnObj.getLabel() %}
+                <th class="column-header column-header-{{column}}"> 
                         <span class="column-name">{{ label }}</span> 
 
                         {% if columnObj and not columnObj.virtual %}
@@ -121,14 +121,14 @@ $(function() {
                     {# render columns by Model display method #}
                     {% for column in CRUD.Columns %}
                         {% if CRUD.Object.hasFormatter(column) %}
-                            <td>{{CRUD.Object.formatColumn(item,column)|raw}} </td>
+                            <td class="column-{{column}}">{{CRUD.Object.formatColumn(item,column)|raw}} </td>
                         {% else %}
-                            <td>{{ item.display( column ) }}</td>
+                            <td class="column-{{column}}">{{ item.display( column ) }}</td>
                         {% endif %}
                     {% endfor %}
 
                     {# record operation column #}
-                    <td> 
+                    <td class="controls">
                         {% if CRUD.Object.canUpdate %}
                             <input type="button" 
                                 value="{% trans "Edit" %}"
