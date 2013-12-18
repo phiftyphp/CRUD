@@ -72,7 +72,6 @@ $(function() {
                 {% endblock %}
 
                 {% for column in CRUD.Columns %}
-
                     {% set columnObj = CRUD.Object.model.getColumn(column) %}
                     {% set label = columnObj.getLabel() %}
                 <th class="column-header column-header-{{column}}"> 
