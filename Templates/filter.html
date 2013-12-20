@@ -1,13 +1,24 @@
 {% set listRegionId = CRUDHandler.get('listInnerRegion').getRegionId() %}
-{% set widgetId = widget.getSerialId %}
+{% set widgetId = widget.getSerialId() %}
 <div class="toolbar-control">
     <div class="label">{{widget.label}}</div>
     {{ widget.render()|raw }}
-    <script>
+    <script type="text/javascript">
     $(function() {
-        $('#{{widgetId}}').change(function() {
-            $('#{{ listRegionId }}').asRegion().refreshWith({ "{{widget.name}}": $(this).val(), page: 1 });
-        });
+        var $widget = $('#{{widgetId}}');
+        if ( $widget.is('select') ) {
+            $widget.change(function() {
+                $('#{{ listRegionId }}').asRegion().refreshWith({ "{{widget.name}}": $(this).val(), page: 1 });
+            });
+        } else if ( $widget.is('[type="checkbox"]') ) {
+            var hiddenId = $widget.data('hiddenId');
+            var input = document.getElementById(hiddenId);
+            $(input).change(function() {
+                $('#{{ listRegionId }}').asRegion().refreshWith({ "{{widget.name}}": $(this).val(), page: 1 });
+            });
+        } else {
+            throw "unsupported filter widget type.";
+        }
     });
     </script>
 </div>
