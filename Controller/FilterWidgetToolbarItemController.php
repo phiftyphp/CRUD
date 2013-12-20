@@ -33,7 +33,7 @@ class FilterWidgetToolbarItemController extends ToolbarItemController
         $fieldName = $this->getFieldName();
         $handler = $this->getHandler();
         $value = $handler->request->param('_filter_' . $fieldName);
-        if ( $value !== null ) {
+        if ( $value !== null && $value !== "" ) {
             $collection->where()->equal($fieldName, $value);
         }
     }
