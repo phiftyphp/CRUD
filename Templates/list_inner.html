@@ -44,10 +44,13 @@ $(function() {
 
 {% endblock %}
 
-{{CRUD.Pager|raw}}
 
-{# output Collection SQL #}
-{# <pre style="word-wrap: break-word; padding: 0; margin: 10px 0; line-height: 200%;">{{ CRUD.Items }}</pre> #}
+{% if CRUD.Object.debug %}
+    {# output Collection SQL #}
+    <pre style="word-wrap: break-word; padding: 0; margin: 10px 0; line-height: 200%;">{{ CRUD.Items }}</pre>
+{% endif %}
+
+{{CRUD.Pager|raw}}
 
 {% set order_column = Request.param('_order_column') ? Request.param('_order_column') : 'id' %}
 {% set order_by     = Request.param('_order_by')     ? Request.param('_order_by')     : 'desc' %}
