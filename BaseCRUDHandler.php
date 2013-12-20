@@ -102,7 +102,7 @@ abstract class BaseCRUDHandler extends ExpandableController
     {
         $model = $this->getModel();
         $collection = $model->asCollection();
-        if ( $this->debug ) {
+        if ( $this->debug && class_exists('FB') ) {
             \FB::info( $collection->toSQL() );
         }
         return $collection;
