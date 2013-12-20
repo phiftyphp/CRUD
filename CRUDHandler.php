@@ -41,6 +41,7 @@ use CRUD\Controller\FilterWidgetToolbarItemController;
 abstract class CRUDHandler extends BaseCRUDHandler
 {
 
+
     /*
      * Configurations:
      *
