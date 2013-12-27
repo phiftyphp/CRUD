@@ -19,7 +19,7 @@ vim:filetype=htmldjango:
     <div class="section w-90p center" id="record-div-{{CRUD.Record.id|default('create')}}">
         <div class="hd">{{ CRUD.Object.getEditTitle }}</div>
         <div class="bd">
-            <div class="padding-5">
+            <div class="bd-inner">
                 {% block section_body %}
                     {{ CRUD.Object.getActionView.render|raw }}
                 {% endblock %}
