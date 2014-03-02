@@ -257,6 +257,19 @@ abstract class CRUDHandler extends BaseCRUDHandler
                 kernel()->action->registerCRUD( $self->namespace , $self->modelName , $self->registerCRUD );
             });
         }
+
+        // Update CRUDHandler properties from config 
+        if ( $crudConfig = $this->bundle->config( $rclass->getShortName() ) ) {
+            $properties = [ 'CanCreate', 'CanUpdate', 'CanDelete' ];
+            foreach( $properties as $key ) {
+                $val = $crudConfig->config($key);
+                if ( $val !== null ) {
+                    $this->$key = $val;
+                }
+            }
+        }
+
+
         /*
          * TODO:  Move this to before render CRUD page, keep init method simple
 
