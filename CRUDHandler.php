@@ -260,9 +260,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         // Update CRUDHandler properties from config 
         if ( $crudConfig = $this->bundle->config( $rclass->getShortName() ) ) {
-            $properties = [ 'CanCreate', 'CanUpdate', 'CanDelete' ];
+            $properties = [ 'canCreate', 'canUpdate', 'canDelete' ];
             foreach( $properties as $key ) {
-                $val = $crudConfig->config($key);
+                $val = $crudConfig->lookup($key);
                 if ( $val !== null ) {
                     $this->$key = $val;
                 }
