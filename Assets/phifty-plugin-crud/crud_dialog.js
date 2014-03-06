@@ -33,7 +33,10 @@
           minWidth: 450,
           modal: true
         }, opts.dialogOptions);
-        return $el.dialog(dialogOptions);
+        $el.dialog(dialogOptions);
+        return use_tinymce('adv1', {
+          popup: true
+        });
       });
     }
 

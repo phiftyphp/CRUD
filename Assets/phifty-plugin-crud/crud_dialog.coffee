@@ -24,4 +24,5 @@ class CRUDDialog
       # use as a dialog
       dialogOptions = $.extend({ minWidth: 450, modal: true }, opts.dialogOptions)
       $el.dialog(dialogOptions)
+      use_tinymce('adv1', { popup: true })
 window.CRUDDialog = CRUDDialog
