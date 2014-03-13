@@ -160,6 +160,9 @@ CRUDList.init({
 ###
 CRUDList.init = (config) ->
   itemViewClass = config.itemView
+  
+  if config.dialogOptions == undefined
+    config.dialogOptions = {width: 650}
 
   $container = $(config.container)
   $imageContainer = CRUDList.createContainer()
@@ -168,7 +171,7 @@ CRUDList.init = (config) ->
   }).click (e) ->
     dialog = new CRUDDialog "/bs/#{ config.crudId }/crud/dialog",{},
       dialogOptions:
-        width: 650
+        width: config.dialogOptions.width
       onSuccess: (resp) ->
         coverView = new itemViewClass(config.create, resp.data)
         coverView.appendTo $imageContainer
