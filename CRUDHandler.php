@@ -245,7 +245,12 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         // XXX: currently we use FooBundle\FooBundle as the main bundle class.
         $bundleClass = "$ns\\$ns";
-        $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance();
+        if ( class_exists($bundleClass) ) {
+            $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance();
+        } else {
+            $bundleClass = "$ns\\Application";
+            $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance();
+        }
 
         $this->vars['Handler'] = $this;
 
