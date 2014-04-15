@@ -736,7 +736,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param array $args template arguments
      * @return string template content.
      */
-    public function renderCrudList( $args = array() )
+    public function renderList( $args = array() )
     {
         return $this->render( $this->getCrudTemplatePath('list.html') , $args);
     }
@@ -974,7 +974,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $this->initToolbarControls();
         $region = $this->createListInnerRegion($_REQUEST);
         $this->assign('listInnerRegion', $region);
-        return $this->renderCrudList();
+        return $this->renderList();
     }
 
     /**
