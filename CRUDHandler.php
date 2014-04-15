@@ -786,7 +786,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param array $args template arguments.
      * @return string template content
      */
-    public function renderCrudPage( $args = array() ) 
+    public function renderPage( $args = array() ) 
     {
         return $this->render( $this->getCrudTemplatePath('page.html') , $args);
     }
@@ -1007,7 +1007,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         // here we clone the request for the region.
         $tiles[] = $createRegion = Region::create( $this->getCreateRegionPath(), $_REQUEST );
-        return $this->renderCrudPage(array( 
+        return $this->renderPage(array( 
             'tiles' => $tiles,
             'createRegion' => $createRegion,
         ));
@@ -1022,7 +1022,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         // here we clone the request for the region.
         $tiles[] = Region::create( $this->getEditRegionPath(), $_REQUEST );
-        return $this->renderCrudPage(array( 'tiles' => $tiles ));
+        return $this->renderPage(array( 'tiles' => $tiles ));
     }
 
     /* indexAction is a tiled page,
@@ -1031,7 +1031,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     {
         $tiles   = array();
         $tiles[] = $indexRegion = $this->createIndexRegion();
-        return $this->renderCrudPage(array( 
+        return $this->renderPage(array( 
             'tiles' => $tiles,
             'indexRegion' => $indexRegion,
         ));
