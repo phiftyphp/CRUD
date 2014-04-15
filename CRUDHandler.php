@@ -768,11 +768,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
     /**
-     * Render general item view.
+     * Render general item region for ajax UI update.
      *
      * @param array $args template arguments
      */
-    public function renderItem( $args = array() )
+    public function renderItemRegion( $args = array() )
     {
         return $this->render( $this->getCrudTemplatePath('item.html') , $args);
     }
