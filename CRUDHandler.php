@@ -761,9 +761,20 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param arary $args template arguments.
      * @return string template content.
      */
-    public function renderCrudEdit( $args = array() )
+    public function renderEdit( $args = array() )
     {
         return $this->render( $this->getCrudTemplatePath('edit.html') , $args);
+    }
+
+
+    /**
+     * Render general item view.
+     *
+     * @param array $args template arguments
+     */
+    public function renderItem( $args = array() )
+    {
+        return $this->render( $this->getCrudTemplatePath('item.html') , $args);
     }
 
 
@@ -916,7 +927,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
             'Action' => $this->getCurrentAction(),
             'Record' => $record,
         ));
-        return $this->renderCrudEdit();
+        return $this->renderEdit();
     }
 
 
@@ -925,7 +936,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function editRegionAction()
     {
         $this->editRegionActionPrepare();
-        return $this->renderCrudEdit();
+        return $this->renderEdit();
     }
 
     public function dialogEditRegionAction()
