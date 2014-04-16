@@ -173,8 +173,13 @@ CRUDList.init = (config) ->
       dialogOptions:
         width: config.dialogOptions.width
       onSuccess: (resp) ->
-        coverView = new itemViewClass(config.create, resp.data)
-        coverView.appendTo $imageContainer
+        # if the itemViewClass is defined (which is a front-end template), use it.
+        if itemViewClass
+          coverView = new itemViewClass(config.create, resp.data)
+          coverView.appendTo $imageContainer
+        else
+          # get the item view content and append to our container
+          $.get "/bs/#{ config.crudId }/crud/item", {id: resp.data.id}, (html) -> $container.append(html)
 
   $title = $('<h3/>').text(config.title)
   $hint  = $('<span/>').text(config.hint).addClass("hint")
@@ -198,5 +203,8 @@ CRUDList.renderRecords = ($container, records, config) ->
   return unless records
   itemViewClass = config.itemView
   for record in records
-    coverView = new itemViewClass(config.create, record)
-    coverView.appendTo $container
+    if itemViewClass
+      coverView = new itemViewClass(config.create, record)
+      coverView.appendTo $container
+    else
+      $.get "/bs/#{ config.crudId }/crud/item", {id: record.id}, (html) -> $container.append(html)
