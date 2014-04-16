@@ -22,6 +22,6 @@ class CRUDDialog
         }
       })
       # use as a dialog
-      dialogOptions = $.extend({ minWidth: 450, modal: true }, opts.dialogOptions)
+      dialogOptions = $.extend({ minWidth: 800, modal: true }, opts.dialogOptions)
       $el.dialog(dialogOptions)
 window.CRUDDialog = CRUDDialog

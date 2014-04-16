@@ -30,7 +30,7 @@
           }
         });
         dialogOptions = $.extend({
-          minWidth: 450,
+          minWidth: 800,
           modal: true
         }, opts.dialogOptions);
         return $el.dialog(dialogOptions);
