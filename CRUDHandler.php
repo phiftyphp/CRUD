@@ -139,7 +139,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     /**
      * @var array register CRUD Action automatically
      */
-    public $registerCRUD = array('Create','Update','Delete','BulkDelete');
+    public $registerRecordAction = array('Create','Update','Delete','BulkDelete');
 
     /**
      * @var ToolbarItemController[]
@@ -263,11 +263,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $this->vars['Handler'] = $this;
 
         // anyway, we have the model classname, and the namespace, 
-        // we should be able to registerCRUD automatically, so we don't have to write the code.
-        if ( $this->registerCRUD ) {
+        // we should be able to registerRecordAction automatically, so we don't have to write the code.
+        if ( $this->registerRecordAction ) {
             $self = $this;
             kernel()->event->register('phifty.before_action',function() use($self) {
-                kernel()->action->registerCRUD( $self->namespace , $self->modelName , $self->registerCRUD );
+                kernel()->action->registerRecordAction( $self->namespace , $self->modelName , $self->registerRecordAction );
             });
         }
 
