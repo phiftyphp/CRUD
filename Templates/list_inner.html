@@ -170,6 +170,8 @@ $(function() {
 {% block script %}
 <script>
 jQuery(document).ready(function($) {
+    Holder.run({ domain: 'crud.list' });
+
     $('a[rel*=facebox]').facebox({
         closeImage: '/assets/facebox/src/closelabel.png',
         loadingImage: '/assets/facebox/src/loading.gif'
