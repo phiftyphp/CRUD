@@ -44,9 +44,10 @@ Phifty.CRUD =
       onSuccess: (resp) ->
         self = this
         r = Region.of(self.form())
-        if r.triggerElement
-          Region.of(r.triggerElement).refresh()
-        r.remove()
+        if r
+          if r.triggerElement
+            Region.of(r.triggerElement).refresh()
+          r.remove()
     }, opts.actionOptions or {})
 
     $el.find('.ajax-action').each (i,f) ->
