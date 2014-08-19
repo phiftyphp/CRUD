@@ -21,6 +21,9 @@ Phifty.CRUD =
       r.remove()
 
   initEditRegion: ($el,opts) ->
+
+    opts = $.extend({ removeRegion: true },opts)
+
     $(document.body).trigger('phifty.region_load')
     FormKit.initialize($el)
     $el.find('.tabs').tabs()
@@ -43,11 +46,12 @@ Phifty.CRUD =
       clear: false,
       onSuccess: (resp) ->
         self = this
-        r = Region.of(self.form())
-        if r
-          if r.triggerElement
-            Region.of(r.triggerElement).refresh()
-          r.remove()
+        if opts.removeRegion
+          r = Region.of(self.form())
+          if r
+            if r.triggerElement
+              Region.of(r.triggerElement).refresh()
+            r.remove()
     }, opts.actionOptions or {})
 
     $el.find('.ajax-action').each (i,f) ->

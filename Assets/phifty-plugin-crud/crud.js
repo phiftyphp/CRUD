@@ -36,6 +36,9 @@ vim:sw=2:ts=2:sts=2:
     },
     initEditRegion: function($el, opts) {
       var actionOptions;
+      opts = $.extend({
+        removeRegion: true
+      }, opts);
       $(document.body).trigger('phifty.region_load');
       FormKit.initialize($el);
       $el.find('.tabs').tabs();
@@ -59,12 +62,14 @@ vim:sw=2:ts=2:sts=2:
         onSuccess: function(resp) {
           var r, self;
           self = this;
-          r = Region.of(self.form());
-          if (r) {
-            if (r.triggerElement) {
-              Region.of(r.triggerElement).refresh();
+          if (opts.removeRegion) {
+            r = Region.of(self.form());
+            if (r) {
+              if (r.triggerElement) {
+                Region.of(r.triggerElement).refresh();
+              }
+              return r.remove();
             }
-            return r.remove();
           }
         }
       }, opts.actionOptions || {});
