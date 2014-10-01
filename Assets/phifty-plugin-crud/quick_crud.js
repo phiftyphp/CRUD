@@ -28,7 +28,6 @@
       });
       self = this;
       this.selectInput.after(this.createButton);
-      this.selectInput.after(this.deleteButton);
       this.selectInput.change(function(e) {
         var val;
         val = $(this).val();
@@ -38,6 +37,7 @@
           return self.deleteButton.hide();
         }
       });
+      this.deleteButton.hide();
       if (!this.selectInput.val()) {
         this.deleteButton.hide();
       }

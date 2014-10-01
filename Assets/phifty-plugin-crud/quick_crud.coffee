@@ -18,13 +18,14 @@ class QuickCRUD
 
     self = this
     @selectInput.after( @createButton )
-    @selectInput.after( @deleteButton )
+    # @selectInput.after( @deleteButton )
     @selectInput.change (e) ->
       val = $(this).val()
       if val
         self.deleteButton.show()
       else
         self.deleteButton.hide()
+
     if not @selectInput.val()
       @deleteButton.hide()
 
