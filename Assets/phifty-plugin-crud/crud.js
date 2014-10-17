@@ -102,9 +102,15 @@ vim:sw=2:ts=2:sts=2:
   window.CRUDList = CRUDList = {};
 
   CRUDList.BaseItemView = (function() {
-    function BaseItemView(config, data) {
+
+    /*
+    @config: the config.create
+     */
+    function BaseItemView(config, data, crudConfig) {
       this.config = config;
       this.data = data;
+      this.crudConfig = crudConfig;
+      this.crudConfig || (this.crudConfig = {});
       this.config.primaryKey = this.config.primaryKey || "id";
     }
 
@@ -261,10 +267,12 @@ vim:sw=2:ts=2:sts=2:
         dialogOptions: {
           width: config.dialogOptions.width
         },
+        init: config.init,
+        beforeSubmit: config.beforeSubmit,
         onSuccess: function(resp) {
           var coverView;
           if (itemViewClass) {
-            coverView = new itemViewClass(config.create, resp.data);
+            coverView = new itemViewClass(config.create, resp.data, config);
             return coverView.appendTo($imageContainer);
           } else {
             return $.get("/bs/" + config.crudId + "/crud/item", {
@@ -292,7 +300,7 @@ vim:sw=2:ts=2:sts=2:
       return;
     }
     itemViewClass = config.itemView;
-    coverView = new itemViewClass(config.create, record);
+    coverView = new itemViewClass(config.create, record, config);
     return coverView.appendTo($container);
   };
 
@@ -306,7 +314,7 @@ vim:sw=2:ts=2:sts=2:
     for (_i = 0, _len = records.length; _i < _len; _i++) {
       record = records[_i];
       if (itemViewClass) {
-        coverView = new itemViewClass(config.create, record);
+        coverView = new itemViewClass(config.create, record, config);
         _results.push(coverView.appendTo($container));
       } else {
         _results.push($.get("/bs/" + config.crudId + "/crud/item", {
