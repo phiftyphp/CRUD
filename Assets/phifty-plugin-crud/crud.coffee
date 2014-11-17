@@ -21,6 +21,9 @@ Phifty.CRUD =
       r.remove()
 
   initEditRegion: ($el,opts) ->
+
+    opts = $.extend({ removeRegion: true },opts)
+
     $(document.body).trigger('phifty.region_load')
     FormKit.initialize($el)
     $el.find('.tabs').tabs()
@@ -43,10 +46,12 @@ Phifty.CRUD =
       clear: false,
       onSuccess: (resp) ->
         self = this
-        r = Region.of(self.form())
-        if r.triggerElement
-          Region.of(r.triggerElement).refresh()
-        r.remove()
+        if opts.removeRegion
+          r = Region.of(self.form())
+          if r
+            if r.triggerElement
+              Region.of(r.triggerElement).refresh()
+            r.remove()
     }, opts.actionOptions or {})
 
     $el.find('.ajax-action').each (i,f) ->
@@ -77,7 +82,12 @@ Which generates the input name with
 window.CRUDList = CRUDList = {}
 
 class CRUDList.BaseItemView
-  constructor: (@config,@data) ->
+
+  ###
+  @config: the config.create
+  ###
+  constructor: (@config, @data, @crudConfig) ->
+    @crudConfig ||= {}
     @config.primaryKey = @config.primaryKey || "id"
 
   createHiddenInput: (name,val) ->
@@ -172,10 +182,12 @@ CRUDList.init = (config) ->
     dialog = new CRUDDialog "/bs/#{ config.crudId }/crud/dialog",{},
       dialogOptions:
         width: config.dialogOptions.width
+      init: config.init
+      beforeSubmit: config.beforeSubmit
       onSuccess: (resp) ->
         # if the itemViewClass is defined (which is a front-end template), use it.
         if itemViewClass
-          coverView = new itemViewClass(config.create, resp.data)
+          coverView = new itemViewClass(config.create, resp.data, config)
           coverView.appendTo $imageContainer
         else
           # get the item view content and append to our container
@@ -196,15 +208,15 @@ CRUDList.createContainer = () -> $('<div/>').addClass("clearfix item-container")
 CRUDList.renderRecord = ($container, record, config) ->
   return unless record
   itemViewClass = config.itemView
-  coverView = new itemViewClass(config.create, record)
-  coverView.appendTo $container
+  coverView = new itemViewClass(config.create, record, config)
+  coverView.appendTo($container)
 
 CRUDList.renderRecords = ($container, records, config) ->
   return unless records
   itemViewClass = config.itemView
   for record in records
     if itemViewClass
-      coverView = new itemViewClass(config.create, record)
+      coverView = new itemViewClass(config.create, record, config)
       coverView.appendTo $container
     else
       $.get "/bs/#{ config.crudId }/crud/item", {id: record.id}, (html) -> $container.append(html)
