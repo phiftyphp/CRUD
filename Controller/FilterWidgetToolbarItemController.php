@@ -1,6 +1,7 @@
 <?php
 namespace CRUD\Controller;
 use Phifty\Controller;
+use Exception;
 
 class FilterWidgetToolbarItemController extends ToolbarItemController
 {
@@ -23,7 +24,12 @@ class FilterWidgetToolbarItemController extends ToolbarItemController
         $handler = $this->getHandler();
         $model = $handler->getModel();
         $action = $model->asCreateAction();
-        $widget = $action->getParam( $fieldName )->createWidget(null,array( 'allow_empty' => true ));
+
+        $param = $action->getParam( $fieldName );
+        if (!$param) {
+            throw new Exception("$fieldName param is not defined in action: " . get_class($action) );
+        }
+        $widget = $param->createWidget(null,array( 'allow_empty' => true ));
         $widget->name = '_filter_' . $fieldName;
         return $this->render('@CRUD/filter.html',array( 'widget' => $widget ));
     }
