@@ -97,14 +97,30 @@ class CRUDList.BaseItemView
       value: val
 
   renderKeyField: () ->
-    if @config.relation
-      return @createHiddenInput(
-        @config.relation + "[#{@data[@config.primaryKey]}][#{ @config.primaryKey }]",
-        @data[@config.primaryKey])
-    else
-      return @createHiddenInput("id", @data[@config.primaryKey])
+    if @config.primaryKey and @data[@config.primaryKey]
+      if @config.relation
+        return @createHiddenInput(
+          @config.relation + "[#{@data[@config.primaryKey]}][#{ @config.primaryKey }]",
+          @data[@config.primaryKey])
+      else
+        return @createHiddenInput("id", @data[@config.primaryKey])
 
   appendTo: (target) -> @render().appendTo($(target))
+
+class CRUDList.TextItemView extends CRUDList.BaseItemView
+  render: ->
+    config = @config
+    data = @data
+    $cover = Phifty.AdminUI.createTextCover data,
+      onClose: (e) ->
+        if config.deleteAction and data.id
+          runAction config.deleteAction,
+              { id: data.id },
+              { confirm: '確認刪除? ', remove: $cover }
+        else
+          $cover.remove()
+    @renderKeyField()?.appendTo $cover
+    return $cover
 
 
 class CRUDList.FileItemView extends CRUDList.BaseItemView
@@ -113,12 +129,15 @@ class CRUDList.FileItemView extends CRUDList.BaseItemView
     data = @data
     $cover = Phifty.AdminUI.createFileCover(data)
     $close = $('<div/>').addClass('close').click ->
-        runAction config.deleteAction,
-            { id: data.id },
-            { confirm: '確認刪除? ', remove: $cover }
+        if config.deleteAction and data.id
+          runAction config.deleteAction,
+              { id: data.id },
+              { confirm: '確認刪除? ', remove: $cover }
+        else
+          $cover.remove()
     $close.appendTo($cover)
     $keyField = @renderKeyField()
-    $keyField.appendTo $cover
+    $keyField?.appendTo $cover
     return $cover
 
 class CRUDList.ResourceItemView extends CRUDList.BaseItemView
@@ -131,7 +150,7 @@ class CRUDList.ResourceItemView extends CRUDList.BaseItemView
           { id: data[config.primaryKey] },
           { confirm: '確認刪除? ', remove: this }
     $keyField = @renderKeyField()
-    $keyField.appendTo $cover
+    $keyField?.appendTo $cover
     return $cover
 
 class CRUDList.ImageItemView extends CRUDList.BaseItemView
@@ -149,7 +168,7 @@ class CRUDList.ImageItemView extends CRUDList.BaseItemView
 
     # The field "images[3][id]" for id
     $keyField = @renderKeyField()
-    $keyField.appendTo $cover
+    $keyField?.appendTo $cover
     return $cover
 
 

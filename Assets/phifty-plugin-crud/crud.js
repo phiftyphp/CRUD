@@ -123,10 +123,12 @@ vim:sw=2:ts=2:sts=2:
     };
 
     BaseItemView.prototype.renderKeyField = function() {
-      if (this.config.relation) {
-        return this.createHiddenInput(this.config.relation + ("[" + this.data[this.config.primaryKey] + "][" + this.config.primaryKey + "]"), this.data[this.config.primaryKey]);
-      } else {
-        return this.createHiddenInput("id", this.data[this.config.primaryKey]);
+      if (this.config.primaryKey && this.data[this.config.primaryKey]) {
+        if (this.config.relation) {
+          return this.createHiddenInput(this.config.relation + ("[" + this.data[this.config.primaryKey] + "][" + this.config.primaryKey + "]"), this.data[this.config.primaryKey]);
+        } else {
+          return this.createHiddenInput("id", this.data[this.config.primaryKey]);
+        }
       }
     };
 
@@ -137,6 +139,41 @@ vim:sw=2:ts=2:sts=2:
     return BaseItemView;
 
   })();
+
+  CRUDList.TextItemView = (function(_super) {
+    __extends(TextItemView, _super);
+
+    function TextItemView() {
+      return TextItemView.__super__.constructor.apply(this, arguments);
+    }
+
+    TextItemView.prototype.render = function() {
+      var $cover, config, data, _ref;
+      config = this.config;
+      data = this.data;
+      $cover = Phifty.AdminUI.createTextCover(data, {
+        onClose: function(e) {
+          if (config.deleteAction && data.id) {
+            return runAction(config.deleteAction, {
+              id: data.id
+            }, {
+              confirm: '確認刪除? ',
+              remove: $cover
+            });
+          } else {
+            return $cover.remove();
+          }
+        }
+      });
+      if ((_ref = this.renderKeyField()) != null) {
+        _ref.appendTo($cover);
+      }
+      return $cover;
+    };
+
+    return TextItemView;
+
+  })(CRUDList.BaseItemView);
 
   CRUDList.FileItemView = (function(_super) {
     __extends(FileItemView, _super);
@@ -151,16 +188,22 @@ vim:sw=2:ts=2:sts=2:
       data = this.data;
       $cover = Phifty.AdminUI.createFileCover(data);
       $close = $('<div/>').addClass('close').click(function() {
-        return runAction(config.deleteAction, {
-          id: data.id
-        }, {
-          confirm: '確認刪除? ',
-          remove: $cover
-        });
+        if (config.deleteAction && data.id) {
+          return runAction(config.deleteAction, {
+            id: data.id
+          }, {
+            confirm: '確認刪除? ',
+            remove: $cover
+          });
+        } else {
+          return $cover.remove();
+        }
       });
       $close.appendTo($cover);
       $keyField = this.renderKeyField();
-      $keyField.appendTo($cover);
+      if ($keyField != null) {
+        $keyField.appendTo($cover);
+      }
       return $cover;
     };
 
@@ -190,7 +233,9 @@ vim:sw=2:ts=2:sts=2:
         }
       });
       $keyField = this.renderKeyField();
-      $keyField.appendTo($cover);
+      if ($keyField != null) {
+        $keyField.appendTo($cover);
+      }
       return $cover;
     };
 
@@ -223,7 +268,9 @@ vim:sw=2:ts=2:sts=2:
         }
       });
       $keyField = this.renderKeyField();
-      $keyField.appendTo($cover);
+      if ($keyField != null) {
+        $keyField.appendTo($cover);
+      }
       return $cover;
     };
 

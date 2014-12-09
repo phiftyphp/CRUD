@@ -40,7 +40,6 @@
           return self.deleteButton.hide();
         }
       });
-      this.deleteButton.hide();
       if (!this.selectInput.val()) {
         this.deleteButton.hide();
       }
