@@ -13,6 +13,7 @@ class CRUDDialog
           disableScroll: true
           container: $el.find('.action-result-container').first()
         actionOptions: {
+          beforeSubmit: opts.beforeSubmit
           onSuccess: (resp) ->
             opts.onSuccess(resp,$el) if opts.onSuccess
             setTimeout((->
@@ -22,6 +23,8 @@ class CRUDDialog
         }
       })
       # use as a dialog
-      dialogOptions = $.extend({ minWidth: 450, modal: true }, opts.dialogOptions)
+      dialogOptions = $.extend({ minWidth: 800, modal: true }, opts.dialogOptions)
       $el.dialog(dialogOptions)
+      use_tinymce('adv1', { popup: true })
+      opts.init($el) if opts.init
 window.CRUDDialog = CRUDDialog

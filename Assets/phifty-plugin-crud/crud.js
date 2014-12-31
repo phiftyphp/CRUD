@@ -36,6 +36,9 @@ vim:sw=2:ts=2:sts=2:
     },
     initEditRegion: function($el, opts) {
       var actionOptions;
+      opts = $.extend({
+        removeRegion: true
+      }, opts);
       $(document.body).trigger('phifty.region_load');
       FormKit.initialize($el);
       $el.find('.tabs').tabs();
@@ -59,11 +62,15 @@ vim:sw=2:ts=2:sts=2:
         onSuccess: function(resp) {
           var r, self;
           self = this;
-          r = Region.of(self.form());
-          if (r.triggerElement) {
-            Region.of(r.triggerElement).refresh();
+          if (opts.removeRegion) {
+            r = Region.of(self.form());
+            if (r) {
+              if (r.triggerElement) {
+                Region.of(r.triggerElement).refresh();
+              }
+              return r.remove();
+            }
           }
-          return r.remove();
         }
       }, opts.actionOptions || {});
       return $el.find('.ajax-action').each(function(i, f) {
@@ -95,9 +102,15 @@ vim:sw=2:ts=2:sts=2:
   window.CRUDList = CRUDList = {};
 
   CRUDList.BaseItemView = (function() {
-    function BaseItemView(config, data) {
+
+    /*
+    @config: the config.create
+     */
+    function BaseItemView(config, data, crudConfig) {
       this.config = config;
       this.data = data;
+      this.crudConfig = crudConfig;
+      this.crudConfig || (this.crudConfig = {});
       this.config.primaryKey = this.config.primaryKey || "id";
     }
 
@@ -110,10 +123,12 @@ vim:sw=2:ts=2:sts=2:
     };
 
     BaseItemView.prototype.renderKeyField = function() {
-      if (this.config.relation) {
-        return this.createHiddenInput(this.config.relation + ("[" + this.data[this.config.primaryKey] + "][" + this.config.primaryKey + "]"), this.data[this.config.primaryKey]);
-      } else {
-        return this.createHiddenInput("id", this.data[this.config.primaryKey]);
+      if (this.config.primaryKey && this.data[this.config.primaryKey]) {
+        if (this.config.relation) {
+          return this.createHiddenInput(this.config.relation + ("[" + this.data[this.config.primaryKey] + "][" + this.config.primaryKey + "]"), this.data[this.config.primaryKey]);
+        } else {
+          return this.createHiddenInput("id", this.data[this.config.primaryKey]);
+        }
       }
     };
 
@@ -124,6 +139,41 @@ vim:sw=2:ts=2:sts=2:
     return BaseItemView;
 
   })();
+
+  CRUDList.TextItemView = (function(_super) {
+    __extends(TextItemView, _super);
+
+    function TextItemView() {
+      return TextItemView.__super__.constructor.apply(this, arguments);
+    }
+
+    TextItemView.prototype.render = function() {
+      var $cover, config, data, _ref;
+      config = this.config;
+      data = this.data;
+      $cover = Phifty.AdminUI.createTextCover(data, {
+        onClose: function(e) {
+          if (config.deleteAction && data.id) {
+            return runAction(config.deleteAction, {
+              id: data.id
+            }, {
+              confirm: '確認刪除? ',
+              remove: $cover
+            });
+          } else {
+            return $cover.remove();
+          }
+        }
+      });
+      if ((_ref = this.renderKeyField()) != null) {
+        _ref.appendTo($cover);
+      }
+      return $cover;
+    };
+
+    return TextItemView;
+
+  })(CRUDList.BaseItemView);
 
   CRUDList.FileItemView = (function(_super) {
     __extends(FileItemView, _super);
@@ -138,16 +188,22 @@ vim:sw=2:ts=2:sts=2:
       data = this.data;
       $cover = Phifty.AdminUI.createFileCover(data);
       $close = $('<div/>').addClass('close').click(function() {
-        return runAction(config.deleteAction, {
-          id: data.id
-        }, {
-          confirm: '確認刪除? ',
-          remove: $cover
-        });
+        if (config.deleteAction && data.id) {
+          return runAction(config.deleteAction, {
+            id: data.id
+          }, {
+            confirm: '確認刪除? ',
+            remove: $cover
+          });
+        } else {
+          return $cover.remove();
+        }
       });
       $close.appendTo($cover);
       $keyField = this.renderKeyField();
-      $keyField.appendTo($cover);
+      if ($keyField != null) {
+        $keyField.appendTo($cover);
+      }
       return $cover;
     };
 
@@ -177,7 +233,9 @@ vim:sw=2:ts=2:sts=2:
         }
       });
       $keyField = this.renderKeyField();
-      $keyField.appendTo($cover);
+      if ($keyField != null) {
+        $keyField.appendTo($cover);
+      }
       return $cover;
     };
 
@@ -210,7 +268,9 @@ vim:sw=2:ts=2:sts=2:
         }
       });
       $keyField = this.renderKeyField();
-      $keyField.appendTo($cover);
+      if ($keyField != null) {
+        $keyField.appendTo($cover);
+      }
       return $cover;
     };
 
@@ -254,10 +314,20 @@ vim:sw=2:ts=2:sts=2:
         dialogOptions: {
           width: config.dialogOptions.width
         },
+        init: config.init,
+        beforeSubmit: config.beforeSubmit,
         onSuccess: function(resp) {
           var coverView;
-          coverView = new itemViewClass(config.create, resp.data);
-          return coverView.appendTo($imageContainer);
+          if (itemViewClass) {
+            coverView = new itemViewClass(config.create, resp.data, config);
+            return coverView.appendTo($imageContainer);
+          } else {
+            return $.get("/bs/" + config.crudId + "/crud/item", {
+              id: resp.data.id
+            }, function(html) {
+              return $container.append(html);
+            });
+          }
         }
       });
     });
@@ -277,7 +347,7 @@ vim:sw=2:ts=2:sts=2:
       return;
     }
     itemViewClass = config.itemView;
-    coverView = new itemViewClass(config.create, record);
+    coverView = new itemViewClass(config.create, record, config);
     return coverView.appendTo($container);
   };
 
@@ -290,8 +360,16 @@ vim:sw=2:ts=2:sts=2:
     _results = [];
     for (_i = 0, _len = records.length; _i < _len; _i++) {
       record = records[_i];
-      coverView = new itemViewClass(config.create, record);
-      _results.push(coverView.appendTo($container));
+      if (itemViewClass) {
+        coverView = new itemViewClass(config.create, record, config);
+        _results.push(coverView.appendTo($container));
+      } else {
+        _results.push($.get("/bs/" + config.crudId + "/crud/item", {
+          id: record.id
+        }, function(html) {
+          return $container.append(html);
+        }));
+      }
     }
     return _results;
   };

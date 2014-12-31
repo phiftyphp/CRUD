@@ -106,6 +106,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
 
+
     /**
      * @var array model fields for quicksearch
      */
@@ -133,11 +134,12 @@ abstract class CRUDHandler extends BaseCRUDHandler
     );
 
 
+    public $parentRelationship;
 
     /**
      * @var array register CRUD Action automatically
      */
-    public $registerCRUD = array('Create','Update','Delete','BulkDelete');
+    public $registerRecordAction = array('Create','Update','Delete','BulkDelete');
 
     /**
      * @var ToolbarItemController[]
@@ -167,6 +169,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public $defaultOrder = array('id', 'DESC');
 
 
+    /**
+     * @var array The primary fields are defined for the minimal CRUD UI components.
+     */
     public $primaryFields;
 
 
@@ -223,6 +228,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $routes->add( '/crud/index'  , $class . ':indexRegionAction');
         $routes->add( '/crud/create' , $class . ':createRegionAction');
         $routes->add( '/crud/edit'   , $class . ':editRegionAction');
+
+        $routes->add( '/crud/item'   , $class . ':itemRegionAction');
+
         $routes->add( '/crud/list'   , $class . ':listRegionAction');
         $routes->add( '/crud/list_inner'   , $class . ':listInnerRegionAction');
         $routes->add( '/crud/dialog' , $class . ':dialogEditRegionAction');
@@ -255,11 +263,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $this->vars['Handler'] = $this;
 
         // anyway, we have the model classname, and the namespace, 
-        // we should be able to registerCRUD automatically, so we don't have to write the code.
-        if ( $this->registerCRUD ) {
+        // we should be able to registerRecordAction automatically, so we don't have to write the code.
+        if ( $this->registerRecordAction ) {
             $self = $this;
             kernel()->event->register('phifty.before_action',function() use($self) {
-                kernel()->action->registerCRUD( $self->namespace , $self->modelName , $self->registerCRUD );
+                kernel()->action->registerRecordAction( $self->namespace , $self->modelName , $self->registerRecordAction );
             });
         }
 
@@ -575,7 +583,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
                 $this->listRightColumns
             );
         } else {
-            $columnNames = $this->getModel()->getColumnNames();
+            // $columnNames = $this->getModel()->getColumnNames();
+            $columnNames = $this->getModel()->getRenderableColumnNames();
         }
 
         return $this->_listColumnNames = $columnNames;
@@ -736,7 +745,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param array $args template arguments
      * @return string template content.
      */
-    public function renderCrudList( $args = array() )
+    public function renderList( $args = array() )
     {
         return $this->render( $this->getCrudTemplatePath('list.html') , $args);
     }
@@ -761,9 +770,20 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param arary $args template arguments.
      * @return string template content.
      */
-    public function renderCrudEdit( $args = array() )
+    public function renderEdit( $args = array() )
     {
         return $this->render( $this->getCrudTemplatePath('edit.html') , $args);
+    }
+
+
+    /**
+     * Render general item region for ajax UI update.
+     *
+     * @param array $args template arguments
+     */
+    public function renderItem( $args = array() )
+    {
+        return $this->render( $this->getCrudTemplatePath('item.html') , $args);
     }
 
 
@@ -775,7 +795,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param array $args template arguments.
      * @return string template content
      */
-    public function renderCrudPage( $args = array() ) 
+    public function renderPageWrapper( $args = array() ) 
     {
         return $this->render( $this->getCrudTemplatePath('page.html') , $args);
     }
@@ -916,7 +936,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
             'Action' => $this->getCurrentAction(),
             'Record' => $record,
         ));
-        return $this->renderCrudEdit();
+        return $this->renderEdit();
     }
 
 
@@ -925,7 +945,13 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function editRegionAction()
     {
         $this->editRegionActionPrepare();
-        return $this->renderCrudEdit();
+        return $this->renderEdit();
+    }
+
+    public function itemRegionAction()
+    {
+        $this->editRegionActionPrepare();
+        return $this->renderItem();
     }
 
     public function dialogEditRegionAction()
@@ -963,7 +989,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $this->initToolbarControls();
         $region = $this->createListInnerRegion($_REQUEST);
         $this->assign('listInnerRegion', $region);
-        return $this->renderCrudList();
+        return $this->renderList();
     }
 
     /**
@@ -996,7 +1022,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         // here we clone the request for the region.
         $tiles[] = $createRegion = Region::create( $this->getCreateRegionPath(), $_REQUEST );
-        return $this->renderCrudPage(array( 
+        return $this->renderPageWrapper(array( 
             'tiles' => $tiles,
             'createRegion' => $createRegion,
         ));
@@ -1011,7 +1037,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         // here we clone the request for the region.
         $tiles[] = Region::create( $this->getEditRegionPath(), $_REQUEST );
-        return $this->renderCrudPage(array( 'tiles' => $tiles ));
+        return $this->renderPageWrapper(array( 'tiles' => $tiles ));
     }
 
     /* indexAction is a tiled page,
@@ -1020,7 +1046,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     {
         $tiles   = array();
         $tiles[] = $indexRegion = $this->createIndexRegion();
-        return $this->renderCrudPage(array( 
+        return $this->renderPageWrapper(array( 
             'tiles' => $tiles,
             'indexRegion' => $indexRegion,
         ));

@@ -1,0 +1,76 @@
+{% import '@CoreBundle/phifty/forms.html' as forms %}
+{% set frag_serial = random() %}
+{% set editRegionId = "crud-edit-" ~ frag_serial %}
+{% set resultContainerId = "result-container-" ~ frag_serial %}
+
+{% set item = CRUD.Record %}
+<div class="item clearfix item-{{item.id}}" id="item-{{ frag_serial }}" data-record-id="{{item.id}}">
+    {# render related record hidden input #}
+    {#
+        @config.relation + "[#{@data[@config.primaryKey]}][#{ @config.primaryKey }]",
+        @data[@config.primaryKey])
+    #}
+    <input type="hidden" name="{{CRUD.Object.parentRelationship}}[{{item.id}}][id]" value="{{item.id}}"/>
+
+
+    {% if CRUD.Object.primaryFields %}
+        {% set columnNames = CRUD.Object.primaryFields %}
+    {% else %}
+        {% set columnNames = CRUD.Object.getListColumns() %}
+    {% endif %}
+
+    {% for columnName in columnNames %}
+        {% set column = CRUD.Object.model.getColumn(columnName) %}
+        <div class="col-field">
+            <div class="v-field">
+                <div class="label">{{ column.label }}</div>
+                <div class="column-{{columnName}}">
+                {% if CRUD.Object.hasFormatter(columnName) %}
+                    {{CRUD.Object.formatColumn(item,columnName)|raw}}
+                {% else %}
+                    {{ item.display( columnName ) }}
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+
+    <div class="col-field pull-right">
+        {% if CRUD.Object.canUpdate %}
+        <input type="button" 
+            value="{% trans "編輯" %}"
+            data-record-id="{{ item.id }}"
+            class="record-edit-btn btn"/>
+        {% endif %}
+
+        {% if CRUD.Object.canDelete %}
+        <input type="button" 
+            value="{% trans "刪除" %}"
+            class="record-delete-btn btn"
+            data-record-id="{{ item.id }}"/>
+        {% endif %}
+    </div>
+</div>
+<script>
+$(function() {
+    var $item = $('#item-{{frag_serial}}');
+    $item.find('.record-edit-btn').click(function(e) {
+        e.stopPropagation();
+        var id = $(this).data('record-id');
+        var dialog = new CRUDDialog('/bs/{{ CRUD.Object.crudId }}/crud/dialog',{ id: id },{
+            // if create success
+            onSuccess: function(resp) {
+                $.get('/bs/{{ CRUD.Object.crudId }}/crud/item', { id: id }, function(html) { $item.replaceWith(html); });
+            }
+        });
+    });
+    $item.find('.record-delete-btn').click(function(e) {
+        e.stopPropagation();
+        var id = $(this).data('record-id');
+        runAction( '{{ CRUD.Object.namespace }}::Action::Delete{{ CRUD.Object.modelName }}', 
+            { id: id } , { confirm: '確認刪除? ', remove: $item } 
+        );
+    });
+});
+</script>
