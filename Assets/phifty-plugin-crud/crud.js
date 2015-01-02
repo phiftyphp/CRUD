@@ -151,7 +151,7 @@ vim:sw=2:ts=2:sts=2:
       var $cover, config, data, _ref;
       config = this.config;
       data = this.data;
-      $cover = Phifty.AdminUI.createTextCover(data, {
+      $cover = AdminUI.createTextCover(data, {
         onClose: function(e) {
           if (config.deleteAction && data.id) {
             return runAction(config.deleteAction, {
@@ -186,7 +186,7 @@ vim:sw=2:ts=2:sts=2:
       var $close, $cover, $keyField, config, data;
       config = this.config;
       data = this.data;
-      $cover = Phifty.AdminUI.createFileCover(data);
+      $cover = AdminUI.createFileCover(data);
       $close = $('<div/>').addClass('close').click(function() {
         if (config.deleteAction && data.id) {
           return runAction(config.deleteAction, {
@@ -222,7 +222,7 @@ vim:sw=2:ts=2:sts=2:
       var $cover, $keyField, config, data;
       config = this.config;
       data = this.data;
-      $cover = Phifty.AdminUI.createResourceCover(data, {
+      $cover = AdminUI.createResourceCover(data, {
         onClose: function(e) {
           return runAction(config.deleteAction, {
             id: data[config.primaryKey]
@@ -254,7 +254,7 @@ vim:sw=2:ts=2:sts=2:
       var $cover, $keyField, config, self;
       self = this;
       config = this.config;
-      $cover = Phifty.AdminUI.createImageCover({
+      $cover = AdminUI.createImageCover({
         thumb: this.data.thumb,
         image: this.data.image,
         title: this.data.title,

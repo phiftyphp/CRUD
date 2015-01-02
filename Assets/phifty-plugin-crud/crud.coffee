@@ -111,7 +111,7 @@ class CRUDList.TextItemView extends CRUDList.BaseItemView
   render: ->
     config = @config
     data = @data
-    $cover = Phifty.AdminUI.createTextCover data,
+    $cover = AdminUI.createTextCover data,
       onClose: (e) ->
         if config.deleteAction and data.id
           runAction config.deleteAction,
@@ -127,7 +127,7 @@ class CRUDList.FileItemView extends CRUDList.BaseItemView
   render: ->
     config = @config
     data = @data
-    $cover = Phifty.AdminUI.createFileCover(data)
+    $cover = AdminUI.createFileCover(data)
     $close = $('<div/>').addClass('close').click ->
         if config.deleteAction and data.id
           runAction config.deleteAction,
@@ -144,7 +144,7 @@ class CRUDList.ResourceItemView extends CRUDList.BaseItemView
   render: ->
     config = @config
     data = @data
-    $cover = Phifty.AdminUI.createResourceCover data,
+    $cover = AdminUI.createResourceCover data,
       onClose: (e) ->
         runAction config.deleteAction,
           { id: data[config.primaryKey] },
@@ -157,7 +157,7 @@ class CRUDList.ImageItemView extends CRUDList.BaseItemView
   render: ->
     self = this
     config = @config
-    $cover = Phifty.AdminUI.createImageCover
+    $cover = AdminUI.createImageCover
       thumb: @data.thumb
       image: @data.image
       title: @data.title
