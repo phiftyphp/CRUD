@@ -97,8 +97,8 @@ InputHelper.hiddenInput = (name,val) ->
 # @data (hash): Contains anything you need.
 #
 # @uiSettings:
-#   title (string)
-#   titleBy (string)
+#   label (string)
+#   labelBy (string)
 #
 # @config:
 #   new (boolean)
@@ -146,9 +146,10 @@ class CRUDList.NewTextItemView extends CRUDList.NewBaseItemView
   render: ->
     config = @config
     data = @data
-    title = @uiSettings.title or @data[ @uiSettings.titleBy ] or "Untitled"
-    $cover = AdminUI.createTextCover { name: title },
-      onClose: (e) ->
+    label = @uiSettings.label or @data[ @uiSettings.labelBy ] or "Untitled"
+    $cover = AdminUI.createTag
+      label: label
+      onRemove: (e) ->
         if config.deleteAction and data.id
           runAction config.deleteAction,
             { id: data.id },
@@ -189,7 +190,7 @@ class CRUDList.TextItemView extends CRUDList.BaseItemView
   render: ->
     config = @config
     data = @data
-    $cover = AdminUI.createTextCover data,
+    $cover = AdminUI.createTextTag data,
       onClose: (e) ->
         if config.deleteAction and data.id
           runAction config.deleteAction,

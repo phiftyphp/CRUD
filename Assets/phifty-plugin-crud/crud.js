@@ -117,8 +117,8 @@ vim:sw=2:ts=2:sts=2:
    * @data (hash): Contains anything you need.
    *
    * @uiSettings:
-   *   title (string)
-   *   titleBy (string)
+   *   label (string)
+   *   labelBy (string)
    *
    * @config:
    *   new (boolean)
@@ -187,14 +187,13 @@ vim:sw=2:ts=2:sts=2:
     }
 
     NewTextItemView.prototype.render = function() {
-      var $cover, config, data, title;
+      var $cover, config, data, label;
       config = this.config;
       data = this.data;
-      title = this.uiSettings.title || this.data[this.uiSettings.titleBy] || "Untitled";
-      $cover = AdminUI.createTextCover({
-        name: title
-      }, {
-        onClose: function(e) {
+      label = this.uiSettings.label || this.data[this.uiSettings.labelBy] || "Untitled";
+      $cover = AdminUI.createTag({
+        label: label,
+        onRemove: function(e) {
           if (config.deleteAction && data.id) {
             return runAction(config.deleteAction, {
               id: data.id
@@ -265,7 +264,7 @@ vim:sw=2:ts=2:sts=2:
       var $cover, config, data, _ref;
       config = this.config;
       data = this.data;
-      $cover = AdminUI.createTextCover(data, {
+      $cover = AdminUI.createTextTag(data, {
         onClose: function(e) {
           if (config.deleteAction && data.id) {
             return runAction(config.deleteAction, {
