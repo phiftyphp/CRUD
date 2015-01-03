@@ -81,8 +81,86 @@ Which generates the input name with
 ###
 window.CRUDList = CRUDList = {}
 
-class CRUDList.BaseItemView
 
+# Move to helper.coffee
+
+window.InputHelper = {}
+InputHelper.hiddenInput = (name,val) ->
+  return $('<input/>').attr
+      type: 'hidden'
+      name: name
+      value: val
+
+
+###
+#
+# @data (hash): Contains anything you need.
+#
+# @uiSettings:
+#   title (string)
+#   titleBy (string)
+#
+# @config:
+#   new (boolean)
+#   primaryKey (string): for example, "id"
+#   relation (string): for example, "product_images"
+###
+class CRUDList.NewBaseItemView
+  constructor: (@data, @uiSettings, @config) ->
+    # set default primary key to "id"
+    @config.primaryKey = @config.primaryKey || "id"
+
+  renderHiddenField: ($el, fieldName) ->
+    console.log "renderHiddenField"
+    pkId = @data[@config.primaryKey]
+    val = @data[fieldName]
+    index = if @config.index then @config.index else pkId
+    return unless val
+
+    if @config.relation
+      # For existing records, we should use the primary key value of the junction record for the key field.
+      # As the same as the value in the input.
+
+      # For new records, we should generate unique numbers avoid conflict, e.g., `coupon_limited_products[9][product_id]`
+      # Currently we're using product id as the field key for the new records.
+      $el.append InputHelper.hiddenInput(@config.relation + "[#{index}][#{fieldName}]", val)
+    else
+      $el.append InputHelper.hiddenInput(fieldName, val)
+
+  renderFields: ($el) ->
+    for k,v of @data
+      @renderHiddenField($el, k)
+    return
+
+  _render: () ->
+    return @el if @el
+    @el = @render()
+    return @el
+
+  append: (el) -> @_render().append(el)
+
+  appendTo: (target) -> @_render().appendTo($(target))
+
+
+class CRUDList.NewTextItemView extends CRUDList.NewBaseItemView
+  render: ->
+    config = @config
+    data = @data
+    title = @uiSettings.title or @data[ @uiSettings.titleBy ] or "Untitled"
+    $cover = AdminUI.createTextCover { name: title },
+      onClose: (e) ->
+        if config.deleteAction and data.id
+          runAction config.deleteAction,
+            { id: data.id },
+            { confirm: '確認刪除? ', remove: $cover }
+        else
+          $cover.remove()
+    @renderFields($cover)
+    return $cover
+
+
+
+class CRUDList.BaseItemView
   ###
   @config: the config.create
   ###

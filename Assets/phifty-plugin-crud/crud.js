@@ -101,6 +101,120 @@ vim:sw=2:ts=2:sts=2:
 
   window.CRUDList = CRUDList = {};
 
+  window.InputHelper = {};
+
+  InputHelper.hiddenInput = function(name, val) {
+    return $('<input/>').attr({
+      type: 'hidden',
+      name: name,
+      value: val
+    });
+  };
+
+
+  /*
+   *
+   * @data (hash): Contains anything you need.
+   *
+   * @uiSettings:
+   *   title (string)
+   *   titleBy (string)
+   *
+   * @config:
+   *   new (boolean)
+   *   primaryKey (string): for example, "id"
+   *   relation (string): for example, "product_images"
+   */
+
+  CRUDList.NewBaseItemView = (function() {
+    function NewBaseItemView(data, uiSettings, config) {
+      this.data = data;
+      this.uiSettings = uiSettings;
+      this.config = config;
+      this.config.primaryKey = this.config.primaryKey || "id";
+    }
+
+    NewBaseItemView.prototype.renderHiddenField = function($el, fieldName) {
+      var index, pkId, val;
+      console.log("renderHiddenField");
+      pkId = this.data[this.config.primaryKey];
+      val = this.data[fieldName];
+      index = this.config.index ? this.config.index : pkId;
+      if (!val) {
+        return;
+      }
+      if (this.config.relation) {
+        return $el.append(InputHelper.hiddenInput(this.config.relation + ("[" + index + "][" + fieldName + "]"), val));
+      } else {
+        return $el.append(InputHelper.hiddenInput(fieldName, val));
+      }
+    };
+
+    NewBaseItemView.prototype.renderFields = function($el) {
+      var k, v, _ref;
+      _ref = this.data;
+      for (k in _ref) {
+        v = _ref[k];
+        this.renderHiddenField($el, k);
+      }
+    };
+
+    NewBaseItemView.prototype._render = function() {
+      if (this.el) {
+        return this.el;
+      }
+      this.el = this.render();
+      return this.el;
+    };
+
+    NewBaseItemView.prototype.append = function(el) {
+      return this._render().append(el);
+    };
+
+    NewBaseItemView.prototype.appendTo = function(target) {
+      return this._render().appendTo($(target));
+    };
+
+    return NewBaseItemView;
+
+  })();
+
+  CRUDList.NewTextItemView = (function(_super) {
+    __extends(NewTextItemView, _super);
+
+    function NewTextItemView() {
+      return NewTextItemView.__super__.constructor.apply(this, arguments);
+    }
+
+    NewTextItemView.prototype.render = function() {
+      var $cover, config, data, title;
+      config = this.config;
+      data = this.data;
+      title = this.uiSettings.title || this.data[this.uiSettings.titleBy] || "Untitled";
+      $cover = AdminUI.createTextCover({
+        name: title
+      }, {
+        onClose: function(e) {
+          if (config.deleteAction && data.id) {
+            return runAction(config.deleteAction, {
+              id: data.id
+            }, {
+              confirm: '確認刪除? ',
+              remove: $cover
+            });
+          } else {
+            return $cover.remove();
+          }
+        }
+      });
+      this.renderFields($cover);
+      return $cover;
+    };
+
+    return NewTextItemView;
+
+  })(CRUDList.NewBaseItemView);
+
   CRUDList.BaseItemView = (function() {
 
     /*
