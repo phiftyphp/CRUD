@@ -136,7 +136,6 @@ vim:sw=2:ts=2:sts=2:
 
     NewBaseItemView.prototype.renderHiddenField = function($el, fieldName) {
       var index, pkId, val;
-      console.log("renderHiddenField");
       pkId = this.data[this.config.primaryKey];
       val = this.data[fieldName];
       index = this.config.index ? this.config.index : pkId;

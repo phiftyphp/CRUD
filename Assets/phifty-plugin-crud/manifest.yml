@@ -6,5 +6,6 @@ collections:
     - crud_dialog.js
     - crud_chooser.js
     - quick_crud.js
+    - aut.js
   - css:
     - crud.css

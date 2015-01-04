@@ -111,7 +111,6 @@ class CRUDList.NewBaseItemView
     @config.primaryKey = @config.primaryKey || "id"
 
   renderHiddenField: ($el, fieldName) ->
-    console.log "renderHiddenField"
     pkId = @data[@config.primaryKey]
     val = @data[fieldName]
     index = if @config.index then @config.index else pkId
