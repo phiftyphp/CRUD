@@ -29,8 +29,13 @@ vim:filetype=htmldjango:
 
 {% endif %}
 </div>
+
+
 {% block init_js %}
 <script type="text/javascript">
+/**
+This is initialized after a region is loaded.
+*/
 $(document.body).ready(function() {
     // <div id="{{ resultContainerId }}" class="action-result-container"> </div>
     var $el = $('#{{ editRegionId }}');
@@ -50,17 +55,6 @@ $(document.body).ready(function() {
     $el.find('select[name=lang]').addClass('lang-switch');
     I18N.initLangSwitch($el);
 
-    // hint js
-    $('.v-field .hint').each(function(i,e) {
-        var $hint = $(this);
-        $hint.hide().css({ position: 'absolute', zIndex: 100 });
-        $hint.parent().css({ position: 'relative' });
-        $hint.prev().hover(function() { 
-            $hint.fadeIn();
-        }, function() { 
-            $hint.fadeOut();
-        });
-    });
     // $el.find("select, input:checkbox, input:radio, input:file, input:text, input:submit, input:button").uniform();
 });
 </script>

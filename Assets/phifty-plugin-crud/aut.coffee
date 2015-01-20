@@ -109,6 +109,8 @@ $ ->
     $(container).find('[data-widget="aut"]').each (i,el) ->
       aut = new AutoCompleteTaggingWidget(el, {})
       aut.init()
+
+  # Bind to region-js "region.load" event to initialize the widget everywhere...
   $(Region).bind 'region.load', (e, reg) ->
     findAndInit(reg)
   findAndInit($(document.body))

@@ -37,7 +37,7 @@ New BulkCRUD:
       this.menu = this.config.menu;
       this.namespace = this.config.namespace;
       this.model = this.config.model;
-      this.table.find('tbody tr').click(function(e) {
+      this.table.on("click", "tbody tr", function(e) {
         var el;
         el = $(this).find('input[name="selected[]"]');
         if (el.attr('checked')) {
@@ -49,7 +49,7 @@ New BulkCRUD:
         }
         return e.stopPropagation();
       });
-      this.table.find('tbody input[name="selected[]"]').click(function(e) {
+      this.table.on("click", 'tbody input[name="selected[]"]', function(e) {
         e.stopPropagation();
         if ($(this).attr('checked')) {
           return $(this).parents("tr").addClass('selected');
@@ -57,11 +57,34 @@ New BulkCRUD:
           return $(this).parents("tr").removeClass('selected');
         }
       });
-      this.container.find('.select-all').click((function(_this) {
+      this.table.on("click", ".select-all", (function(_this) {
         return function() {
           return _this.toggleSelect();
         };
       })(this));
+      this.table.on("click", ".record-edit-btn", function(e) {
+        var id, section;
+        id = $(this).data("record-id");
+        section = $(this).parents(".section").get(0);
+        e.stopPropagation();
+        return Region.before(section, $(this).data("edit-url"), {
+          id: id
+        }, this);
+      });
+      this.table.on("click", ".record-delete-btn", function(e) {
+        var id;
+        e.stopPropagation();
+        if (!$(this).data("delete-action")) {
+          console.error("data-delete-action undefined");
+        }
+        id = $(this).data("record-id");
+        return runAction($(this).data("delete-action"), {
+          id: id
+        }, {
+          confirm: "確認刪除? ",
+          removeTr: this
+        });
+      });
       this.menu.empty();
       this.menu.append($('<option/>'));
       self = this;

@@ -1,11 +1,14 @@
 ---
 collections:
   - js:
+    - modal.js
     - bulk.js
     - crud.js
+    - crud_list.js
     - crud_dialog.js
     - crud_chooser.js
     - quick_crud.js
     - aut.js
+    - crud_init.js
   - css:
     - crud.css

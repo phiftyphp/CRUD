@@ -36,24 +36,10 @@ vim:sw=2:ts=2:sts=2:
     },
     initEditRegion: function($el, opts) {
       var actionOptions;
+      $(document.body).trigger('phifty.region_load');
       opts = $.extend({
         removeRegion: true
       }, opts);
-      $(document.body).trigger('phifty.region_load');
-      FormKit.initialize($el);
-      $el.find('.tabs').tabs();
-      $el.find('.accordion').accordion({
-        active: false,
-        collapsible: true,
-        autoHeight: false
-      });
-      $el.find(".collapsible").collapse();
-      if (typeof $.oembed !== 'undefined') {
-        $el.find('.oembed').oembed(null, {
-          maxHeight: 160,
-          maxWidth: 300
-        });
-      }
       if (opts.defaultTinyMCE) {
         use_tinymce('adv1');
       }

@@ -21,22 +21,9 @@ Phifty.CRUD =
       r.remove()
 
   initEditRegion: ($el,opts) ->
+    $(document.body).trigger('phifty.region_load')
 
     opts = $.extend({ removeRegion: true },opts)
-
-    $(document.body).trigger('phifty.region_load')
-    FormKit.initialize($el)
-    $el.find('.tabs').tabs()
-    $el.find('.accordion').accordion({
-      active: false
-      collapsible: true
-      autoHeight: false
-    })
-    # initialize collapse when in ajax request.
-    $el.find(".collapsible").collapse()
-
-    if typeof $.oembed isnt 'undefined'
-      $el.find('.oembed').oembed(null, { maxHeight: 160 , maxWidth: 300 })
 
     # $(".crud-edit").find("select, input:checkbox, input:radio, input:file, input:text, input:submit, input:button").uniform();
     if opts.defaultTinyMCE
@@ -317,7 +304,3 @@ CRUDList.renderRecords = ($container, records, config) ->
       coverView.appendTo $container
     else
       $.get "/bs/#{ config.crudId }/crud/item", {id: record.id}, (html) -> $container.append(html)
-
-
-
-

@@ -1,5 +1,5 @@
 <script>
-$(document.body).ready(function() {
+$(function() {
     var $section = $('.section-list-{{CRUD.Object.crudId}}');
     var $table = $section.find('.crud-list table');
     var $menu = $section.find('.bulk-menu');
@@ -19,27 +19,7 @@ $(document.body).ready(function() {
     {% endif %}
 {% endif %}
 });
-
-$(function() {
-    // initialize the edit buttons in the list.
-    $('.section-list-{{CRUD.Object.crudId}}').find('.record-edit-btn').click(function(e) {
-        var id = $(this).attr('data-record-id');
-        var s = $(this).parents('.section').get(0);
-        e.stopPropagation();
-        Region.before( s, '{{ CRUD.Object.getEditRegionPath() }}', { id: id } , this );
-    });
-
-    // initialize the delete buttons in the list.
-    $('.section-list-{{CRUD.Object.crudId}}').find('.record-delete-btn').click(function(e) {
-        e.stopPropagation();
-        var id = $(this).attr('data-record-id');
-        runAction( '{{ CRUD.Object.namespace }}::Action::Delete{{ CRUD.Object.modelName }}', 
-            { id: id } , { confirm: '確認刪除? ', removeTr: this } 
-        );
-    });
-});
 </script>
-
 {% block control %}
 
 {% endblock %}
@@ -107,7 +87,7 @@ $(function() {
                 <tr class="{% if loop.index is even %}even{% else %}old{% endif %}">
                     {% if CRUD.Object.canBulkEdit %}
                         <td align="center" style="text-align: center;">
-                            <input type="checkbox" name="selected[]" value="{{ item.id }}">
+                            <input type="checkbox" class="bulk-checkbox" name="selected[]" value="{{ item.id }}">
                         </td>
                     {% endif %}
 
@@ -136,6 +116,7 @@ $(function() {
                             <input type="button" 
                                 value="{% trans "編輯" %}"
                                 data-record-id="{{ item.id }}"
+                                data-edit-url="{{  CRUD.Object.getEditRegionPath() }}"
                                 class="record-edit-btn btn"/>
                         {% endif %}
 
@@ -143,7 +124,9 @@ $(function() {
                             <input type="button" 
                                 value="{% trans "刪除" %}"
                                 class="record-delete-btn btn"
-                                data-record-id="{{ item.id }}"/>
+                                data-record-id="{{ item.id }}"
+                                data-delete-action="{{ CRUD.Object.namespace }}::Action::Delete{{ CRUD.Object.modelName }}"
+                                />
                         {% endif %}
 
                         {% if CRUD.Object.canEditInNewWindow %}

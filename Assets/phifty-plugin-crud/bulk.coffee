@@ -30,7 +30,7 @@ class BulkCRUD
     @namespace = @config.namespace
     @model = @config.model
 
-    @table.find('tbody tr').click (e) ->
+    @table.on "click", "tbody tr", (e) ->
       el = $(this).find('input[name="selected[]"]')
       if el.attr('checked')
         $(this).removeClass('selected')
@@ -40,15 +40,31 @@ class BulkCRUD
         $(this).addClass('selected')
       e.stopPropagation()
 
-    @table.find('tbody input[name="selected[]"]').click (e) ->
+    @table.on "click", 'tbody input[name="selected[]"]', (e) ->
       e.stopPropagation()
       if $(this).attr('checked')
         $(this).parents("tr").addClass('selected')
       else
         $(this).parents("tr").removeClass('selected')
 
-    # bind #select-all
-    @container.find('.select-all').click => @toggleSelect()
+    @table.on "click", ".select-all", => @toggleSelect()
+
+    @table.on "click", ".record-edit-btn", (e) ->
+      id = $(this).data("record-id")
+      section = $(this).parents(".section").get(0)
+      e.stopPropagation()
+      Region.before section, $(this).data("edit-url"), { id: id }, this
+
+    @table.on "click", ".record-delete-btn", (e) ->
+      e.stopPropagation()
+      if not $(this).data("delete-action")
+        console.error("data-delete-action undefined")
+      id = $(this).data("record-id")
+      runAction $(this).data("delete-action"), { id: id },
+        confirm: "確認刪除? "
+        removeTr: this
+
+
     @menu.empty()
     @menu.append( $('<option/>') )
 
