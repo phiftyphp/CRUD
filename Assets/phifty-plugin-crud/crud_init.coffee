@@ -1,5 +1,11 @@
 # Initialize the CRUD list
 $ ->
+  $(document).on "click", ".column-sort", (e) ->
+    r = Region.of(this)
+    r.refreshWith
+      _order_column: $(this).data('sort-column')
+      _order_by: $(this).data('sort-type')
+    return false
 
   # bind components when region is ready
   $(Region).bind 'region.load', (e, $el) ->

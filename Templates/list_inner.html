@@ -51,25 +51,27 @@ $(function() {
                     </th>
                 {% endif %}
 
-                {% block prepend_thead %} 
+                {% block prepend_thead %}
                 {% endblock %}
 
                 {% for column in CRUD.Columns %}
                     {% set columnObj = CRUD.Object.model.getColumn(column) %}
                     {% set label = columnObj.getLabel() %}
-                <th class="column-header column-header-{{column}}"> 
-                        <span class="column-name">{{ label }}</span> 
+                    <th class="column-header column-header-{{column}}">
+                        <span class="column-name">{{ label }}</span>
 
                         {% if columnObj and not columnObj.virtual %}
                             {% if order_column == column and order_by == "desc" %}
-                                <span title="Sort ascending by {{ label }}" 
-                                    class="column-sort-asc" 
-                                    onclick=" return Phifty.CRUD.columnSortHandler(this, '{{ column }}' , 'asc' );">
+                                <span title="Sort ascending by {{ label }}"
+                                    class="column-sort column-sort-asc"
+                                    data-sort-column="{{column}}"
+                                    data-sort-type="asc"
                                 </span>
                             {% else %}
-                                <span title="Sort descending by {{ label }}" 
-                                    class="column-sort-desc" 
-                                    onclick=" return Phifty.CRUD.columnSortHandler(this, '{{ column }}' , 'desc');">
+                                <span title="Sort descending by {{ label }}"
+                                    class="column-sort column-sort-desc"
+                                    data-sort-column="{{column}}"
+                                    data-sort-type="desc"
                                 </span>
                             {% endif %}
                         {% endif %}

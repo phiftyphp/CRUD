@@ -14,15 +14,6 @@ vim:sw=2:ts=2:sts=2:
   }
 
   Phifty.CRUD = {
-    columnSortHandler: function(o, name, sort_by) {
-      var r;
-      r = Region.of(o);
-      r.refreshWith({
-        _order_column: name,
-        _order_by: sort_by
-      });
-      return false;
-    },
     closeEditRegion: function(el) {
       var r;
       r = Region.of(el);

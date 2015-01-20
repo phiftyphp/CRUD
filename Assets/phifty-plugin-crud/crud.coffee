@@ -6,13 +6,6 @@ vim:sw=2:ts=2:sts=2:
 window.Phifty = {} unless window.Phifty
 
 Phifty.CRUD =
-  columnSortHandler: (o, name, sort_by) ->
-    r = Region.of(o)
-    r.refreshWith
-      _order_column: name
-      _order_by: sort_by
-    return false
-
   closeEditRegion: (el) ->
     r = Region.of(el)
     if $.scrollTo
