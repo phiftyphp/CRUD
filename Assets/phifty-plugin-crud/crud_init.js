@@ -10,6 +10,14 @@
       });
       return false;
     });
+    $(document).on("change", ".crud-quicksearch", function() {
+      var target;
+      target = $(this).data("target");
+      return $(target).asRegion().refreshWith({
+        _q: this.value,
+        page: 1
+      });
+    });
     return $(Region).bind('region.load', function(e, $el) {
       if (typeof $.oembed !== 'undefined') {
         $el.find('.oembed').oembed(null, {

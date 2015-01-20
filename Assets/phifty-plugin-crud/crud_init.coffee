@@ -7,6 +7,13 @@ $ ->
       _order_by: $(this).data('sort-type')
     return false
 
+  # quick search event
+  $(document).on "change", ".crud-quicksearch", ->
+    target = $(this).data("target")
+    $(target).asRegion().refreshWith
+      _q: @value
+      page: 1
+
   # bind components when region is ready
   $(Region).bind 'region.load', (e, $el) ->
     if typeof $.oembed isnt 'undefined'

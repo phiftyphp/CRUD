@@ -32,9 +32,8 @@
             {% if CRUD.Object.quicksearchFields %}
                 {% include '@CRUD/quick_search_filter.html' %}
             {% endif %}
-
-            <div class="clear"> </div>
-        </div> {# end of toolbar #}
+        </div>
+        <!-- /.toolbar -->
 
         {{listInnerRegion|raw}}
     </div>

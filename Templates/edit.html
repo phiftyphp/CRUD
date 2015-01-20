@@ -39,7 +39,7 @@ This is initialized after a region is loaded.
 $(document.body).ready(function() {
     // <div id="{{ resultContainerId }}" class="action-result-container"> </div>
     var $el = $('#{{ editRegionId }}');
-    Region.of($el).getEl().before( $('<div/>').attr('id','{{ resultContainerId }}').addClass('action-result-container') )
+    Region.of($el).getEl().before( $('<div/>').attr('id','{{ resultContainerId }}').addClass('action-result-container') );
     Phifty.CRUD.initEditRegion($el,{
         defaultTinyMCE: true,
         setupAction: function(a) {
@@ -50,12 +50,10 @@ $(document.body).ready(function() {
         }
     });
 
-    // add lang-switch class name to lang select dropdown to initialize lang
+    // Add lang-switch class name to lang select dropdown to initialize lang
     // switch feature
     $el.find('select[name=lang]').addClass('lang-switch');
     I18N.initLangSwitch($el);
-
-    // $el.find("select, input:checkbox, input:radio, input:file, input:text, input:submit, input:button").uniform();
 });
 </script>
 {% endblock %}

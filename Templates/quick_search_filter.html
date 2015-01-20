@@ -1,11 +1,6 @@
-<div class="toolbar-control pull-right">
-    <input id="crud-quicksearch" type="text" name="_q" value="{{ Request.param('_q') }}" placeholder="快速搜尋..."/>
+<div class="pull-right">
+    <div class="toolbar-divider"> </div>
+    <div class="toolbar-control">
+        <input class="crud-quicksearch" data-target="#{{ listInnerRegion.getRegionId() }}" type="text" name="_q" value="{{ Request.param('_q') }}" placeholder="快速搜尋..."/>
+    </div>
 </div>
-<div class="toolbar-divider pull-right"> </div>
-<script> 
-$(function() {
-    $('#crud-quicksearch').change(function() {
-         $('#{{ listInnerRegion.getRegionId() }}').asRegion().refreshWith({ _q: this.value, page: 1 });
-    });
-});
-</script>
