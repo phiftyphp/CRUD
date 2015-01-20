@@ -317,3 +317,7 @@ CRUDList.renderRecords = ($container, records, config) ->
       coverView.appendTo $container
     else
       $.get "/bs/#{ config.crudId }/crud/item", {id: record.id}, (html) -> $container.append(html)
+
+
+
+
