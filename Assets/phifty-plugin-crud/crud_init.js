@@ -18,6 +18,9 @@
         page: 1
       });
     });
+    $('.date-picker').datepicker({
+      dateFormat: 'yy-mm-dd'
+    });
     return $(Region).bind('region.load', function(e, $el) {
       if (typeof $.oembed !== 'undefined') {
         $el.find('.oembed').oembed(null, {
@@ -25,6 +28,9 @@
           maxWidth: 300
         });
       }
+      $el.find('.date-picker').datepicker({
+        dateFormat: 'yy-mm-dd'
+      });
       FormKit.initialize($el);
       $el.find('.tabs').tabs();
       $el.find('.accordion').accordion({

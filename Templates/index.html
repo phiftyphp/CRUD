@@ -7,16 +7,19 @@ vim:filetype=htmldjango:
     {% if not Bundle.config.hide_create %}
         {% if CRUD.Object.canCreate %}
             {# append a region after current parent div.section, if user clicks "Create" #}
-            <input type="button" 
-                class="button record-create-btn"
-                value="{{CRUD.Object.getCreateButtonLabel()}}" 
-                onclick=" 
-                    Region.after(
-                        $(this).parents('.section').get(0), 
-                        '{{ CRUD.Object.getCreateRegionPath() }}'
-                    ); 
-                    return false;"
-            />
+            <button type="button" 
+                class="btn record-create-btn"
+                data-create-region-url="{{ CRUD.Object.getCreateRegionPath() }}">
+            {{CRUD.Object.getCreateButtonLabel()}}
+            </button>
+            <script>
+            $(function() {
+                $(document).on('click','.record-create-btn',function() {
+                    Region.after($(this).parents('.section').get(0), $(this).data('create-region-url')); 
+                    return false;
+                });
+            });
+            </script>
         {% endif %}
     {% endif %}
 {% endblock %}

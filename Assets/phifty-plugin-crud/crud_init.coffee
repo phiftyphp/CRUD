@@ -14,10 +14,14 @@ $ ->
       _q: @value
       page: 1
 
+  $('.date-picker').datepicker({ dateFormat: 'yy-mm-dd' })
+
   # bind components when region is ready
   $(Region).bind 'region.load', (e, $el) ->
     if typeof $.oembed isnt 'undefined'
       $el.find('.oembed').oembed(null, { maxHeight: 160 , maxWidth: 300 })
+
+    $el.find('.date-picker').datepicker({ dateFormat: 'yy-mm-dd' })
 
     FormKit.initialize($el)
 
