@@ -395,7 +395,7 @@ vim:sw=2:ts=2:sts=2:
     $imageContainer = CRUDList.createContainer();
     $createBtn = $('<input/>').attr({
       type: "button"
-    }).val("新增" + config.title).addClass("button-s").css({
+    }).val("新增" + config.title).addClass("btn btn-small").css({
       float: "right"
     }).click(function(e) {
       var dialog;

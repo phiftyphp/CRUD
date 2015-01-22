@@ -253,7 +253,7 @@ CRUDList.init = (config) ->
 
   $container = $(config.container)
   $imageContainer = CRUDList.createContainer()
-  $createBtn = $('<input/>').attr({ type: "button" }).val("新增" + config.title).addClass("button-s").css({
+  $createBtn = $('<input/>').attr({ type: "button" }).val("新增" + config.title).addClass("btn btn-small").css({
     float: "right"
   }).click (e) ->
     dialog = new CRUDDialog "/bs/#{ config.crudId }/crud/dialog",{},
