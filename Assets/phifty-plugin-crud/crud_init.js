@@ -32,7 +32,7 @@
         dateFormat: 'yy-mm-dd'
       });
       FormKit.initialize($el);
-      $el.find('.tabs').tabs();
+      $el.find('.nav-tabs li:first-child a[data-toggle="tab"]').tab('show');
       $el.find('.accordion').accordion({
         active: false,
         collapsible: true,

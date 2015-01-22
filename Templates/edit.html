@@ -39,6 +39,9 @@ This is initialized after a region is loaded.
 $(document.body).ready(function() {
     // <div id="{{ resultContainerId }}" class="action-result-container"> </div>
     var $el = $('#{{ editRegionId }}');
+    if (!$el[0]) {
+        console.error('Region #{{ editRegionId }} not found.');
+    }
     Region.of($el).getEl().before( $('<div/>').attr('id','{{ resultContainerId }}').addClass('action-result-container') );
     Phifty.CRUD.initEditRegion($el,{
         defaultTinyMCE: true,

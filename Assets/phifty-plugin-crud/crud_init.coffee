@@ -25,7 +25,11 @@ $ ->
 
     FormKit.initialize($el)
 
-    $el.find('.tabs').tabs()
+    # Display the first tab
+    $el.find('.nav-tabs li:first-child a[data-toggle="tab"]').tab('show')
+
+    # $el.find('.tabs').tabs()
+    # $el.find('.tabs').easytabs()
 
     $el.find('.accordion').accordion({
       active: false

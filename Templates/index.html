@@ -15,7 +15,7 @@ vim:filetype=htmldjango:
             <script>
             $(function() {
                 $(document).on('click','.record-create-btn',function() {
-                    Region.after($(this).parents('.section').get(0), $(this).data('create-region-url')); 
+                    Region.after($(this).parents('.control-section').get(0), $(this).data('create-region-url')); 
                     return false;
                 });
             });
