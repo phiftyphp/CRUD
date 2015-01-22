@@ -2,7 +2,7 @@
 vim:filetype=htmldjango:
 #}
 {% block top_section %}
-<div class="section">
+<div class="control-section">
 {% block crud_control_section %}
     {% if not Bundle.config.hide_create %}
         {% if CRUD.Object.canCreate %}
