@@ -94,11 +94,7 @@ window.Modal.create = (opts) ->
   document.body.appendChild(modal)
 
   if opts.ajax and opts.ajax.url
-    # TODO: use ajax indicator
-    # body.innerHTML = 
-    jQuery.get opts.ajax.url, opts.ajax.args or {}, (html) ->
-      # set html
-      body.innerHTML = html
+    $(body).asRegion().load opts.ajax.url, opts.ajax.args, () ->
       opts.ajax.onReady(null, eventPayload) if opts.ajax.onReady
   return modal
 

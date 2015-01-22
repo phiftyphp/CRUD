@@ -106,8 +106,7 @@
     modal.appendChild(dialog);
     document.body.appendChild(modal);
     if (opts.ajax && opts.ajax.url) {
-      jQuery.get(opts.ajax.url, opts.ajax.args || {}, function(html) {
-        body.innerHTML = html;
+      $(body).asRegion().load(opts.ajax.url, opts.ajax.args, function() {
         if (opts.ajax.onReady) {
           return opts.ajax.onReady(null, eventPayload);
         }

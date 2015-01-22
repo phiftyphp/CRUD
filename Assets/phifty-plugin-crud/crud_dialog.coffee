@@ -1,6 +1,4 @@
-
 # vim:sw=2:ts=2:sts=2:
-
 class CRUDDialog
   constructor: (path,args,opts) ->
     $('.ui-dialog').remove() if $('.ui-dialog').get(0)

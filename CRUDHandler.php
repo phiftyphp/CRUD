@@ -128,8 +128,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * Default action view options,
      * Use ajax, and show close_button
      */
-    public $actionViewOptions = array( 
+    public $actionViewOptions = array(
         'ajax' => true,
+        'submit_button' => true,
         'close_button' => true,
     );
 
@@ -224,18 +225,19 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $handler = new static;
         $class = get_class($handler);
         $routes = new \Roller\RouteSet;
-        $routes->add( '/'            , $class . ':indexAction' );
-        $routes->add( '/crud/index'  , $class . ':indexRegionAction');
-        $routes->add( '/crud/create' , $class . ':createRegionAction');
-        $routes->add( '/crud/edit'   , $class . ':editRegionAction');
+        $routes->add('/'            , $class . ':indexAction' );
+        $routes->add('/crud/index'  , $class . ':indexRegionAction');
+        $routes->add('/crud/create' , $class . ':createRegionAction');
+        $routes->add('/crud/edit'   , $class . ':editRegionAction');
 
-        $routes->add( '/crud/item'   , $class . ':itemRegionAction');
+        $routes->add('/crud/item'   , $class . ':itemRegionAction');
 
-        $routes->add( '/crud/list'   , $class . ':listRegionAction');
-        $routes->add( '/crud/list_inner'   , $class . ':listInnerRegionAction');
-        $routes->add( '/crud/dialog' , $class . ':dialogEditRegionAction');
-        $routes->add( '/edit'        , $class . ':editAction');
-        $routes->add( '/create'      , $class . ':createAction');
+        $routes->add('/crud/list'   , $class . ':listRegionAction');
+        $routes->add('/crud/list_inner'   , $class . ':listInnerRegionAction');
+        $routes->add('/crud/modal' , $class . ':modalEditRegionAction');
+        $routes->add('/crud/dialog' , $class . ':dialogEditRegionAction');
+        $routes->add('/edit'        , $class . ':editAction');
+        $routes->add('/create'      , $class . ':createAction');
 
         if ( $handler->primaryFields ) {
             $routes->add( '/crud/quick_create', $class . ':quickCreateAction' );
@@ -754,6 +756,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
 
+    public function renderEditModal($args = array())
+    {
+        return $this->render($this->getCrudTemplatePath('modal.html') , $args);
+    }
 
 
     /**
@@ -761,7 +767,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public function renderEditDialog( $args = array() )
     {
-        return $this->render( $this->getCrudTemplatePath('dialog.html') , $args);
+        return $this->render($this->getCrudTemplatePath('dialog.html') , $args);
     }
 
     /**
@@ -878,11 +884,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
         ));
     }
 
-
-    public function getDialogActionView()
+    public function getModalActionView()
     {
         return $this->createActionView($this->getCurrentAction(),null,array(
             'close_button' => false,
+            'submit_button' => false,
             'ajax' => true,
         ));
     }
@@ -958,6 +964,12 @@ abstract class CRUDHandler extends BaseCRUDHandler
     {
         $this->editRegionActionPrepare();
         return $this->renderEditDialog();
+    }
+
+    public function modalEditRegionAction()
+    {
+        $this->editRegionActionPrepare();
+        return $this->renderEditModal();
     }
 
     public function quickCreateAction() 
