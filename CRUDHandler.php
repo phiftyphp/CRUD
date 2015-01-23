@@ -130,8 +130,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public $actionViewOptions = array(
         'ajax' => true,
-        'submit_button' => true,
-        'close_button' => true,
+        'submit_btn' => true,
+        'close_btn' => true,
     );
 
 
@@ -878,7 +878,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function getQuickCreateActionView()
     {
         return $this->createActionView($this->getCurrentAction(),null,array(
-            'close_button' => false,
+            'close_btn' => false,
             'fields' => $this->primaryFields,
             'ajax' => true,
         ));
@@ -887,8 +887,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function getModalActionView()
     {
         return $this->createActionView($this->getCurrentAction(),null,array(
-            'close_button' => false,
-            'submit_button' => false,
+            'close_btn' => false,
+            'submit_btn' => false,
             'ajax' => true,
         ));
     }

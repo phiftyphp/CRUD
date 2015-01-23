@@ -1,0 +1,9 @@
+{#
+vim:filetype=htmldjango:
+#}
+{% set edit_frag_serial = random() %}
+<div id="crud-edit-{{ edit_frag_serial }}" class="crud-edit crud-modal-content crud-edit-{{ CRUD.Record.id|default('create') }}">
+    {% block modal_body %}
+        {{ CRUD.Object.getModalActionView().render|raw }}
+    {% endblock %}
+</div>

@@ -207,15 +207,18 @@ CRUDList.init = (config) ->
 
   $container = $(config.container)
   $imageContainer = CRUDList.createContainer()
+
+  # The create action
   $createBtn = $('<input/>').attr({ type: "button" }).val("新增" + config.title).addClass("btn btn-small").css({
     float: "right"
   }).click (e) ->
-
     modal = Modal.create({
       title: config.title
       ajax: {
         url: "/bs/#{ config.crudId }/crud/modal"
-        args: {}
+        args:
+          _submit_btn: false
+          _close_btn: false
         onReady: (e, ui) ->
           form = ui.body.find("form").get(0)
 

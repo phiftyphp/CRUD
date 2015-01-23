@@ -347,7 +347,10 @@ Which generates the input name with
         title: config.title,
         ajax: {
           url: "/bs/" + config.crudId + "/crud/modal",
-          args: {},
+          args: {
+            _submit_btn: false,
+            _close_btn: false
+          },
           onReady: function(e, ui) {
             var form;
             form = ui.body.find("form").get(0);
