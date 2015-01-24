@@ -39,24 +39,26 @@ window.Modal = {}
 window.Modal.ajax = (url, args, opts) ->
 
 window.Modal.create = (opts) ->
-  modal = document.createElement('div')
-  modal.classList.add('modal')
+  modal = document.createElement("div")
+  modal.classList.add("modal")
 
-  dialog = document.createElement('div')
-  dialog.classList.add('modal-dialog')
+  if opts?.side
+    modal.classList.add("side-modal")
 
-  content = document.createElement('div')
-  content.classList.add('modal-content')
+  dialog = document.createElement("div")
+  dialog.classList.add("modal-dialog")
 
-  header = document.createElement('div')
-  header.classList.add('modal-header')
+  content = document.createElement("div")
+  content.classList.add("modal-content")
 
+  header = document.createElement("div")
+  header.classList.add("modal-header")
 
-  closeBtn = $('<button/>').attr('type', 'button').addClass('close')
-  closeBtn.append( $('<span/>').html('&times;') )
-  closeBtn.append( $('<span/>').addClass('sr-only').text('Close') )
+  closeBtn = $("<button/>").attr("type", "button").addClass("close")
+  closeBtn.append( $("<span/>").html("&times;") )
+  closeBtn.append( $("<span/>").addClass("sr-only").text('Close') )
   closeBtn.appendTo(header)
-  closeBtn.click (e) -> $(modal).modal('hide')
+  closeBtn.click (e) -> $(modal).modal("hide")
 
   # <h4 class="modal-title">Modal title</h4>
   if opts.title

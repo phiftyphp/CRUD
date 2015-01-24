@@ -320,6 +320,8 @@ Which generates the input name with
     container: $('#product-images'),
     crudId: "product_image",
     itemView: CRUDList.ImageItemView,
+    modal:
+      backdrop: false
     create: {
       deleteAction: "ProductBundle::Action::DeleteProductImage",
       relation: "images",
@@ -387,7 +389,7 @@ Which generates the input name with
           }
         ]
       });
-      return $(modal).modal('show');
+      return $(modal).modal((config != null ? config.modal : void 0) || 'show');
     });
     $title = $('<h3/>').text(config.title);
     $hint = $('<span/>').text(config.hint).addClass("hint");

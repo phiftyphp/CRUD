@@ -42,20 +42,23 @@
 
   window.Modal.create = function(opts) {
     var body, closeBtn, content, controlOpts, dialog, eventPayload, footer, header, modal, _fn, _i, _len, _ref;
-    modal = document.createElement('div');
-    modal.classList.add('modal');
-    dialog = document.createElement('div');
-    dialog.classList.add('modal-dialog');
-    content = document.createElement('div');
-    content.classList.add('modal-content');
-    header = document.createElement('div');
-    header.classList.add('modal-header');
-    closeBtn = $('<button/>').attr('type', 'button').addClass('close');
-    closeBtn.append($('<span/>').html('&times;'));
-    closeBtn.append($('<span/>').addClass('sr-only').text('Close'));
+    modal = document.createElement("div");
+    modal.classList.add("modal");
+    if (opts != null ? opts.side : void 0) {
+      modal.classList.add("side-modal");
+    }
+    dialog = document.createElement("div");
+    dialog.classList.add("modal-dialog");
+    content = document.createElement("div");
+    content.classList.add("modal-content");
+    header = document.createElement("div");
+    header.classList.add("modal-header");
+    closeBtn = $("<button/>").attr("type", "button").addClass("close");
+    closeBtn.append($("<span/>").html("&times;"));
+    closeBtn.append($("<span/>").addClass("sr-only").text('Close'));
     closeBtn.appendTo(header);
     closeBtn.click(function(e) {
-      return $(modal).modal('hide');
+      return $(modal).modal("hide");
     });
     if (opts.title) {
       $('<h4/>').text(opts.title).addClass('modal-title').appendTo(header);
