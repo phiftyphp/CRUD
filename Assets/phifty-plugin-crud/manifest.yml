@@ -1,7 +1,6 @@
 ---
 collections:
   - js:
-    - modal.js
     - bulk.js
     - crud.js
     - crud_list.js
