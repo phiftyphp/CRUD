@@ -192,6 +192,8 @@ CRUDList.init({
   container: $('#product-images'),
   crudId: "product_image",
   itemView: CRUDList.ImageItemView,
+  modal:
+    backdrop: false
   create: {
     deleteAction: "ProductBundle::Action::DeleteProductImage",
     relation: "images",
@@ -249,7 +251,7 @@ CRUDList.init = (config) ->
         }
       ]
     })
-    $(modal).modal('show')
+    $(modal).modal(config?.modal or 'show')
 
   $title = $('<h3/>').text(config.title)
   $hint  = $('<span/>').text(config.hint).addClass("hint")
