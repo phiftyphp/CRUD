@@ -7,7 +7,7 @@ class CRUD extends Bundle
     public function assets()
     {
         return array(
-            'phifty-plugin-crud',
+            'phifty-crud',
             'tchooser'
         );
     }
