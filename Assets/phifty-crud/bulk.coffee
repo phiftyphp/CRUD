@@ -53,7 +53,48 @@ class BulkCRUD
       id = $(this).data("record-id")
       section = $(this).parents(".section").get(0)
       e.stopPropagation()
-      Region.before section, $(this).data("edit-url"), { id: id }, this
+
+      title = $(this).data("modal-title")
+      size = $(this).data("modal-size")
+      side = $(this).data("modal-side")
+
+      modal = Modal.create({
+        title: title
+        side: side
+        size: size
+        ajax: {
+          url: $(this).data("edit-url")
+          args:
+            _submit_btn: false
+            _close_btn: false
+            id: id
+          onReady: (e, ui) ->
+            form = ui.body.find("form").get(0)
+
+            # Setup Action form automatically
+            Action.form form,
+              status: true
+              clear: true
+              onSuccess: (resp) ->
+                ui.modal.modal('hide')
+                setTimeout (->
+                  # Remove the modal itself
+                  ui.modal.remove()
+                ), 800
+        }
+        controls: [
+          {
+            label: 'Save'
+            onClick: (e,ui) ->
+              ui.body.find("form").submit()
+          }
+        ]
+      })
+      $(modal).modal(config?.modal or 'show')
+
+      # Region.before section, $(this).data("edit-url"), { id: id }, this
+      # jQuery.get $(this).data("edit-url"), { id: id}, (html) ->
+      #  $(document.body).append(html)
 
     @table.on "click", ".record-delete-btn", (e) ->
       e.stopPropagation()

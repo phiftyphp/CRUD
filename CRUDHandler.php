@@ -8,6 +8,7 @@ use Closure;
 use Roller\RouteSet;
 use CRUD\Controller\ToolbarItemController;
 use CRUD\Controller\FilterWidgetToolbarItemController;
+use LazyRecord\BaseModel;
 
 
 /**
@@ -548,9 +549,14 @@ abstract class CRUDHandler extends BaseCRUDHandler
      *
      * @return string title string for edit view.
      */
-    public function getEditTitle()
+    public function getEditTitle(BaseModel $record = NULL)
     {
-        $record = $this->getCurrentRecord();
+        if (!$record) {
+            $record = $this->getCurrentRecord();
+        }
+        if (!$record) {
+            return '';
+        }
         return $record->id
             ? __('Edit %1: %2', $record->getLabel() , $record->dataLabel() )
             : __('Create %1' , $record->getLabel() )
@@ -678,13 +684,17 @@ abstract class CRUDHandler extends BaseCRUDHandler
      *
      * @return mixed Record object.
      */
-    public function loadRecord()
+    public function loadRecord($id = NULL)
     {
-        if ( $this->currentRecord ) {
+        if ($this->currentRecord) {
             return $this->currentRecord;
         }
+
         $record = $this->getModel();
-        if ( $id = $this->request->param('id') ) {
+        if (!$id) {
+            $id = $this->request->param('id');
+        }
+        if ($id) {
             $record->load( (int) $id );
         }
         return $record;
@@ -886,7 +896,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function getModalActionView()
     {
-        return $this->createActionView($this->getCurrentAction(),null,array(
+        return $this->createActionView($this->getCurrentAction(),NULL,array(
             'close_btn' => false,
             'submit_btn' => false,
             'ajax' => true,
@@ -898,7 +908,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      *
      * @param ActionKit\RecordAction
      */
-    public function createActionView($action, $viewClass = null,$viewOptions = null)
+    public function createActionView($action, $viewClass = NULL, array $viewOptions = NULL)
     {
         if (! $viewClass) {
             $viewClass = $this->actionViewClass;

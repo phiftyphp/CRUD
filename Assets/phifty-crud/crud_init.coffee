@@ -37,6 +37,14 @@ $ ->
       autoHeight: false
     })
 
+    # Initialize language section switch
+    # Add lang-switch class name to lang select dropdown to initialize lang
+    # switch feature
+    $el.find('select[name=lang]').addClass('lang-switch')
+    I18N.initLangSwitch($el)
+
+    use_tinymce('adv1', { popup: true })
+
     # initialize collapse when in ajax request.
     $el.find(".collapsible").collapse()
 

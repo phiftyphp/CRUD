@@ -116,6 +116,9 @@ $(function() {
                             <input type="button" 
                                 value="{% trans "編輯" %}"
                                 data-record-id="{{ item.id }}"
+                                data-modal-title="{{ CRUD.Object.getEditTitle(item) }}"
+                                data-modal-size="large"
+                                data-modal-side="true"
                                 data-edit-url="{{  CRUD.Object.getEditRegionPath() }}"
                                 class="record-edit-btn btn"/>
                         {% endif %}
@@ -154,7 +157,6 @@ $(function() {
 <script>
 jQuery(document).ready(function($) {
     Holder.run({ domain: 'crud.list' });
-
     $('a[rel*=facebox]').facebox({
         closeImage: '/assets/facebox/src/closelabel.png',
         loadingImage: '/assets/facebox/src/loading.gif'

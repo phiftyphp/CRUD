@@ -63,13 +63,49 @@ New BulkCRUD:
         };
       })(this));
       this.table.on("click", ".record-edit-btn", function(e) {
-        var id, section;
+        var id, modal, section, side, size, title;
         id = $(this).data("record-id");
         section = $(this).parents(".section").get(0);
         e.stopPropagation();
-        return Region.before(section, $(this).data("edit-url"), {
-          id: id
-        }, this);
+        title = $(this).data("modal-title");
+        size = $(this).data("modal-size");
+        side = $(this).data("modal-side");
+        modal = Modal.create({
+          title: title,
+          side: side,
+          size: size,
+          ajax: {
+            url: $(this).data("edit-url"),
+            args: {
+              _submit_btn: false,
+              _close_btn: false,
+              id: id
+            },
+            onReady: function(e, ui) {
+              var form;
+              form = ui.body.find("form").get(0);
+              return Action.form(form, {
+                status: true,
+                clear: true,
+                onSuccess: function(resp) {
+                  ui.modal.modal('hide');
+                  return setTimeout((function() {
+                    return ui.modal.remove();
+                  }), 800);
+                }
+              });
+            }
+          },
+          controls: [
+            {
+              label: 'Save',
+              onClick: function(e, ui) {
+                return ui.body.find("form").submit();
+              }
+            }
+          ]
+        });
+        return $(modal).modal((config != null ? config.modal : void 0) || 'show');
       });
       this.table.on("click", ".record-delete-btn", function(e) {
         var id;

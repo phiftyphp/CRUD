@@ -38,6 +38,11 @@
         collapsible: true,
         autoHeight: false
       });
+      $el.find('select[name=lang]').addClass('lang-switch');
+      I18N.initLangSwitch($el);
+      use_tinymce('adv1', {
+        popup: true
+      });
       $el.find(".collapsible").collapse();
       return $el.find(".v-field .hint").each(function(i, e) {
         var $hint;

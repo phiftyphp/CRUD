@@ -5,18 +5,16 @@ vim:filetype=htmldjango:
 {% set frag_serial = random() %}
 {% set editRegionId = "crud-edit-" ~ frag_serial %}
 {% set resultContainerId = "result-container-" ~ frag_serial %}
-
-
-<div id="{{ editRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
-
 {% if Request.param('no_wrapper') %}
-    {{ CRUD.Action.asView('AdminUI\\Action\\View\\StackView',{ 
-        close_button: false, 
-        ajax: true 
+    <div id="{{ editRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
+    {{ CRUD.Action.asView('AdminUI\\Action\\View\\StackView',{
+        close_button: false,
+        ajax: true
     }).render|raw}}
+    </div>
 {% else %}
-
-    <div class="section" id="record-div-{{CRUD.Record.id|default('create')}}">
+    {#
+    <div class="section">
         <div class="hd">{{ CRUD.Object.getEditTitle }}</div>
         <div class="bd">
             <div class="bd-inner">
@@ -26,10 +24,35 @@ vim:filetype=htmldjango:
             </div>
         </div>
     </div>
+    #}
+    <div id="{{ editRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
+        {% block section_body %}
+            {{ CRUD.Object.getActionView.render()|raw }}
+        {% endblock %}
+    </div>
 
+    {#
+    <div id="{{ editRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
+        <div class="modal side-modal in" id="record-div-{{CRUD.Record.id|default('create')}}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        {{ CRUD.Object.getEditTitle }}
+                    </div>
+                    <div class="modal-body">
+                        {% block section_body %}
+                            {{ CRUD.Object.getActionView.render()|raw }}
+                        {% endblock %}
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    #}
 {% endif %}
-</div>
-
 
 {% block init_js %}
 <script type="text/javascript">
@@ -42,6 +65,9 @@ $(document.body).ready(function() {
     if (!$el[0]) {
         console.error('Region #{{ editRegionId }} not found.');
     }
+    // $el.find('.modal').modal('show');
+    // $(Region).trigger('region.load', [$el])
+    /*
     Region.of($el).getEl().before( $('<div/>').attr('id','{{ resultContainerId }}').addClass('action-result-container') );
     Phifty.CRUD.initEditRegion($el,{
         defaultTinyMCE: true,
@@ -52,11 +78,7 @@ $(document.body).ready(function() {
             });
         }
     });
-
-    // Add lang-switch class name to lang select dropdown to initialize lang
-    // switch feature
-    $el.find('select[name=lang]').addClass('lang-switch');
-    I18N.initLangSwitch($el);
+    */
 });
 </script>
 {% endblock %}
