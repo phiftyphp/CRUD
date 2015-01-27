@@ -13,60 +13,21 @@ vim:filetype=htmldjango:
     }).render|raw}}
     </div>
 {% else %}
-    {#
-    <div class="section">
-        <div class="hd">{{ CRUD.Object.getEditTitle }}</div>
-        <div class="bd">
-            <div class="bd-inner">
-                {% block section_body %}
-                    {{ CRUD.Object.getActionView.render()|raw }}
-                {% endblock %}
-            </div>
-        </div>
-    </div>
-    #}
     <div id="{{ editRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
         {% block section_body %}
             {{ CRUD.Object.getActionView.render()|raw }}
         {% endblock %}
     </div>
-
-    {#
-    <div id="{{ editRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
-        <div class="modal side-modal in" id="record-div-{{CRUD.Record.id|default('create')}}">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        {{ CRUD.Object.getEditTitle }}
-                    </div>
-                    <div class="modal-body">
-                        {% block section_body %}
-                            {{ CRUD.Object.getActionView.render()|raw }}
-                        {% endblock %}
-                    </div>
-                    <div class="modal-footer">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    #}
 {% endif %}
 
 {% block init_js %}
 <script type="text/javascript">
-/**
-This is initialized after a region is loaded.
-*/
 $(document.body).ready(function() {
     // <div id="{{ resultContainerId }}" class="action-result-container"> </div>
     var $el = $('#{{ editRegionId }}');
     if (!$el[0]) {
         console.error('Region #{{ editRegionId }} not found.');
     }
-    // $el.find('.modal').modal('show');
-    // $(Region).trigger('region.load', [$el])
     /*
     Region.of($el).getEl().before( $('<div/>').attr('id','{{ resultContainerId }}').addClass('action-result-container') );
     Phifty.CRUD.initEditRegion($el,{

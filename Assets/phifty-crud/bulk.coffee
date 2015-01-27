@@ -71,16 +71,23 @@ class BulkCRUD
           onReady: (e, ui) ->
             form = ui.body.find("form").get(0)
 
+            $result = $('<div/>').addClass('action-result-container')
+            $(form).before($result)
+
             # Setup Action form automatically
-            Action.form form,
+            a = Action.form form,
               status: true
               clear: true
               onSuccess: (resp) ->
-                ui.modal.modal('hide')
                 setTimeout (->
                   # Remove the modal itself
+                  ui.modal.modal('hide')
                   ui.modal.remove()
-                ), 800
+                ), 1000
+            a.plug(ActionMsgbox, {
+                container: $result
+                fadeOut: false
+            })
         }
         controls: [
           {

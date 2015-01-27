@@ -82,17 +82,23 @@ New BulkCRUD:
               id: id
             },
             onReady: function(e, ui) {
-              var form;
+              var $result, a, form;
               form = ui.body.find("form").get(0);
-              return Action.form(form, {
+              $result = $('<div/>').addClass('action-result-container');
+              $(form).before($result);
+              a = Action.form(form, {
                 status: true,
                 clear: true,
                 onSuccess: function(resp) {
-                  ui.modal.modal('hide');
                   return setTimeout((function() {
+                    ui.modal.modal('hide');
                     return ui.modal.remove();
-                  }), 800);
+                  }), 1000);
                 }
+              });
+              return a.plug(ActionMsgbox, {
+                container: $result,
+                fadeOut: false
               });
             }
           },
