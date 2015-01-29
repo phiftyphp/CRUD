@@ -2,9 +2,10 @@
 vim:filetype=htmldjango: 
 #}
 {% import '@CoreBundle/phifty/forms.html' as forms %}
-{% set frag_serial = random() %}
+{% set frag_serial = "region~" ~ random() %}
 {% set editRegionId = "crud-edit-" ~ frag_serial %}
 {% set resultContainerId = "result-container-" ~ frag_serial %}
+
 {% if Request.param('no_wrapper') %}
     <div id="{{ editRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
     {{ CRUD.Action.asView('AdminUI\\Action\\View\\StackView',{
@@ -21,25 +22,4 @@ vim:filetype=htmldjango:
 {% endif %}
 
 {% block init_js %}
-<script type="text/javascript">
-$(document.body).ready(function() {
-    // <div id="{{ resultContainerId }}" class="action-result-container"> </div>
-    var $el = $('#{{ editRegionId }}');
-    if (!$el[0]) {
-        console.error('Region #{{ editRegionId }} not found.');
-    }
-    /*
-    Region.of($el).getEl().before( $('<div/>').attr('id','{{ resultContainerId }}').addClass('action-result-container') );
-    Phifty.CRUD.initEditRegion($el,{
-        defaultTinyMCE: true,
-        setupAction: function(a) {
-            a.plug( ActionMsgbox,{
-                container: $('#{{ resultContainerId }}'),
-                fadeOut: true
-            });
-        }
-    });
-    */
-});
-</script>
 {% endblock %}
