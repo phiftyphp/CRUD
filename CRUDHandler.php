@@ -264,6 +264,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         }
 
         $this->vars['Handler'] = $this;
+        $this->vars['Controller'] = $this;
 
         // anyway, we have the model classname, and the namespace, 
         // we should be able to registerRecordAction automatically, so we don't have to write the code.
@@ -530,7 +531,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
             return $this->vars[$name];
         }
     }
-
 
     /**
      * Assign CRUD Vars
