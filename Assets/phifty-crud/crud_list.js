@@ -344,40 +344,14 @@ Which generates the input name with
     }).val("新增" + config.title).addClass("btn btn-small").css({
       float: "right"
     }).click(function(e) {
-      var modal;
-      modal = Modal.create({
+      var ui;
+      ui = ModalManager.createBlock({
         title: config.title,
         ajax: {
           url: "/bs/" + config.crudId + "/crud/modal",
           args: {
             _submit_btn: false,
             _close_btn: false
-          },
-          onReady: function(e, ui) {
-            var form;
-            form = ui.body.find("form").get(0);
-            return Action.form(form, {
-              status: true,
-              clear: true,
-              onSuccess: function(resp) {
-                var coverView;
-                ui.modal.modal('hide');
-                setTimeout((function() {
-                  self.refresh();
-                  return ui.modal.remove();
-                }), 800);
-                if (itemViewClass) {
-                  coverView = new itemViewClass(config.create, resp.data, config);
-                  return coverView.appendTo($imageContainer);
-                } else {
-                  return $.get("/bs/" + config.crudId + "/crud/item", {
-                    id: resp.data.id
-                  }, function(html) {
-                    return $container.append(html);
-                  });
-                }
-              }
-            });
           }
         },
         controls: [
@@ -389,7 +363,32 @@ Which generates the input name with
           }
         ]
       });
-      return $(modal).modal((config != null ? config.modal : void 0) || 'show');
+      ui.dialog.on("dialog.ajax.done", function(e, ui) {
+        var form;
+        form = ui.body.find("form").get(0);
+        return Action.form(form, {
+          status: true,
+          clear: true,
+          onSuccess: function(resp) {
+            var coverView;
+            ui.dialog.modal('hide');
+            setTimeout((function() {
+              return ui.container.remove();
+            }), 800);
+            if (itemViewClass) {
+              coverView = new itemViewClass(config.create, resp.data, config);
+              return coverView.appendTo($imageContainer);
+            } else {
+              return $.get("/bs/" + config.crudId + "/crud/item", {
+                id: resp.data.id
+              }, function(html) {
+                return $container.append(html);
+              });
+            }
+          }
+        });
+      });
+      return ui.container.modal((config != null ? config.modal : void 0) || 'show');
     });
     $title = $('<h3/>').text(config.title);
     $hint = $('<span/>').text(config.hint).addClass("hint");

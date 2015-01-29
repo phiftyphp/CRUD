@@ -203,7 +203,7 @@ CRUDList.init({
 ###
 CRUDList.init = (config) ->
   itemViewClass = config.itemView
-  
+
   if config.dialogOptions == undefined
     config.dialogOptions = {width: 650}
 
@@ -214,34 +214,15 @@ CRUDList.init = (config) ->
   $createBtn = $('<input/>').attr({ type: "button" }).val("新增" + config.title).addClass("btn btn-small").css({
     float: "right"
   }).click (e) ->
-    modal = Modal.create({
+
+    # Returns a modal structure
+    ui = ModalManager.createBlock({
       title: config.title
       ajax: {
         url: "/bs/#{ config.crudId }/crud/modal"
         args:
           _submit_btn: false
           _close_btn: false
-        onReady: (e, ui) ->
-          form = ui.body.find("form").get(0)
-
-          # Setup Action form automatically
-          Action.form form,
-            status: true
-            clear: true
-            onSuccess: (resp) ->
-              ui.modal.modal('hide')
-              setTimeout (->
-                self.refresh()
-                ui.modal.remove()
-              ), 800
-
-              # if the itemViewClass is defined (which is a front-end template), use it.
-              if itemViewClass
-                coverView = new itemViewClass(config.create, resp.data, config)
-                coverView.appendTo $imageContainer
-              else
-                # get the item view content and append to our container
-                $.get "/bs/#{ config.crudId }/crud/item", {id: resp.data.id}, (html) -> $container.append(html)
       }
       controls: [
         {
@@ -251,7 +232,30 @@ CRUDList.init = (config) ->
         }
       ]
     })
-    $(modal).modal(config?.modal or 'show')
+    ui.dialog.on "dialog.ajax.done", (e, ui) ->
+      form = ui.body.find("form").get(0)
+
+      # Setup Action form automatically
+      Action.form form,
+        status: true
+        clear: true
+        onSuccess: (resp) ->
+          ui.dialog.modal('hide')
+          setTimeout (->
+            # self.refresh()
+            ui.container.remove()
+          ), 800
+
+          # if the itemViewClass is defined (which is a front-end template), use it.
+          if itemViewClass
+            coverView = new itemViewClass(config.create, resp.data, config)
+            coverView.appendTo $imageContainer
+          else
+            # get the item view content and append to our container
+            $.get "/bs/#{ config.crudId }/crud/item", {id: resp.data.id}, (html) -> $container.append(html)
+
+    ui.container.modal(config?.modal or 'show')
+    # ui.container.modal({ backdrop: true })
 
   $title = $('<h3/>').text(config.title)
   $hint  = $('<span/>').text(config.hint).addClass("hint")

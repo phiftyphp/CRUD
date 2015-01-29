@@ -58,7 +58,7 @@ class BulkCRUD
       size = $(this).data("modal-size")
       side = $(this).data("modal-side")
 
-      modal = Modal.create({
+      ui = ModalManager.create({
         title: title
         side: side
         size: size
@@ -68,26 +68,6 @@ class BulkCRUD
             _submit_btn: false
             _close_btn: false
             id: id
-          onReady: (e, ui) ->
-            form = ui.body.find("form").get(0)
-
-            $result = $('<div/>').addClass('action-result-container')
-            $(form).before($result)
-
-            # Setup Action form automatically
-            a = Action.form form,
-              status: true
-              clear: true
-              onSuccess: (resp) ->
-                setTimeout (->
-                  # Remove the modal itself
-                  ui.modal.modal('hide')
-                  ui.modal.remove()
-                ), 1000
-            a.plug(ActionMsgbox, {
-                container: $result
-                fadeOut: false
-            })
         }
         controls: [
           {
@@ -97,7 +77,27 @@ class BulkCRUD
           }
         ]
       })
-      $(modal).modal(config?.modal or 'show')
+
+      ui.dialog.on "dialog.ajax.done", (e, ui) ->
+        form = ui.body.find("form").get(0)
+        $result = $('<div/>').addClass('action-result-container')
+        $(form).before($result)
+
+        # Setup Action form automatically
+        a = Action.form form,
+          status: true
+          clear: true
+          onSuccess: (resp) ->
+            setTimeout (->
+              # Remove the modal itself
+              ui.dialog.foldableModal('close')
+            ), 1000
+        a.plug(ActionMsgbox, {
+            container: $result
+            fadeOut: false
+        })
+
+      ui.dialog.foldableModal(config?.modal or 'show')
 
       # Region.before section, $(this).data("edit-url"), { id: id }, this
       # jQuery.get $(this).data("edit-url"), { id: id}, (html) ->

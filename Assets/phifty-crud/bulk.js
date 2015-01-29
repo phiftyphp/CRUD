@@ -63,14 +63,14 @@ New BulkCRUD:
         };
       })(this));
       this.table.on("click", ".record-edit-btn", function(e) {
-        var id, modal, section, side, size, title;
+        var id, section, side, size, title, ui;
         id = $(this).data("record-id");
         section = $(this).parents(".section").get(0);
         e.stopPropagation();
         title = $(this).data("modal-title");
         size = $(this).data("modal-size");
         side = $(this).data("modal-side");
-        modal = Modal.create({
+        ui = ModalManager.create({
           title: title,
           side: side,
           size: size,
@@ -80,26 +80,6 @@ New BulkCRUD:
               _submit_btn: false,
               _close_btn: false,
               id: id
-            },
-            onReady: function(e, ui) {
-              var $result, a, form;
-              form = ui.body.find("form").get(0);
-              $result = $('<div/>').addClass('action-result-container');
-              $(form).before($result);
-              a = Action.form(form, {
-                status: true,
-                clear: true,
-                onSuccess: function(resp) {
-                  return setTimeout((function() {
-                    ui.modal.modal('hide');
-                    return ui.modal.remove();
-                  }), 1000);
-                }
-              });
-              return a.plug(ActionMsgbox, {
-                container: $result,
-                fadeOut: false
-              });
             }
           },
           controls: [
@@ -111,7 +91,26 @@ New BulkCRUD:
             }
           ]
         });
-        return $(modal).modal((config != null ? config.modal : void 0) || 'show');
+        ui.dialog.on("dialog.ajax.done", function(e, ui) {
+          var $result, a, form;
+          form = ui.body.find("form").get(0);
+          $result = $('<div/>').addClass('action-result-container');
+          $(form).before($result);
+          a = Action.form(form, {
+            status: true,
+            clear: true,
+            onSuccess: function(resp) {
+              return setTimeout((function() {
+                return ui.dialog.foldableModal('close');
+              }), 1000);
+            }
+          });
+          return a.plug(ActionMsgbox, {
+            container: $result,
+            fadeOut: false
+          });
+        });
+        return ui.dialog.foldableModal((config != null ? config.modal : void 0) || 'show');
       });
       this.table.on("click", ".record-delete-btn", function(e) {
         var id;
