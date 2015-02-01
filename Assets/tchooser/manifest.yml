@@ -4,6 +4,6 @@ collections:
     - js/tchooser.js
   - css:
     - css/tchooser.css
-  - files:
+  - file:
     - css/images
 
