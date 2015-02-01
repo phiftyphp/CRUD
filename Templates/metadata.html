@@ -1,9 +1,10 @@
-
-<div class="column span-2">
-    {{CRUD.Action.renderField('created_by')|raw}}
-    {{CRUD.Action.renderField('updated_by')|raw}}
-</div>
-<div class="column span-4">
-    {{CRUD.Action.renderField('created_on')|raw}}
-    {{CRUD.Action.renderField('updated_on')|raw}}
+<div class="row">
+    <div class="col-md-5">
+        {{CRUD.Action.renderField('created_by')|raw}}
+        {{CRUD.Action.renderField('updated_by')|raw}}
+    </div>
+    <div class="col-md-5">
+        {{CRUD.Action.renderField('created_on')|raw}}
+        {{CRUD.Action.renderField('updated_on')|raw}}
+    </div>
 </div>
