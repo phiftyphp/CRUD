@@ -195,9 +195,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public $listMiddleColumns = array();
 
-
     protected $_listColumnNames = array();
-
 
     /**
      * @var array tab panel objects

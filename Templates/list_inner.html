@@ -83,8 +83,7 @@ $(function() {
         {% for item in CRUD.Items %}
 
             {% block row %}
-
-                <tr class="{% if loop.index is even %}even{% else %}old{% endif %}">
+                <tr class="{{item.rowClass}} {% if loop.index is even %}even{% else %}old{% endif %}">
                     {% if CRUD.Object.canBulkEdit %}
                         <td align="center" style="text-align: center;">
                             <input type="checkbox" class="bulk-checkbox" name="selected[]" value="{{ item.id }}">
