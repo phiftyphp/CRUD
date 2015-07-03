@@ -141,7 +141,12 @@ abstract class CRUDHandler extends BaseCRUDHandler
     /**
      * @var array register CRUD Action automatically
      */
-    public $registerRecordAction = array('Create','Update','Delete','BulkDelete');
+    public $registerRecordAction = array(
+        array('prefix' => 'Create'),
+        array('prefix' => 'Update'),
+        array('prefix' => 'Delete'),
+        array('prefix' => 'BulkDelete')
+    );
 
     /**
      * @var ToolbarItemController[]
@@ -269,7 +274,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
         if ( $this->registerRecordAction ) {
             $self = $this;
             kernel()->event->register('phifty.before_action',function() use($self) {
-                kernel()->action->registerRecordAction( $self->namespace , $self->modelName , $self->registerRecordAction );
+                kernel()->action->registerAction('RecordActionTemplate', array(
+                    'namespace' => $self->namespace,
+                    'model' => $self->modelName,
+                    'types' => (array) $self->registerRecordAction
+                ));
             });
         }
 
@@ -899,6 +908,12 @@ abstract class CRUDHandler extends BaseCRUDHandler
             'submit_btn' => false,
             'ajax' => true,
         ));
+    }
+
+    public function getCSRFToken()
+    {
+        $action = $this->getCurrentAction();
+        return $action->getCSRFToken();
     }
 
     /**

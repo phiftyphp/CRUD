@@ -108,7 +108,11 @@ class BulkCRUD
       if not $(this).data("delete-action")
         console.error("data-delete-action undefined")
       id = $(this).data("record-id")
-      runAction $(this).data("delete-action"), { id: id },
+      csrf = $(this).data("csrf-token")
+      runAction $(this).data("delete-action"), { 
+        id: id
+        _csrf_token: csrf 
+      },
         confirm: "確認刪除? "
         removeTr: this
 
@@ -152,7 +156,7 @@ class BulkCRUD
 
   sendAction: (action, params, cb) ->
     params = $.extend {
-      action: action,
+      "__action": action,
       "__ajax_request": 1
     }, params
     $.ajax
