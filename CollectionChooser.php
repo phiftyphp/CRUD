@@ -62,9 +62,9 @@ class CollectionChooser extends ExpandableController
         if( $this->order ) {
             foreach( $this->order as $order ) {
                 if( is_array($order) ) {
-                    $collection->order($order[0] , @$order[1] ?: 'DESC');
+                    $collection->orderBy($order[0] , @$order[1] ?: 'DESC');
                 } else {
-                    $collection->order($order);
+                    $collection->orderBy($order);
                 }
             }
         }
