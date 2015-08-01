@@ -680,9 +680,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $orderColumn = $this->request->param('_order_column');
         $orderBy     = $this->request->param('_order_by');
         if ( $orderColumn && $orderBy ) {
-            $collection->order( $orderColumn , $orderBy );
+            $collection->orderBy( $orderColumn , $orderBy );
         } elseif ( $this->defaultOrder ) {
-            $collection->order( $this->defaultOrder[0], $this->defaultOrder[1]);
+            $collection->orderBy( $this->defaultOrder[0], $this->defaultOrder[1]);
         }
     }
 
