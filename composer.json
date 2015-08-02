@@ -7,5 +7,9 @@
         }
     ],
     "require": {},
-    "autoload": { "psr-4":  { "CRUD\\": "" } }
+    "autoload": {
+        "psr-4": {
+            "CRUD\\": ""
+        }
+    }
 }
