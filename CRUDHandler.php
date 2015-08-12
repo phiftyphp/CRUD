@@ -92,7 +92,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
     /**
-     * @var bool use the default template, so you don't have to create template pages.
+     * @var bool use the default template defined in CRUD bundle, so you don't
+     *           have to create template pages.
      */
     public $useDefaultTemplate = false;
 
@@ -500,10 +501,24 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function getTemplateId()
     {
-        if ( $this->templateId ) {
+        if ($this->templateId) {
             return $this->templateId;
         }
         return $this->crudId;
+    }
+
+
+    public function getDefaultTemplateNamespace()
+    {
+        if ($namespace = CRUD::getInstance()->config('TemplateNamespace')) {
+            return $namespace;
+        }
+
+
+        if ($this->defaultTemplateNamespace) {
+            return $this->defaultTemplateNamespace;
+        }
+        return 'CRUD';
     }
 
 
@@ -744,17 +759,21 @@ abstract class CRUDHandler extends BaseCRUDHandler
     // =================================================
     public function getCrudTemplatePath($filename)
     {
-        if ( $this->useDefaultTemplate ) {
-            return "@CRUD/$filename";
+        $loader = $this->kernel->twig->loader;
+
+        if ($this->useDefaultTemplate) {
+            $namespace = $this->getDefaultTemplateNamespace();
+            return '@' . $namespace . '/' . $filename;
         }
 
-        $path = '@' . $this->namespace . '/' . $this->getTemplateId() . '/' . $filename;
-        // check the file existence, if the template file is not found, 
-        // fallback to default template.
-        if ( ! $this->kernel->twig->loader->exists($path) ) {
-            $path = "@CRUD/$filename";
+        $customTemplatePath = '@' . $this->namespace . '/' . $this->getTemplateId() . '/' . $filename;
+        // Check the template file existence for the current bundle, if the
+        // template file is not found in the current bundle, it fallback to
+        // default template to use the default one.
+        if ($loader->exists($customTemplatePath)) {
+            return $customTemplatePath;
         }
-        return $path;
+        return '@' . $this->getDefaultTemplateNamespace() . '/' . $filename;
     }
 
 
