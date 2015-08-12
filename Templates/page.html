@@ -1,4 +1,5 @@
-{% extends '@AdminUI/page.html' %}
+{% set AdminUI = Kernel.bundle('AdminUI') %}
+{% extends AdminUI.getBasePageTemplate() %}
 {% block admin_panel %}
     {{ parent() }}
     {% if tiles %}
