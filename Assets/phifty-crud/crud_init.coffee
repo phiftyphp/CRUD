@@ -1,5 +1,9 @@
 # Initialize the CRUD list
 $ ->
+  $(document).on "click", ".record-create-btn", (e) ->
+    Region.after $(this).parents(".control-section").get(0), $(this).data("create-region-url")
+    false
+
   $(document).on "click", ".column-sort", (e) ->
     r = Region.of(this)
     r.refreshWith

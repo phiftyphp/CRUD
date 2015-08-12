@@ -12,14 +12,6 @@ vim:filetype=htmldjango:
                 data-create-region-url="{{ CRUD.Object.getCreateRegionPath() }}">
             {{CRUD.Object.getCreateButtonLabel()}}
             </button>
-            <script>
-            $(function() {
-                $(document).on('click','.record-create-btn',function() {
-                    Region.after($(this).parents('.control-section').get(0), $(this).data('create-region-url')); 
-                    return false;
-                });
-            });
-            </script>
         {% endif %}
     {% endif %}
 {% endblock %}
