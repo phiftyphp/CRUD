@@ -30,7 +30,7 @@ New BulkCRUD:
     BulkCRUD.prototype.handlers = {};
 
     BulkCRUD.prototype.init = function(config1) {
-      var self;
+      var openRecordEditModal, self;
       this.config = config1;
       this.container = this.config.container;
       this.table = this.config.table;
@@ -62,20 +62,20 @@ New BulkCRUD:
           return _this.toggleSelect();
         };
       })(this));
-      this.table.on("click", ".record-edit-btn", function(e) {
+      openRecordEditModal = function($btn) {
         var id, section, side, size, title, ui;
-        id = $(this).data("record-id");
-        section = $(this).parents(".section").get(0);
+        id = $btn.data("record-id");
+        section = $btn.parents(".section").get(0);
         e.stopPropagation();
-        title = $(this).data("modal-title");
-        size = $(this).data("modal-size");
-        side = $(this).data("modal-side");
+        title = $btn.data("modal-title");
+        size = $btn.data("modal-size");
+        side = $btn.data("modal-side");
         ui = ModalManager.create({
           title: title,
           side: side,
           size: size,
           ajax: {
-            url: $(this).data("edit-url"),
+            url: $btn.data("edit-url"),
             args: {
               _submit_btn: false,
               _close_btn: false,
@@ -110,7 +110,12 @@ New BulkCRUD:
             fadeOut: false
           });
         });
-        return ui.dialog.foldableModal((typeof config !== "undefined" && config !== null ? config.modal : void 0) || 'show');
+        ui.dialog.foldableModal((typeof config !== "undefined" && config !== null ? config.modal : void 0) || 'show');
+        return ui;
+      };
+      this.table.on("click", ".record-edit-btn", function(e) {
+        openRecordEditModal($(this));
+        return false;
       });
       this.table.on("click", ".record-delete-btn", function(e) {
         var csrf, id;

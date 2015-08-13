@@ -49,21 +49,21 @@ class BulkCRUD
 
     @table.on "click", ".select-all", => @toggleSelect()
 
-    @table.on "click", ".record-edit-btn", (e) ->
-      id = $(this).data("record-id")
-      section = $(this).parents(".section").get(0)
+    openRecordEditModal = ($btn) ->
+      id = $btn.data("record-id")
+      section = $btn.parents(".section").get(0)
       e.stopPropagation()
 
-      title = $(this).data("modal-title")
-      size = $(this).data("modal-size")
-      side = $(this).data("modal-side")
+      title = $btn.data("modal-title")
+      size = $btn.data("modal-size")
+      side = $btn.data("modal-side")
 
       ui = ModalManager.create({
         title: title
         side: side
         size: size
         ajax: {
-          url: $(this).data("edit-url")
+          url: $btn.data("edit-url")
           args:
             _submit_btn: false
             _close_btn: false
@@ -77,8 +77,8 @@ class BulkCRUD
           }
         ]
       })
-
       ui.dialog.on "dialog.ajax.done", (e, ui) ->
+        # Initialize the modal form
         form = ui.body.find("form").get(0)
         $result = $('<div/>').addClass('action-result-container')
         $(form).before($result)
@@ -96,12 +96,21 @@ class BulkCRUD
             container: $result
             fadeOut: false
         })
-
+      # XXX: the config object is defined in the BulkCRUD's constructor
       ui.dialog.foldableModal(config?.modal or 'show')
+      return ui
 
-      # Region.before section, $(this).data("edit-url"), { id: id }, this
-      # jQuery.get $(this).data("edit-url"), { id: id}, (html) ->
-      #  $(document.body).append(html)
+    # the region style editor
+    #
+    # @table.on "click", ".record-edit-btn", (e) ->
+    #   Region.before section, $(this).data("edit-url"), { id: id }, this
+    #   jQuery.get $(this).data("edit-url"), { id: id}, (html) ->
+    #     $(document.body).append(html)
+
+    # open a modal base on the data attributes defined on the record edit button elements
+    @table.on "click", ".record-edit-btn", (e) ->
+      openRecordEditModal $(this)
+      return false
 
     @table.on "click", ".record-delete-btn", (e) ->
       e.stopPropagation()
