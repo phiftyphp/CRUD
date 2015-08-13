@@ -785,8 +785,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
     // =================================================
     public function findTemplatePath($filename)
     {
-        $firephp = \FirePHP::getInstance(true);
-
         if ($this->useDefaultTemplate) {
             return '@' . $this->getDefaultTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
         }
@@ -799,7 +797,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         // If we're app bundle
         $customTemplatePath = '@' . $this->namespace . DIRECTORY_SEPARATOR . $this->getTemplateId() . DIRECTORY_SEPARATOR . $filename;
-        $firephp->fb(['CRUD::findTemplatePath', $filename, $customTemplatePath]);
         if ($loader->exists($customTemplatePath)) {
             return $customTemplatePath;
         }
@@ -807,12 +804,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
         // find the custom template path for CRUD base templates
         $customTemplatePath = '@' . $this->getCustomTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
         // $customTemplatePath = '@' . $this->getCustomTemplateNamespace() . DIRECTORY_SEPARATOR . $this->getTemplateId() . DIRECTORY_SEPARATOR . $filename;
-        $firephp->fb(['CRUD::findTemplatePath', $filename, $customTemplatePath]);
         if ($loader->exists($customTemplatePath)) {
             return $customTemplatePath;
         }
-
-        $firephp->fb(['CRUD::findTemplatePath', $filename, 'default']);
 
         // Fallback template path
         return '@' . $this->getDefaultTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
