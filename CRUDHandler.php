@@ -165,7 +165,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     /**
      * @var integer the default record Limit per page
      */
-    public $pageLimit = 15;
+    public $pageLimit = 10;
 
 
     /**
