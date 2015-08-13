@@ -1,6 +1,7 @@
 <?php
 namespace CRUD;
 // use WebUI\Components\Pager;
+use WebUI\Components\Breadcrumbs;
 use Phifty\Web\RegionPager;
 use Phifty\Web\BootstrapRegionPager;
 use Phifty\Web\Region;
@@ -220,6 +221,14 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
     /**
+     * @var array The navigation stack definition
+     */
+    protected $navStack = [
+        ['label' => 'Dashboard', 'href' => '/bs'],
+    ];
+
+
+    /**
      * Expand routes to RouteSet
      */
     public static function expand()
@@ -304,6 +313,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
             $this->primaryFields[] = 'lang';
         }
         */
+
+        $this->navStack[] = [
+            'label' => $this->getListTitle(),
+            'href' => static::get_mount_path(),
+        ];
     }
 
 
@@ -524,6 +538,14 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return 'CRUD';
     }
 
+    public function getNavigationBar()
+    {
+        $nav = new Breadcrumbs;
+        foreach ($this->navStack as $navItem) {
+            $nav->appendLink($navItem['label'], $navItem['href']);
+        }
+        return $nav;
+    }
 
 
     /**
