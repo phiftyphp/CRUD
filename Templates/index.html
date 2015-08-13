@@ -9,8 +9,9 @@ vim:filetype=htmldjango:
             {# append a region after current parent div.section, if user clicks "Create" #}
             <button type="button" 
                 class="btn record-create-btn"
+                data-crud-id="{{ CRUD.Object.crudId }}"
                 data-create-region-url="{{ CRUD.Object.getCreateRegionPath() }}">
-            {{CRUD.Object.getCreateButtonLabel()}}
+                {{CRUD.Object.getCreateButtonLabel()}}
             </button>
         {% endif %}
     {% endif %}
