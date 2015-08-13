@@ -1,6 +1,8 @@
 <?php
 namespace CRUD;
+// use WebUI\Components\Pager;
 use Phifty\Web\RegionPager;
+use Phifty\Web\BootstrapRegionPager;
 use Phifty\Web\Region;
 use Phifty\Controller;
 use ReflectionClass;
