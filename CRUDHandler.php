@@ -1063,7 +1063,16 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $this->initToolbarControls();
         $region = $this->createListInnerRegion($_REQUEST);
         $this->assign('listInnerRegion', $region);
-        return $this->renderList();
+
+        // please note that we will get all items in list region since we don't have constraint
+        $collection = $this->getCollection();
+
+        $this->assignCRUDVars([
+            // so here is the number of total items
+            'NumberOfTotalItems' => $collection->queryCount(),
+        ]);
+
+        return $this->renderList([]);
     }
 
     /**
