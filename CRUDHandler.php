@@ -738,7 +738,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $pageSize = $this->getCurrentPageSize();
         $count    = $collection->queryCount();
         $collection->page( $page ,$pageSize );
-        return new RegionPager( $page, $count, $pageSize );
+        // return new RegionPager( $page, $count, $pageSize );
+        return new BootstrapRegionPager( $page, $count, $pageSize );
     }
 
 
