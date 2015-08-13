@@ -40,11 +40,11 @@ abstract class BaseCRUDHandler extends ExpandableController
 
 
     /**
-     * @var string the default template namespace
+     * @var string the custom template namespace
      *
      * Fallback to @CRUD namespace if the override template does not exists.
      */
-    public $defaultTemplateNamespace = 'CRUD';
+    public $customTemplateNamespace;
 
     /**
      * @var Phifty\Model model object for cache, please use getModel() method

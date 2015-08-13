@@ -507,17 +507,18 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $this->crudId;
     }
 
+    public function getCustomTemplateNamespace()
+    {
+        // If it's defined in CRUDHandler scope, we should use it.
+        if ($this->customTemplateNamespace) {
+            return $this->customTemplateNamespace;
+        }
+        // or we can use the template namespace for system wide config
+        return CRUD::getInstance()->config('TemplateNamespace');
+    }
 
     public function getDefaultTemplateNamespace()
     {
-        if ($namespace = CRUD::getInstance()->config('TemplateNamespace')) {
-            return $namespace;
-        }
-
-
-        if ($this->defaultTemplateNamespace) {
-            return $this->defaultTemplateNamespace;
-        }
         return 'CRUD';
     }
 
@@ -757,23 +758,39 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     // renderer helpers
     // =================================================
-    public function getCrudTemplatePath($filename)
+    public function findTemplatePath($filename)
     {
-        $loader = $this->kernel->twig->loader;
+        $firephp = \FirePHP::getInstance(true);
 
         if ($this->useDefaultTemplate) {
-            $namespace = $this->getDefaultTemplateNamespace();
-            return '@' . $namespace . '/' . $filename;
+            return '@' . $this->getDefaultTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
         }
 
-        $customTemplatePath = '@' . $this->namespace . '/' . $this->getTemplateId() . '/' . $filename;
+        $loader = $this->kernel->twig->loader;
+
         // Check the template file existence for the current bundle, if the
         // template file is not found in the current bundle, it fallback to
         // default template to use the default one.
+
+        // If we're app bundle
+        $customTemplatePath = '@' . $this->namespace . DIRECTORY_SEPARATOR . $this->getTemplateId() . DIRECTORY_SEPARATOR . $filename;
+        $firephp->fb(['CRUD::findTemplatePath', $filename, $customTemplatePath]);
         if ($loader->exists($customTemplatePath)) {
             return $customTemplatePath;
         }
-        return '@' . $this->getDefaultTemplateNamespace() . '/' . $filename;
+
+        // find the custom template path for CRUD base templates
+        $customTemplatePath = '@' . $this->getCustomTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
+        // $customTemplatePath = '@' . $this->getCustomTemplateNamespace() . DIRECTORY_SEPARATOR . $this->getTemplateId() . DIRECTORY_SEPARATOR . $filename;
+        $firephp->fb(['CRUD::findTemplatePath', $filename, $customTemplatePath]);
+        if ($loader->exists($customTemplatePath)) {
+            return $customTemplatePath;
+        }
+
+        $firephp->fb(['CRUD::findTemplatePath', $filename, 'default']);
+
+        // Fallback template path
+        return '@' . $this->getDefaultTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
     }
 
 
@@ -785,7 +802,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public function renderList( $args = array() )
     {
-        return $this->render( $this->getCrudTemplatePath('list.html') , $args);
+        return $this->render( $this->findTemplatePath('list.html') , $args);
     }
 
 
@@ -794,7 +811,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function renderEditModal($args = array())
     {
-        return $this->render($this->getCrudTemplatePath('modal.html') , $args);
+        return $this->render($this->findTemplatePath('modal.html') , $args);
     }
 
 
@@ -803,7 +820,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public function renderEditDialog( $args = array() )
     {
-        return $this->render($this->getCrudTemplatePath('dialog.html') , $args);
+        return $this->render($this->findTemplatePath('dialog.html') , $args);
     }
 
     /**
@@ -814,7 +831,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public function renderEdit( $args = array() )
     {
-        return $this->render( $this->getCrudTemplatePath('edit.html') , $args);
+        return $this->render( $this->findTemplatePath('edit.html') , $args);
     }
 
 
@@ -825,7 +842,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public function renderItem( $args = array() )
     {
-        return $this->render( $this->getCrudTemplatePath('item.html') , $args);
+        return $this->render( $this->findTemplatePath('item.html') , $args);
     }
 
 
@@ -839,13 +856,13 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public function renderPageWrapper( $args = array() ) 
     {
-        return $this->render( $this->getCrudTemplatePath('page.html') , $args);
+        return $this->render( $this->findTemplatePath('page.html') , $args);
     }
 
 
     public function renderCrudIndex( $args = array() )
     {
-        return $this->render( $this->getCrudTemplatePath('index.html') , $args);
+        return $this->render( $this->findTemplatePath('index.html') , $args);
     }
 
 
@@ -1016,7 +1033,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function quickCreateAction() 
     {
-        return $this->render( $this->getCrudTemplatePath('quick_create.html') , array());
+        return $this->render( $this->findTemplatePath('quick_create.html') , array());
     }
 
 
@@ -1059,7 +1076,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
             'Pager'   => $this->createCollectionPager($collection),
             'Columns' => $this->getListColumns(),
         ));
-        return $this->render( $this->getCrudTemplatePath('list_inner.html'));
+        return $this->render( $this->findTemplatePath('list_inner.html'));
     }
 
 
