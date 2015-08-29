@@ -8,10 +8,10 @@ use Phifty\Web\Region;
 use Phifty\Controller;
 use ReflectionClass;
 use Closure;
-use Roller\RouteSet;
 use CRUD\Controller\ToolbarItemController;
 use CRUD\Controller\FilterWidgetToolbarItemController;
 use LazyRecord\BaseModel;
+use Pux\Mux;
 
 
 /**
@@ -231,34 +231,32 @@ abstract class CRUDHandler extends BaseCRUDHandler
     /**
      * Expand routes to RouteSet
      */
-    public static function expand()
+    public function expand(array $options = array(), $dynamic = false)
     {
+        $this->mux = $mux = new Mux;
         // TODO:
         // here we construct the object, so that
         // we will register the CRUD actions.
         // we should move the ModelName extraction to static,
         // so that we won't waste too much resource on creating objects.
-        $handler = new static;
-        $class = get_class($handler);
-        $routes = new \Roller\RouteSet;
-        $routes->add('/'            , $class . ':indexAction' );
-        $routes->add('/crud/index'  , $class . ':indexRegionAction');
-        $routes->add('/crud/create' , $class . ':createRegionAction');
-        $routes->add('/crud/edit'   , $class . ':editRegionAction');
+        $class = get_class($this);
+        $mux->add('/'            , [$class,'indexAction'], $options);
+        $mux->add('/crud/index'  , [$class,'indexRegionAction'], $options);
+        $mux->add('/crud/create' , [$class,'createRegionAction'], $options);
+        $mux->add('/crud/edit'   , [$class,'editRegionAction'], $options);
+        $mux->add('/crud/item'   , [$class,'itemRegionAction'], $options);
 
-        $routes->add('/crud/item'   , $class . ':itemRegionAction');
+        $mux->add('/crud/list'       , [$class , 'listRegionAction'], $options);
+        $mux->add('/crud/list_inner' , [$class , 'listInnerRegionAction'], $options);
+        $mux->add('/crud/modal'      , [$class , 'modalEditRegionAction'], $options);
+        $mux->add('/crud/dialog'     , [$class , 'dialogEditRegionAction'], $options);
+        $mux->add('/edit'            , [$class , 'editAction'], $options);
+        $mux->add('/create'          , [$class , 'createAction'], $options);
 
-        $routes->add('/crud/list'   , $class . ':listRegionAction');
-        $routes->add('/crud/list_inner'   , $class . ':listInnerRegionAction');
-        $routes->add('/crud/modal' , $class . ':modalEditRegionAction');
-        $routes->add('/crud/dialog' , $class . ':dialogEditRegionAction');
-        $routes->add('/edit'        , $class . ':editAction');
-        $routes->add('/create'      , $class . ':createAction');
-
-        if ( $handler->primaryFields ) {
-            $routes->add( '/crud/quick_create', $class . ':quickCreateAction' );
+        if ($this->primaryFields) {
+            $mux->add( '/crud/quick_create', [$class,'quickCreateAction'], $options);
         }
-        return $routes;
+        return $mux;
     }
 
 
@@ -313,10 +311,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
             $this->primaryFields[] = 'lang';
         }
         */
-
         $this->navStack[] = [
             'label' => $this->getListTitle(),
-            'href' => static::get_mount_path(),
+            'href'  => $this->getRoutePrefix(),
         ];
     }
 
@@ -332,7 +329,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function initToolbarControls()
     {
-        if ( $this->filterColumns ) {
+        if ($this->filterColumns) {
             foreach( $this->filterColumns as $n ) {
                 $this->addToolbarItem(new FilterWidgetToolbarItemController($n));
             }
@@ -389,7 +386,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function getRoutePrefix()
     {
-        return static::get_mount_path();
+        if (isset($this->matchedRoute[3]['mount_path'])) {
+            return $this->matchedRoute[3]'mount_path'];
+        }
+        throw new \Exception('mount_path is not set in matchedRoute');
     }
 
 
