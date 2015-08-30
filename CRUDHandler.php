@@ -387,7 +387,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function getRoutePrefix()
     {
         if (isset($this->matchedRoute[3]['mount_path'])) {
-            return $this->matchedRoute[3]'mount_path'];
+            return $this->matchedRoute[3]['mount_path'];
         }
         throw new \Exception('mount_path is not set in matchedRoute');
     }
