@@ -240,7 +240,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         // we should move the ModelName extraction to static,
         // so that we won't waste too much resource on creating objects.
         $class = get_class($this);
-        $mux->add('/'            , [$class,'indexAction'], $options);
+        $mux->add(''             , [$class,'indexAction'], $options);
         $mux->add('/crud/index'  , [$class,'indexRegionAction'], $options);
         $mux->add('/crud/create' , [$class,'createRegionAction'], $options);
         $mux->add('/crud/edit'   , [$class,'editRegionAction'], $options);
@@ -259,17 +259,16 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $mux;
     }
 
-
-
     public function init()
     {
         parent::init();
+
         $rclass = new ReflectionClass($this);
         $ns = $rclass->getNamespaceName();
 
         // XXX: currently we use FooBundle\FooBundle as the main bundle class.
         $bundleClass = "$ns\\$ns";
-        if ( class_exists($bundleClass) ) {
+        if (class_exists($bundleClass)) {
             $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance();
         } else {
             $bundleClass = "$ns\\Application";
@@ -293,7 +292,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         }
 
         // Update CRUDHandler properties from config 
-        if ( $crudConfig = $this->bundle->config( $rclass->getShortName() ) ) {
+        if ($crudConfig = $this->bundle->config( $rclass->getShortName() )) {
             $properties = [ 'canCreate', 'canUpdate', 'canDelete' ];
             foreach( $properties as $key ) {
                 $val = $crudConfig->lookup($key);
@@ -386,10 +385,13 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function getRoutePrefix()
     {
-        if (isset($this->matchedRoute[3]['mount_path'])) {
-            return $this->matchedRoute[3]['mount_path'];
+        if (!isset($this->matchedRoute[3]['mount_path'])) {
+            echo '<pre>';
+            debug_print_backtrace();
+            echo '</pre>';
+            throw new \Exception('mount_path is not set in matchedRoute');
         }
-        throw new \Exception('mount_path is not set in matchedRoute');
+        return $this->matchedRoute[3]['mount_path'];
     }
 
 
@@ -772,13 +774,13 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param array $args template arguments.
      * @param array $engineOptions engine options.
      */
-    public function render( $template , $args = array() , $engineOptions = array() )
+    public function render($template , array $args = array(), array $engineOptions = array() )
     {
         // merge variables
-        $args = array_merge( $this->vars , $args );
+        $args = array_merge($this->vars , $args);
 
         // render template file
-        return parent::render( $template , $args , $engineOptions );
+        return parent::render($template , $args , $engineOptions);
     }
 
     // renderer helpers

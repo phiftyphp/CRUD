@@ -1,8 +1,9 @@
 <?php
 namespace CRUD;
-use Pux\Controller\ExpandableController;
+use Phifty\Controller;
+use Pux\Expandable;
 
-abstract class BaseCRUDHandler extends ExpandableController
+abstract class BaseCRUDHandler extends Controller implements Expandable
 {
     protected $kernel;
 
@@ -56,6 +57,7 @@ abstract class BaseCRUDHandler extends ExpandableController
     {
         $this->vars['CRUD']['Object'] = $this;
         $this->kernel = kernel();
+
 
         if (! $this->namespace) {
             // extract namespace from model class name
