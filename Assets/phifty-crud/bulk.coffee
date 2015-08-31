@@ -20,6 +20,11 @@ New BulkCRUD:
 
 ###
 
+
+
+
+
+
 class BulkCRUD
   handlers: {}
 
@@ -49,67 +54,23 @@ class BulkCRUD
 
     @table.on "click", ".select-all", => @toggleSelect()
 
-    openRecordEditModal = ($btn) ->
-      id = $btn.data("record-id")
-      section = $btn.parents(".section").get(0)
-      e.stopPropagation()
 
-      title = $btn.data("modal-title")
-      size = $btn.data("modal-size")
-      side = $btn.data("modal-side")
-
-      ui = ModalManager.create({
-        title: title
-        side: side
-        size: size
-        ajax: {
-          url: $btn.data("edit-url")
-          args:
-            _submit_btn: false
-            _close_btn: false
-            id: id
-        }
-        controls: [
-          {
-            label: 'Save'
-            onClick: (e,ui) ->
-              ui.body.find("form").submit()
-          }
-        ]
-      })
-      ui.dialog.on "dialog.ajax.done", (e, ui) ->
-        # Initialize the modal form
-        form = ui.body.find("form").get(0)
-        $result = $('<div/>').addClass('action-result-container')
-        $(form).before($result)
-
-        # Setup Action form automatically
-        a = Action.form form,
-          status: true
-          clear: true
-          onSuccess: (resp) ->
-            setTimeout (->
-              # Remove the modal itself
-              ui.dialog.foldableModal('close')
-            ), 1000
-        a.plug(ActionMsgbox, {
-            container: $result
-            fadeOut: false
-        })
-      # XXX: the config object is defined in the BulkCRUD's constructor
-      ui.dialog.foldableModal(config?.modal or 'show')
-      return ui
-
+    ###
     # the region style editor
     #
-    # @table.on "click", ".record-edit-btn", (e) ->
-    #   Region.before section, $(this).data("edit-url"), { id: id }, this
-    #   jQuery.get $(this).data("edit-url"), { id: id}, (html) ->
-    #     $(document.body).append(html)
+    @table.on "click", ".record-edit-btn", (e) ->
+      section = $btn.parents(".section").get(0)
+      Region.before section, $(this).data("edit-url"), { id: id }, this
+      jQuery.get $(this).data("edit-url"), { id: id}, (html) ->
+        $(document.body).append(html)
+    ###
 
     # open a modal base on the data attributes defined on the record edit button elements
     @table.on "click", ".record-edit-btn", (e) ->
-      openRecordEditModal $(this)
+      e.stopPropagation()
+
+      # config.modal may contain the options to open a modal
+      CRUDModal.openFromBtn $(this), config?.modal
       return false
 
     @table.on "click", ".record-delete-btn", (e) ->
@@ -118,9 +79,9 @@ class BulkCRUD
         console.error("data-delete-action undefined")
       id = $(this).data("record-id")
       csrf = $(this).data("csrf-token")
-      runAction $(this).data("delete-action"), { 
+      runAction $(this).data("delete-action"), {
         id: id
-        _csrf_token: csrf 
+        _csrf_token: csrf
       },
         confirm: "確認刪除? "
         removeTr: this

@@ -4,13 +4,28 @@
 #
 ###
 $ ->
+  # TODO: use reactjs to render the widgets
 
+  ### 
+  # Here is the old way to append "create form"
   # Hook the record create button
   $(document).on "click", ".record-create-btn", (e) ->
+    # .control-section
+    # console.log ".control-section", $(this).parents(".control-section")
+    # here is the logic controls how the "form" will be opened.
     Region.after $(this).parents(".control-section").get(0), $(this).data("create-region-url")
-    false
+    return false
+  ###
+
+  $(document).on "click", ".record-create-btn", (e) ->
+    console.log("create record", e)
+    e.stopPropagation()
+    # config.modal may contain the options to open a modal
+    CRUDModal.openFromBtn $(this), config?.modal
+    return false
 
 
+  # initialize column sort buttons
   $(document).on "click", ".column-sort", (e) ->
     r = Region.of(this)
     r.refreshWith

@@ -30,7 +30,7 @@ New BulkCRUD:
     BulkCRUD.prototype.handlers = {};
 
     BulkCRUD.prototype.init = function(config1) {
-      var openRecordEditModal, self;
+      var self;
       this.config = config1;
       this.container = this.config.container;
       this.table = this.config.table;
@@ -62,59 +62,19 @@ New BulkCRUD:
           return _this.toggleSelect();
         };
       })(this));
-      openRecordEditModal = function($btn) {
-        var id, section, side, size, title, ui;
-        id = $btn.data("record-id");
-        section = $btn.parents(".section").get(0);
-        e.stopPropagation();
-        title = $btn.data("modal-title");
-        size = $btn.data("modal-size");
-        side = $btn.data("modal-side");
-        ui = ModalManager.create({
-          title: title,
-          side: side,
-          size: size,
-          ajax: {
-            url: $btn.data("edit-url"),
-            args: {
-              _submit_btn: false,
-              _close_btn: false,
-              id: id
-            }
-          },
-          controls: [
-            {
-              label: 'Save',
-              onClick: function(e, ui) {
-                return ui.body.find("form").submit();
-              }
-            }
-          ]
-        });
-        ui.dialog.on("dialog.ajax.done", function(e, ui) {
-          var $result, a, form;
-          form = ui.body.find("form").get(0);
-          $result = $('<div/>').addClass('action-result-container');
-          $(form).before($result);
-          a = Action.form(form, {
-            status: true,
-            clear: true,
-            onSuccess: function(resp) {
-              return setTimeout((function() {
-                return ui.dialog.foldableModal('close');
-              }), 1000);
-            }
-          });
-          return a.plug(ActionMsgbox, {
-            container: $result,
-            fadeOut: false
-          });
-        });
-        ui.dialog.foldableModal((typeof config !== "undefined" && config !== null ? config.modal : void 0) || 'show');
-        return ui;
-      };
+
+      /*
+       * the region style editor
+       *
+      @table.on "click", ".record-edit-btn", (e) ->
+        section = $btn.parents(".section").get(0)
+        Region.before section, $(this).data("edit-url"), { id: id }, this
+        jQuery.get $(this).data("edit-url"), { id: id}, (html) ->
+          $(document.body).append(html)
+       */
       this.table.on("click", ".record-edit-btn", function(e) {
-        openRecordEditModal($(this));
+        e.stopPropagation();
+        CRUDModal.openFromBtn($(this), typeof config !== "undefined" && config !== null ? config.modal : void 0);
         return false;
       });
       this.table.on("click", ".record-delete-btn", function(e) {

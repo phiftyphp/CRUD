@@ -8,8 +8,21 @@
 
 (function() {
   $(function() {
+
+    /* 
+     * Here is the old way to append "create form"
+     * Hook the record create button
+    $(document).on "click", ".record-create-btn", (e) ->
+       * .control-section
+       * console.log ".control-section", $(this).parents(".control-section")
+       * here is the logic controls how the "form" will be opened.
+      Region.after $(this).parents(".control-section").get(0), $(this).data("create-region-url")
+      return false
+     */
     $(document).on("click", ".record-create-btn", function(e) {
-      Region.after($(this).parents(".control-section").get(0), $(this).data("create-region-url"));
+      console.log("create record", e);
+      e.stopPropagation();
+      CRUDModal.openFromBtn($(this), typeof config !== "undefined" && config !== null ? config.modal : void 0);
       return false;
     });
     $(document).on("click", ".column-sort", function(e) {

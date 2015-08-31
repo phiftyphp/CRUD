@@ -343,7 +343,8 @@ Which generates the input name with
       type: "button"
     }).val("新增" + config.title).addClass("btn btn-small").css({
       float: "right"
-    }).click(function(e) {
+    });
+    $createBtn.click(function(e) {
       var ui;
       ui = ModalManager.createBlock({
         title: config.title,

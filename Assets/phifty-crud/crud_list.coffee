@@ -213,7 +213,8 @@ CRUDList.init = (config) ->
   # The create action
   $createBtn = $('<input/>').attr({ type: "button" }).val("新增" + config.title).addClass("btn btn-small").css({
     float: "right"
-  }).click (e) ->
+  })
+  $createBtn.click (e) ->
 
     # Returns a modal structure
     ui = ModalManager.createBlock({
