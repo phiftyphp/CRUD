@@ -756,14 +756,14 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param LazyRecord\BaseCollection collection object.
      * @return RegionPager
      */
-    public function createCollectionPager($collection) 
+    public function createCollectionPager($collection)
     {
         $page     = $this->getCurrentPage();
         $pageSize = $this->getCurrentPageSize();
         $count    = $collection->queryCount();
         $collection->page( $page ,$pageSize );
         // return new RegionPager( $page, $count, $pageSize );
-        return new BootstrapRegionPager( $page, $count, $pageSize );
+        return new BootstrapRegionPager($page, $count, $pageSize );
     }
 
 
