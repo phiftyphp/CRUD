@@ -1,6 +1,8 @@
 ### 
 vim:sw=2:ts=2:sts=2:
 
+CRUDBulk maintains the record table and the related record operations like "Edit", "Delete" in each row.
+
 Bulk Operation API
 
 New BulkCRUD:
@@ -34,25 +36,52 @@ class BulkCRUD
     @menu = @config.menu
     @namespace = @config.namespace
     @model = @config.model
+    @csrfToken = @config.csrfToken
 
+    self = this
+
+    # reset the selection number
+    $('.number-of-selected-items').text(0)
+
+
+    # When user clicks on the row, we should also update the checkbox
     @table.on "click", "tbody tr", (e) ->
-      el = $(this).find('input[name="selected[]"]')
-      if el.attr('checked')
-        $(this).removeClass('selected')
-        el.removeAttr('checked')
-      else
-        el.attr('checked','checked')
-        $(this).addClass('selected')
       e.stopPropagation()
 
-    @table.on "click", 'tbody input[name="selected[]"]', (e) ->
-      e.stopPropagation()
-      if $(this).attr('checked')
-        $(this).parents("tr").addClass('selected')
-      else
-        $(this).parents("tr").removeClass('selected')
+      # click events happened on checkbox input or material checkbox should
+      # have ignored.
+      return if $(e.target).is("span.check") or $(e.target).is(".crud-bulk-select")
 
-    @table.on "click", ".select-all", => @toggleSelect()
+      # the logic here updates tr status to checkbox status
+      $tr = $(this)
+
+      # find the checkbox
+      $check = $tr.find('.crud-bulk-select')
+      if $check.is(':checked')
+        $check.prop('checked', false)
+        $tr.removeClass('selected active')
+      else
+        $check.prop('checked', true)
+        $tr.addClass('selected active')
+      self.updateNumberOfSelectedItems()
+
+    # Listen to the change event of the checkbox input element, and change the current row selection
+    @table.on "change", "input.crud-bulk-select", (e) ->
+      e.stopPropagation()
+
+      $input = $(this)
+      $tr = $input.parents("tr")
+
+      # "active" class is used for bootstrap
+      if $input.is(':checked')
+        $tr.removeClass('selected active')
+      else
+        $tr.addClass('selected active')
+      self.updateNumberOfSelectedItems()
+
+    @table.on "click", ".crud-bulk-select-all", (e) =>
+      e.stopPropagation()
+      @toggleSelectAll(e)
 
 
     ###
@@ -101,33 +130,46 @@ class BulkCRUD
         handler.call(self,$select)
       $select.find('option').first().attr('selected','selected')
 
-  getSelectedItems: () ->
-    @container.find('input[name="selected[]"]:checked')
 
-  getSelectedItemValues: () ->
-    @getSelectedItems().map( (i,e) -> parseInt(e.value) ).get()
+  # Find elements that would display "number of selected items" over the whole
+  # page.
+  findNumberOfSelectedItems: -> $('.number-of-selected-items')
 
-  unselectAll: () ->
-    # TODO: use class instead of id
-    @container.find('.select-all').val(0).removeAttr('checked')
-    @container.find('input[name="selected[]"]').removeAttr('checked')
-    @table.find('tbody tr').removeClass('selected')
+  updateNumberOfSelectedItems: ->
+    $checked = @findSelectedCheckboxes()
+    @findNumberOfSelectedItems().text($checked.size())
 
-  selectAll: () ->
-    @container.find('.select-all').val(1).attr('checked','checked')
-    @container.find('input[name="selected[]"]').attr('checked','checked')
-    @table.find('tbody tr').addClass('selected')
+  findCheckboxes: () -> @container.find('input.crud-bulk-select')
 
-  toggleSelect: () ->
-    if @container.find('.select-all').val() is "1"
-      @unselectAll()
+  findSelectedCheckboxes: () -> @container.find('input.crud-bulk-select:checked')
+
+  findSelectedItemValues: () -> @findSelectedCheckboxes().map( (i,e) -> parseInt(e.value) ).get()
+
+  findSelectAllCheckbox: () -> @container.find('input.crud-bulk-select-all')
+
+  unselectAll: (e) ->
+    @findSelectAllCheckbox().prop('checked', false) unless e
+    @findCheckboxes().prop('checked', false)
+    @table.find('tbody tr').removeClass('selected active')
+    @updateNumberOfSelectedItems()
+
+  selectAll: (e) ->
+    @findSelectAllCheckbox().prop('checked', true) unless e
+    @findCheckboxes().prop('checked', true)
+    @table.find('tbody tr').addClass('selected active')
+    @updateNumberOfSelectedItems()
+
+  toggleSelectAll: (e) ->
+    if @findSelectAllCheckbox().is(":checked")
+      @selectAll(e)
     else
-      @selectAll()
+      @unselectAll(e)
 
   sendAction: (action, params, cb) ->
     params = $.extend {
-      "__action": action,
+      "__action": action
       "__ajax_request": 1
+      "_csrf_token": @csrfToken
     }, params
     $.ajax
       url: '/bs',
@@ -147,7 +189,7 @@ class BulkCRUD
 
   runAction: (fullActionName, extraParams, callback) ->
     # the item id list
-    items = @getSelectedItemValues()
+    items = @findSelectedItemValues()
     params = $.extend { items: items }, extraParams
     @sendAction fullActionName, params, callback
 

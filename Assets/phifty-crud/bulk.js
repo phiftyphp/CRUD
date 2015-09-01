@@ -3,6 +3,8 @@
 /* 
 vim:sw=2:ts=2:sts=2:
 
+CRUDBulk maintains the record table and the related record operations like "Edit", "Delete" in each row.
+
 Bulk Operation API
 
 New BulkCRUD:
@@ -37,29 +39,42 @@ New BulkCRUD:
       this.menu = this.config.menu;
       this.namespace = this.config.namespace;
       this.model = this.config.model;
+      this.csrfToken = this.config.csrfToken;
+      self = this;
+      $('.number-of-selected-items').text(0);
       this.table.on("click", "tbody tr", function(e) {
-        var el;
-        el = $(this).find('input[name="selected[]"]');
-        if (el.attr('checked')) {
-          $(this).removeClass('selected');
-          el.removeAttr('checked');
-        } else {
-          el.attr('checked', 'checked');
-          $(this).addClass('selected');
-        }
-        return e.stopPropagation();
-      });
-      this.table.on("click", 'tbody input[name="selected[]"]', function(e) {
+        var $check, $tr;
         e.stopPropagation();
-        if ($(this).attr('checked')) {
-          return $(this).parents("tr").addClass('selected');
-        } else {
-          return $(this).parents("tr").removeClass('selected');
+        if ($(e.target).is("span.check") || $(e.target).is(".crud-bulk-select")) {
+          return;
         }
+        $tr = $(this);
+        $check = $tr.find('.crud-bulk-select');
+        if ($check.is(':checked')) {
+          $check.prop('checked', false);
+          $tr.removeClass('selected active');
+        } else {
+          $check.prop('checked', true);
+          $tr.addClass('selected active');
+        }
+        return self.updateNumberOfSelectedItems();
       });
-      this.table.on("click", ".select-all", (function(_this) {
-        return function() {
-          return _this.toggleSelect();
+      this.table.on("change", "input.crud-bulk-select", function(e) {
+        var $input, $tr;
+        e.stopPropagation();
+        $input = $(this);
+        $tr = $input.parents("tr");
+        if ($input.is(':checked')) {
+          $tr.removeClass('selected active');
+        } else {
+          $tr.addClass('selected active');
+        }
+        return self.updateNumberOfSelectedItems();
+      });
+      this.table.on("click", ".crud-bulk-select-all", (function(_this) {
+        return function(e) {
+          e.stopPropagation();
+          return _this.toggleSelectAll(e);
         };
       })(this));
 
@@ -108,40 +123,65 @@ New BulkCRUD:
       });
     };
 
-    BulkCRUD.prototype.getSelectedItems = function() {
-      return this.container.find('input[name="selected[]"]:checked');
+    BulkCRUD.prototype.findNumberOfSelectedItems = function() {
+      return $('.number-of-selected-items');
     };
 
-    BulkCRUD.prototype.getSelectedItemValues = function() {
-      return this.getSelectedItems().map(function(i, e) {
+    BulkCRUD.prototype.updateNumberOfSelectedItems = function() {
+      var $checked;
+      $checked = this.findSelectedCheckboxes();
+      return this.findNumberOfSelectedItems().text($checked.size());
+    };
+
+    BulkCRUD.prototype.findCheckboxes = function() {
+      return this.container.find('input.crud-bulk-select');
+    };
+
+    BulkCRUD.prototype.findSelectedCheckboxes = function() {
+      return this.container.find('input.crud-bulk-select:checked');
+    };
+
+    BulkCRUD.prototype.findSelectedItemValues = function() {
+      return this.findSelectedCheckboxes().map(function(i, e) {
         return parseInt(e.value);
       }).get();
     };
 
-    BulkCRUD.prototype.unselectAll = function() {
-      this.container.find('.select-all').val(0).removeAttr('checked');
-      this.container.find('input[name="selected[]"]').removeAttr('checked');
-      return this.table.find('tbody tr').removeClass('selected');
+    BulkCRUD.prototype.findSelectAllCheckbox = function() {
+      return this.container.find('input.crud-bulk-select-all');
     };
 
-    BulkCRUD.prototype.selectAll = function() {
-      this.container.find('.select-all').val(1).attr('checked', 'checked');
-      this.container.find('input[name="selected[]"]').attr('checked', 'checked');
-      return this.table.find('tbody tr').addClass('selected');
+    BulkCRUD.prototype.unselectAll = function(e) {
+      if (!e) {
+        this.findSelectAllCheckbox().prop('checked', false);
+      }
+      this.findCheckboxes().prop('checked', false);
+      this.table.find('tbody tr').removeClass('selected active');
+      return this.updateNumberOfSelectedItems();
     };
 
-    BulkCRUD.prototype.toggleSelect = function() {
-      if (this.container.find('.select-all').val() === "1") {
-        return this.unselectAll();
+    BulkCRUD.prototype.selectAll = function(e) {
+      if (!e) {
+        this.findSelectAllCheckbox().prop('checked', true);
+      }
+      this.findCheckboxes().prop('checked', true);
+      this.table.find('tbody tr').addClass('selected active');
+      return this.updateNumberOfSelectedItems();
+    };
+
+    BulkCRUD.prototype.toggleSelectAll = function(e) {
+      if (this.findSelectAllCheckbox().is(":checked")) {
+        return this.selectAll(e);
       } else {
-        return this.selectAll();
+        return this.unselectAll(e);
       }
     };
 
     BulkCRUD.prototype.sendAction = function(action, params, cb) {
       params = $.extend({
         "__action": action,
-        "__ajax_request": 1
+        "__ajax_request": 1,
+        "_csrf_token": this.csrfToken
       }, params);
       return $.ajax({
         url: '/bs',
@@ -167,7 +207,7 @@ New BulkCRUD:
 
     BulkCRUD.prototype.runAction = function(fullActionName, extraParams, callback) {
       var items, params;
-      items = this.getSelectedItemValues();
+      items = this.findSelectedItemValues();
       params = $.extend({
         items: items
       }, extraParams);

@@ -917,7 +917,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public function getRecordAction($record)
     {
-        $action = $record->id 
+        $action = $record->id
             ? $record->asUpdateAction()
             : $record->asCreateAction();
         return $action;
@@ -925,10 +925,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function getCurrentAction()
     {
-        if( $this->currentAction )
+        if ($this->currentAction) {
             return $this->currentAction;
+        }
         $record = $this->getCurrentRecord();
-        return $this->currentAction = $this->getRecordAction( $record );
+        return $this->currentAction = $this->getRecordAction($record);
     }
 
     /**
@@ -969,8 +970,12 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function getCSRFToken()
     {
-        $action = $this->getCurrentAction();
-        return $action->getCSRFToken();
+        if ($action = $this->getCurrentAction()) {
+            if ($token = $action->getCSRFToken()) {
+                return $token;
+            }
+        }
+        return kernel()->actionService['csrf_token'];
     }
 
     /**

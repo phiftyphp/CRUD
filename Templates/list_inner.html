@@ -8,7 +8,8 @@ $(function() {
         table: $table,
         menu: $menu,
         namespace: '{{ CRUD.Object.namespace }}',
-        model: '{{ CRUD.Object.modelName }}'
+        model: '{{ CRUD.Object.modelName }}',
+        csrfToken: '{{ CRUD.Object.getCSRFToken() }}'
     });
 
 {# Here comes the generic plugins #}
@@ -47,7 +48,7 @@ $(function() {
                 {# can we insert this from javascript ? #}
                 {% if CRUD.Object.canBulkEdit %}
                     <th align="center" style="text-align: center;">
-                        <input class="select-all" type="checkbox" value="0"/>
+                        <input class="crud-bulk-select-all" type="checkbox" value="0"/>
                     </th>
                 {% endif %}
 
@@ -86,7 +87,7 @@ $(function() {
                 <tr class="{% if loop.index is even %}even{% else %}old{% endif %}">
                     {% if CRUD.Object.canBulkEdit %}
                         <td align="center" style="text-align: center;">
-                            <input type="checkbox" class="bulk-checkbox" name="selected[]" value="{{ item.id }}">
+                            <input type="checkbox" class="crud-bulk-select" value="{{ item.id }}">
                         </td>
                     {% endif %}
 
