@@ -1,18 +1,23 @@
 <?php
 namespace CRUD\RESTful;
-use Roller\Plugin\RESTful\ResourceHandler as BaseResourceHandler;
+use Pux\Mux;
+use Pux\Controller\RESTfulController;
+use LogicException;
 
-class ResourceHandler extends BaseResourceHandler
+class ResourceHandler extends RESTfulController
 {
     public $recordClass;
 
-    public function createCollection() 
+    public function createCollection()
     {
         return $this->createModel()->asCollection();
     }
 
-    public function createModel() 
+    public function createModel()
     {
+        if (!$this->recordClass) {
+            throw new LogicException(get_class($this) . ":recordClass is not defined.");
+        }
         return new $this->recordClass;
     }
 
@@ -32,8 +37,6 @@ class ResourceHandler extends BaseResourceHandler
         }
     }
 
-
-
     /**
      * retrieve record list
      */
@@ -49,32 +52,44 @@ class ResourceHandler extends BaseResourceHandler
     /**
      * create new record
      */
-    public function create() {
-
+    public function createAction()
+    {
+        return [200, ['Content-Type: application/json;'], json_encode([ 'action' => 'create' ])];
     }
 
     /**
      * delete record
      */
-    public function delete($id) {
+    public function deleteAction($id)
+    {
+        return [200, ['Content-Type: application/json;'], json_encode([ 'action' => 'delete' ])];
+    }
 
+    public function collectionAction()
+    {
+        $collection = $this->createCollection();
+        return [200, ['Content-Type: application/json;'], json_encode($collection->toArray(), JSON_PRETTY_PRINT)];
     }
 
 
     /**
      * update record 
      */
-    public function update($id) {
+    public function updateAction($id)
+    {
         $record = $this->loadRecord($id);
         $put = $this->parseInput();
         $ret = $record->update($put);
         $this->checkRecordResult($ret);
-        return $record->toArray();
+        // return $record->toArray();
+        return [200, [], json_encode([ 'action' => 'delete' ])];
     }
 
-    public function load($id) {
+    public function loadAction($id)
+    {
         $record = $this->loadRecord($id);
-        return $record->toArray();
+        // return $record->toArray();
+        return [200, [], json_encode([ 'action' => 'delete' ])];
     }
 }
 

@@ -691,7 +691,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $this->kernel->event->trigger('phifty.crud.collection_filter',$this,$collection);
 
 
-        if ( $this->quicksearchFields ) {
+        if ($this->quicksearchFields) {
             if ( $q = $this->request->param('_q') ) {
                 $w = $collection->where();
                 $c = 0;
