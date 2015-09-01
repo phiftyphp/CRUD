@@ -37,6 +37,7 @@ CRUDModal.openFromBtn = ($btn, modalConfig) ->
     controls: [
       {
         label: 'Save'
+        primary: true
         onClick: (e,ui) -> ui.body.find("form").submit()
       }
     ]

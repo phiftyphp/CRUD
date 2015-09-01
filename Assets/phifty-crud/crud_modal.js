@@ -39,6 +39,7 @@ modalConfig will be used when you need to define modal options.
       controls: [
         {
           label: 'Save',
+          primary: true,
           onClick: function(e, ui) {
             return ui.body.find("form").submit();
           }
