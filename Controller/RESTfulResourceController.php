@@ -1,10 +1,10 @@
 <?php
-namespace CRUD\RESTful;
+namespace CRUD\Controller;
 use Pux\Mux;
-use Pux\Controller\RESTfulController;
+use Pux\Controller\RESTfulController as BaseRESTfulController;
 use LogicException;
 
-class ResourceHandler extends RESTfulController
+class RESTfulResourceController extends BaseRESTfulController
 {
     public $recordClass;
 
@@ -68,7 +68,13 @@ class ResourceHandler extends RESTfulController
     public function collectionAction()
     {
         $collection = $this->createCollection();
-        return [200, ['Content-Type: application/json;'], json_encode($collection->toArray(), JSON_PRETTY_PRINT)];
+
+        $array = array();
+
+        foreach ($collection as $record) {
+            $array[] = $record->toInflatedArray();
+        }
+        return [200, ['Content-Type: application/json;'], json_encode($array, JSON_PRETTY_PRINT)];
     }
 
 
