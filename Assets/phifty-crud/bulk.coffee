@@ -38,12 +38,27 @@ class BulkCRUD
     @model = @config.model
     @csrfToken = @config.csrfToken
 
-    self = this
 
     # reset the selection number
-    $('.number-of-selected-items').text(0)
+    @findNumberOfSelectedItems().text(0)
 
+    @bind()
 
+    @menu.empty()
+    @menu.append( $('<option/>') )
+
+    self = this
+    @menu.change (e) ->
+      $select = $(this)
+      val = $(this).val()
+      # handler = $select.find(':selected').data('handler')
+      handler = self.handlers[ val ]
+      # call handler
+      handler.call(self,$select) if handler
+      $select.find('option').first().attr('selected','selected')
+
+  bind: ->
+    self = this
     # When user clicks on the row, we should also update the checkbox
     @table.on "click", "tbody tr", (e) ->
       e.stopPropagation()
@@ -74,9 +89,9 @@ class BulkCRUD
 
       # "active" class is used for bootstrap
       if $input.is(':checked')
-        $tr.removeClass('selected active')
-      else
         $tr.addClass('selected active')
+      else
+        $tr.removeClass('selected active')
       self.updateNumberOfSelectedItems()
 
     @table.on "click", ".crud-bulk-select-all", (e) =>
@@ -116,19 +131,6 @@ class BulkCRUD
         removeTr: this
 
 
-    @menu.empty()
-    @menu.append( $('<option/>') )
-
-    self = this
-    @menu.change ->
-      $select = $(this)
-      val = $(this).val()
-      # handler = $select.find(':selected').data('handler')
-      handler = self.handlers[ val ]
-      # call handler
-      if handler
-        handler.call(self,$select)
-      $select.find('option').first().attr('selected','selected')
 
 
   # Find elements that would display "number of selected items" over the whole

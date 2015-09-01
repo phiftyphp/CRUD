@@ -40,8 +40,26 @@ New BulkCRUD:
       this.namespace = this.config.namespace;
       this.model = this.config.model;
       this.csrfToken = this.config.csrfToken;
+      this.findNumberOfSelectedItems().text(0);
+      this.bind();
+      this.menu.empty();
+      this.menu.append($('<option/>'));
       self = this;
-      $('.number-of-selected-items').text(0);
+      return this.menu.change(function(e) {
+        var $select, handler, val;
+        $select = $(this);
+        val = $(this).val();
+        handler = self.handlers[val];
+        if (handler) {
+          handler.call(self, $select);
+        }
+        return $select.find('option').first().attr('selected', 'selected');
+      });
+    };
+
+    BulkCRUD.prototype.bind = function() {
+      var self;
+      self = this;
       this.table.on("click", "tbody tr", function(e) {
         var $check, $tr;
         e.stopPropagation();
@@ -65,9 +83,9 @@ New BulkCRUD:
         $input = $(this);
         $tr = $input.parents("tr");
         if ($input.is(':checked')) {
-          $tr.removeClass('selected active');
-        } else {
           $tr.addClass('selected active');
+        } else {
+          $tr.removeClass('selected active');
         }
         return self.updateNumberOfSelectedItems();
       });
@@ -92,7 +110,7 @@ New BulkCRUD:
         CRUDModal.openFromBtn($(this), typeof config !== "undefined" && config !== null ? config.modal : void 0);
         return false;
       });
-      this.table.on("click", ".record-delete-btn", function(e) {
+      return this.table.on("click", ".record-delete-btn", function(e) {
         var csrf, id;
         e.stopPropagation();
         if (!$(this).data("delete-action")) {
@@ -107,19 +125,6 @@ New BulkCRUD:
           confirm: "確認刪除? ",
           removeTr: this
         });
-      });
-      this.menu.empty();
-      this.menu.append($('<option/>'));
-      self = this;
-      return this.menu.change(function() {
-        var $select, handler, val;
-        $select = $(this);
-        val = $(this).val();
-        handler = self.handlers[val];
-        if (handler) {
-          handler.call(self, $select);
-        }
-        return $select.find('option').first().attr('selected', 'selected');
       });
     };
 
