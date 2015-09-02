@@ -607,8 +607,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
             return '';
         }
         return $record->id
-            ? __('Edit %1: %2', $record->getLabel() , $record->dataLabel() )
-            : __('Create %1' , $record->getLabel() )
+            ? __('編輯 %1: %2', $record->getLabel() , $record->dataLabel() )
+            : __('新建 %1' , $record->getLabel() )
         ;
     }
 
@@ -619,7 +619,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public function getListTitle()
     {
-        return __('%1 Management' , $this->getModel()->getLabel() );
+        // return __('%1 Management' , $this->getModel()->getLabel() );
+        return __('%1 管理' , $this->getModel()->getLabel() );
     }
 
     /**

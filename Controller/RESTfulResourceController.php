@@ -70,7 +70,6 @@ class RESTfulResourceController extends BaseRESTfulController
         $collection = $this->createCollection();
 
         $array = array();
-
         foreach ($collection as $record) {
             $array[] = $record->toInflatedArray();
         }
