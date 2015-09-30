@@ -1015,8 +1015,16 @@ abstract class CRUDHandler extends BaseCRUDHandler
         ));
     }
 
+    /* editRegionAction_{{ id }} template must be declare */
+    // TODO: Support create with pre-defined value 
+    public function editRegionAction()
+    {
+        $this->editRegionActionPrepare();
+        return $this->renderEdit();
+    }
 
-    public function createRegionAction()
+
+    public function createRegionActionPrepare()
     {
         $record = $this->getCurrentRecord();
 
@@ -1028,17 +1036,14 @@ abstract class CRUDHandler extends BaseCRUDHandler
             'Action' => $this->getCurrentAction(),
             'Record' => $record,
         ));
-        return $this->renderEdit();
     }
 
-
-    /* editRegionAction_{{ id }} template must be declare */
-    // TODO: Support create with pre-defined value 
-    public function editRegionAction()
+    public function createRegionAction()
     {
-        $this->editRegionActionPrepare();
+        $this->createRegionActionPrepare();
         return $this->renderEdit();
     }
+
 
     public function itemRegionAction()
     {
