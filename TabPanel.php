@@ -54,9 +54,9 @@ class TabPanel
             && is_a($this->contentRender[0],'CRUD\\CRUDHandler',true) ) 
         {
             $handler = new $this->contentRender[0];
-            $handler->before();
+            $handler->prepare();
             $response = call_user_func(array($handler, $this->contentRender[1]),$this);
-            $handler->after();
+            $handler->finalize();
             return $response;
         }
         elseif( is_callable($this->contentRender) ) {
