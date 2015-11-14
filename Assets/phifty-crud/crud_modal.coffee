@@ -48,6 +48,17 @@ CRUDModal.openFromBtn = ($btn, modalConfig) ->
     $result = $('<div/>').addClass('action-result-container')
     $(form).before($result)
 
+
+    scrollTimer = null
+    $(ui.body).scroll (e) ->
+      clearTimeout(scrollTimer) if scrollTimer
+
+      # delay 100ms to update the position
+      scrollTimer = setTimeout (->
+        console.log("scrollTop " + ui.body.get(0).scrollTop)
+        $result.css({ top: ui.body.get(0).scrollTop })
+      ), 100
+
     # Setup Action form automatically
     a = Action.form form,
       status: true
