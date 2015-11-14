@@ -47,10 +47,22 @@ modalConfig will be used when you need to define modal options.
       ]
     });
     ui.dialog.on("dialog.ajax.done", function(e, ui) {
-      var $result, a, form;
+      var $result, a, form, scrollTimer;
       form = ui.body.find("form").get(0);
       $result = $('<div/>').addClass('action-result-container');
       $(form).before($result);
+      scrollTimer = null;
+      $(ui.body).scroll(function(e) {
+        if (scrollTimer) {
+          clearTimeout(scrollTimer);
+        }
+        return scrollTimer = setTimeout((function() {
+          console.log("scrollTop " + ui.body.get(0).scrollTop);
+          return $result.css({
+            top: ui.body.get(0).scrollTop
+          });
+        }), 100);
+      });
       a = Action.form(form, {
         status: true,
         clear: true,
