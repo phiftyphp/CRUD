@@ -241,6 +241,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
         // so that we won't waste too much resource on creating objects.
         $class = get_class($this);
         $mux->add(''             , [$class,'indexAction'], $options);
+
+        $mux->add('/summary.json', [$class, 'summaryJsonAction'], $options);
+
         $mux->add('/crud/index'  , [$class,'indexRegionAction'], $options);
         $mux->add('/crud/create' , [$class,'createRegionAction'], $options);
         $mux->add('/crud/edit'   , [$class,'editRegionAction'], $options);
@@ -250,6 +253,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $mux->add('/crud/list_inner' , [$class , 'listInnerRegionAction'], $options);
         $mux->add('/crud/modal'      , [$class , 'modalEditRegionAction'], $options);
         $mux->add('/crud/dialog'     , [$class , 'dialogEditRegionAction'], $options);
+
+
         $mux->add('/edit'            , [$class , 'editAction'], $options);
         $mux->add('/create'          , [$class , 'createAction'], $options);
 
@@ -1068,6 +1073,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $this->render( $this->findTemplatePath('quick_create.html') , array());
     }
 
+    
+
 
     public function indexRegionAction()
     {
@@ -1103,6 +1110,16 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         return $this->renderList([]);
     }
+
+    public function summaryJsonAction()
+    {
+        // handle unfiltered collection
+        $collection = $this->getCollection();
+        return $this->toJson([
+            'numberOfTotalItems' => $collection->queryCount(),
+        ]);
+    }
+
 
     /**
      * Prepare default/build-in template variable for list region.
