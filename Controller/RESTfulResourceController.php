@@ -24,7 +24,7 @@ class RESTfulResourceController extends BaseRESTfulController
     public function loadRecord($id)
     {
         $record = $this->createModel();
-        $ret = $record->load($id);
+        $ret = $record->find($id);
         $this->checkRecordResult($ret);
         return $record;
     }
