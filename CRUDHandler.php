@@ -44,6 +44,10 @@ use Pux\Mux;
  */
 abstract class CRUDHandler extends BaseCRUDHandler
 {
+    /**
+     * @var string The react application name
+     */
+    public $reactApp;
 
 
     /*
@@ -679,7 +683,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
             the table correctly.
 
         $joined = array();
-        foreach ( $model->getSchema()->getColumns() as $column ) {
+        foreach ($model->getSchema()->getColumns() as $column ) {
             if ( $ref = $column->refer) {
                 if ( isset($joined[$ref]) )
                     continue;
@@ -981,7 +985,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
                 return $token;
             }
         }
-        return kernel()->actionService['csrf_token'];
+        return $this->kernel->actionService['csrf_token'];
     }
 
     /**
