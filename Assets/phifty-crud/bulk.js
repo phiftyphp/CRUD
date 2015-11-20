@@ -110,7 +110,7 @@ New BulkCRUD:
         CRUDModal.openFromBtn($(this), typeof config !== "undefined" && config !== null ? config.modal : void 0);
         return false;
       });
-      this.table.on("click", ".record-delete-btn", function(e) {
+      return this.table.on("click", ".record-delete-btn", function(e) {
         var csrf, id;
         e.stopPropagation();
         if (!$(this).data("delete-action")) {
