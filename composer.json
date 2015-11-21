@@ -6,10 +6,14 @@
             "email": "yoanlin93@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+    },
     "autoload": {
         "psr-4": {
             "CRUD\\": ""
         }
+    },
+    "require-dev": {
+        "corneltek/phifty-core": "3.0.x-dev"
     }
 }
