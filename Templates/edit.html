@@ -1,10 +1,12 @@
 {# 
-vim:filetype=htmldjango: 
+vim:filetype=htmldjango:
+
+The CRUD edit templates here doesn't need to be overrided.
 #}
 {% import '@CoreBundle/phifty/forms.html' as forms %}
-{% set frag_serial = "region~" ~ random() %}
-{% set editRegionId = "crud-edit-" ~ frag_serial %}
-{% set resultContainerId = "result-container-" ~ frag_serial %}
+{% set frag_serial = uniqid("Region") %}
+{% set editRegionId = uniqid("crud-edit-") %}
+{% set resultContainerId = uniqid("result-container-") %}
 
 {% if Request.param('no_wrapper') %}
     <div id="{{ editRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">

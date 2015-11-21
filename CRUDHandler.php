@@ -30,12 +30,14 @@ use Exception;
  *
  *    indexAction
  *    editAction
+ *    viewAction
  *    createAction
  *
  * Controller Actions (regions):
  *
  *    indexRegionAction
  *    editRegionAction
+ *    viewRegionAction
  *    createRegionAction
  *    listRegionAction
  *
@@ -266,6 +268,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $mux->add('/crud/index'  , [$class,'indexRegionAction'], $options);
         $mux->add('/crud/create' , [$class,'createRegionAction'], $options);
         $mux->add('/crud/edit'   , [$class,'editRegionAction'], $options);
+        $mux->add('/crud/view'   , [$class,'viewRegionAction'], $options);
         $mux->add('/crud/item'   , [$class,'itemRegionAction'], $options);
 
         $mux->add('/crud/list'       , [$class , 'listRegionAction'], $options);
@@ -274,6 +277,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $mux->add('/crud/dialog'     , [$class , 'dialogEditRegionAction'], $options);
 
 
+        $mux->add('/view'            , [$class , 'viewAction'], $options);
         $mux->add('/edit'            , [$class , 'editAction'], $options);
         $mux->add('/create'          , [$class , 'createAction'], $options);
 
@@ -424,6 +428,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $this->getRoutePrefix() . '/crud/edit';
     }
 
+    public function getViewRegionPath()
+    {
+        return $this->getRoutePrefix() . '/crud/view';
+    }
+
     public function getListRegionPath()
     {
         return $this->getRoutePrefix() . '/crud/list';
@@ -472,6 +481,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function createEditRegion($args = array())
     {
         return Region::create($this->getEditRegionPath(), $args);
+    }
+
+    public function createViewRegion($args = array())
+    {
+        return Region::create($this->getViewRegionPath(), $args);
     }
 
 
@@ -897,12 +911,24 @@ abstract class CRUDHandler extends BaseCRUDHandler
     /**
      * Render edit region template.
      *
-     * @param arary $args template arguments.
+     * @param array $args template arguments.
      * @return string template content.
      */
     public function renderEdit($args = array())
     {
         return $this->render($this->findTemplatePath('edit.html') , $args);
+    }
+
+
+    /**
+     * Render record in read-only view page
+     *
+     * @param array $args
+     * @return string template content.
+     */
+    public function renderView($args = array())
+    {
+        return $this->render($this->findTemplatePath('view.html'), $args);
     }
 
 
@@ -1046,6 +1072,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $action->asView($viewClass,$viewOptions);
     }
 
+
     public function editRegionActionPrepare()
     {
         $record = $this->getCurrentRecord();
@@ -1069,6 +1096,26 @@ abstract class CRUDHandler extends BaseCRUDHandler
     {
         $this->editRegionActionPrepare();
         return $this->renderEdit();
+    }
+
+
+
+    public function viewRegionActionPrepare()
+    {
+        $record = $this->getCurrentRecord();
+        if (! $record->id) {
+            throw new Exception('Record not found.');
+        }
+        $this->assignCRUDVars(array(
+            'Action' => $this->getCurrentAction(),
+            'Record' => $record,
+        ));
+    }
+
+    public function viewRegionAction()
+    {
+        $this->viewRegionActionPrepare();
+        return $this->renderView();
     }
 
 
@@ -1222,6 +1269,21 @@ abstract class CRUDHandler extends BaseCRUDHandler
         ]));
         return $this->renderPageWrapper(array( 'tiles' => $tiles ));
     }
+
+    /**
+     * Provide read only form page
+     */
+    public function viewAction()
+    {
+        $tiles = [];
+        // Reuse the parameters from $_REQUEST
+        // If we are going to render a full page for edit form, we shall also render the _form_controls
+        $tiles[] = Region::create($this->getViewRegionPath(), array_merge($_REQUEST, [
+            '_form_controls' => true,
+        ]));
+        return $this->renderPageWrapper(array( 'tiles' => $tiles ));
+    }
+
 
     /* indexAction is a tiled page,
      * you can use tile to push template blocks into it. */
