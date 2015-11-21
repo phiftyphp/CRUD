@@ -4,18 +4,18 @@ vim:filetype=htmldjango:
 The CRUD edit templates here doesn't need to be overrided.
 #}
 {% set frag_serial = uniqid("Region") %}
-{% set editRegionId = uniqid("crud-edit-") %}
+{% set viewRegionId = uniqid("crud-edit-") %}
 {% set resultContainerId = uniqid("result-container-") %}
 
 {% if Request.param('no_wrapper') %}
-    <div id="{{ editRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
+    <div id="{{ viewRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
     {{ CRUD.Action.asView('AdminUI\\Action\\View\\StackView',{
         close_button: false,
         ajax: true
     }).render|raw}}
     </div>
 {% else %}
-    <div id="{{ editRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
+    <div id="{{ viewRegionId }}" class="crud-edit crud-edit-{{ CRUD.Record.id|default('create') }}">
         {% block section_body %}
             {{ CRUD.Object.getActionView.render()|raw }}
         {% endblock %}
