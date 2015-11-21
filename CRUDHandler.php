@@ -10,7 +10,9 @@ use Closure;
 use CRUD\Controller\ToolbarItemController;
 use CRUD\Controller\FilterWidgetToolbarItemController;
 use LazyRecord\BaseModel;
+use LazyRecord\BaseCollection;
 use Pux\Mux;
+use ActionKit\Action;
 use ReflectionClass;
 use Exception;
 
@@ -553,9 +555,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param string $name column name
      * @param Closure formating handler
      */
-    public function setFormatter($name,$formatter)
+    public function setFormatter($name, $formatter)
     {
-        if ( class_exists('Closure') && method_exists('Closure','bind') ) {
+        if (class_exists('Closure') && method_exists('Closure','bind')) {
             Closure::bind($formatter, $this);
         }
         $this->formatters[ $name ] = $formatter;
@@ -620,7 +622,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      *
      * @param array $args
      */
-    public function assignVars( $args )
+    public function assignVars(array $args)
     {
         $this->vars = array_merge( $this->vars , $args );
     }
@@ -649,9 +651,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
      *
      * @param array $args
      */
-    public function assignCRUDVars($args)
+    public function assignCRUDVars(array $args)
     {
-        foreach( $args as $k => $v ) {
+        foreach ($args as $k => $v) {
             $this->vars['CRUD'][ $k ] = $v;
         }
     }
@@ -781,7 +783,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      *
      * @param BaseCollection
      */
-    public function orderCollection($collection)
+    public function orderCollection(BaseCollection $collection)
     {
         $orderColumn = $this->request->param('_order_column');
         $orderBy     = $this->request->param('_order_by');
@@ -805,10 +807,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         $record = $this->getModel();
         if (!$id) {
-            $id = $this->request->param('id');
+            $id = intval($this->request->param('id'));
         }
         if ($id) {
-            $record->load( (int) $id );
+            $record->load(intval($id));
         }
         return $record;
     }
@@ -991,11 +993,12 @@ abstract class CRUDHandler extends BaseCRUDHandler
      *
      * @return ActionKit\RecordAction
      */
-    public function getRecordAction($record)
+    public function getRecordAction(BaseModel $record)
     {
         $action = $record->id
             ? $record->asUpdateAction()
-            : $record->asCreateAction();
+            : $record->asCreateAction()
+            ;
         return $action;
     }
 
@@ -1058,7 +1061,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      *
      * @param ActionKit\RecordAction
      */
-    public function createActionView($action, $viewClass = NULL, array $viewOptions = NULL)
+    public function createActionView(Action $action, $viewClass = NULL, array $viewOptions = NULL)
     {
         if (! $viewClass) {
             $viewClass = $this->actionViewClass;
@@ -1097,8 +1100,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $this->editRegionActionPrepare();
         return $this->renderEdit();
     }
-
-
 
     public function viewRegionActionPrepare()
     {
