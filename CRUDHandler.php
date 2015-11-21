@@ -987,17 +987,16 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public function getActionView()
     {
-        if( isset($this->bundle) ) {
-            if( $this->bundle->config('with_lang') ) {
+        if (isset($this->bundle)) {
+            if ($this->bundle->config('with_lang')) {
                 return $this->createActionView($this->currentAction);
             } else {
                 return $this->createActionView($this->currentAction,null,array(
                     'skips' => array('lang')
                 ));
             }
-        } else {
-            return $this->createActionView($this->currentAction);
         }
+        return $this->createActionView($this->currentAction);
     }
 
     public function getQuickCreateActionView()
@@ -1200,7 +1199,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
         // $tiles[] = $this->editRegionAction();
 
         // here we clone the request for the region.
-        $tiles[] = $createRegion = Region::create( $this->getCreateRegionPath(), $_REQUEST );
+        $tiles[] = $createRegion = Region::create( $this->getCreateRegionPath(), array_merge($_REQUEST, [ 
+            '_form_controls' => true,
+        ]));
         return $this->renderPageWrapper([
             'tiles' => $tiles,
             'createRegion' => $createRegion,
@@ -1214,9 +1215,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function editAction()
     {
         $tiles = [];
-        // the old way: this renders the content in the same request.
-        // $tiles[] = $this->editRegionAction();
-
         // Reuse the parameters from $_REQUEST
         // If we are going to render a full page for edit form, we shall also render the _form_controls
         $tiles[] = Region::create($this->getEditRegionPath(), array_merge($_REQUEST, [
