@@ -73,6 +73,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public $canDelete = true;
 
+    public $canExport = false;
+
+    public $canImport = false;
+
 
     /**
      * @var boolean Can user do all bulk operations ?
@@ -1064,6 +1068,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function createRegionAction()
     {
+        if (!$this->canCreate) {
+            throw new Exception('Creating new record requires permission.');
+        }
         $this->createRegionActionPrepare();
         return $this->renderEdit();
     }
@@ -1071,6 +1078,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function itemRegionAction()
     {
+        if (!$this->canUpdate) {
+            throw new Exception('Creating new record requires permission.');
+        }
         $this->editRegionActionPrepare();
         return $this->renderItem();
     }
