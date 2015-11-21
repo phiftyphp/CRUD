@@ -152,6 +152,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
         'ajax' => true,
         'submit_btn' => true,
         'close_btn' => true,
+
+        // 'form_controls' is not used by any template or action class yet.
+        '_form_controls' => true,
     );
 
 
@@ -286,6 +289,12 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function init()
     {
         parent::init();
+
+        // Derive options from request
+        $request = $this->getRequest();
+        $useFormControls = $request->param('_form_controls');
+        $this->actionViewOptions['submit_btn'] = true;
+        $this->actionViewOptions['_form_controls'] = true;
 
         $rclass = new ReflectionClass($this);
         $ns = $rclass->getNamespaceName();
@@ -890,9 +899,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param arary $args template arguments.
      * @return string template content.
      */
-    public function renderEdit( $args = array() )
+    public function renderEdit($args = array())
     {
-        return $this->render( $this->findTemplatePath('edit.html') , $args);
+        return $this->render($this->findTemplatePath('edit.html') , $args);
     }
 
 
@@ -915,7 +924,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param array $args template arguments.
      * @return string template content
      */
-    public function renderPageWrapper( $args = array() ) 
+    public function renderPageWrapper( $args = array() )
     {
         return $this->render( $this->findTemplatePath('page.html') , $args);
     }
@@ -1191,21 +1200,27 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         // here we clone the request for the region.
         $tiles[] = $createRegion = Region::create( $this->getCreateRegionPath(), $_REQUEST );
-        return $this->renderPageWrapper(array( 
+        return $this->renderPageWrapper([
             'tiles' => $tiles,
             'createRegion' => $createRegion,
-        ));
+        ]);
     }
 
 
+    /**
+     * Provide full editing page.
+     */
     public function editAction()
     {
-        $tiles = array();
+        $tiles = [];
         // the old way: this renders the content in the same request.
         // $tiles[] = $this->editRegionAction();
 
-        // here we clone the request for the region.
-        $tiles[] = Region::create( $this->getEditRegionPath(), $_REQUEST );
+        // Reuse the parameters from $_REQUEST
+        // If we are going to render a full page for edit form, we shall also render the _form_controls
+        $tiles[] = Region::create($this->getEditRegionPath(), array_merge($_REQUEST, [
+            '_form_controls' => true,
+        ]));
         return $this->renderPageWrapper(array( 'tiles' => $tiles ));
     }
 
