@@ -304,7 +304,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         // anyway, we have the model classname, and the namespace, 
         // we should be able to registerRecordAction automatically, so we don't have to write the code.
-        if ( $this->registerRecordAction ) {
+        if ($this->registerRecordAction) {
             $self = $this;
             $this->kernel->event->register('phifty.before_action',function() use($self) {
                 kernel()->action->registerAction('RecordActionTemplate', array(
@@ -378,6 +378,24 @@ abstract class CRUDHandler extends BaseCRUDHandler
     }
 
 
+    /**
+     * route prefix is extracted from $this->matchedRoute, which depends on 
+     * where this CRUDHandler was mount.
+     *
+     * @return string mount path
+     */
+    public function getRoutePrefix()
+    {
+        if (!isset($this->matchedRoute[3]['mount_path'])) {
+            echo '<pre>';
+            debug_print_backtrace();
+            echo '</pre>';
+            throw new \Exception('mount_path is not set in matchedRoute');
+        }
+        return $this->matchedRoute[3]['mount_path'];
+    }
+
+
 
     // Route related methods
 
@@ -414,17 +432,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
     }
 
 
-
-    public function getRoutePrefix()
-    {
-        if (!isset($this->matchedRoute[3]['mount_path'])) {
-            echo '<pre>';
-            debug_print_backtrace();
-            echo '</pre>';
-            throw new \Exception('mount_path is not set in matchedRoute');
-        }
-        return $this->matchedRoute[3]['mount_path'];
-    }
 
 
 
