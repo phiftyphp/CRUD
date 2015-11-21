@@ -46,10 +46,17 @@ abstract class CRUDHandler extends BaseCRUDHandler
 {
     /**
      * @var string The react application name
+     *
+     * This is unused for now.
      */
     public $reactApp;
 
 
+
+    /**
+     * @var string resource id is used for ACL
+     */
+    public $resourceId;
     /*
      * Configurations:
      *
@@ -291,7 +298,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         // we should be able to registerRecordAction automatically, so we don't have to write the code.
         if ( $this->registerRecordAction ) {
             $self = $this;
-            kernel()->event->register('phifty.before_action',function() use($self) {
+            $this->kernel->event->register('phifty.before_action',function() use($self) {
                 kernel()->action->registerAction('RecordActionTemplate', array(
                     'namespace' => $self->namespace,
                     'model' => $self->modelName,
@@ -300,8 +307,16 @@ abstract class CRUDHandler extends BaseCRUDHandler
             });
         }
 
-        // Update CRUDHandler properties from config 
-        if ($crudConfig = $this->bundle->config( $rclass->getShortName() )) {
+        if ($this->resourceId) {
+
+            $this->canCreate = $this->kernel->accessControl->can('create', $this->resourceId) || $this->kernel->currentUser->isAdmin();
+
+            $this->canUpdate = $this->kernel->accessControl->can('update', $this->resourceId) || $this->kernel->currentUser->isAdmin();
+
+            $this->canDelete = $this->kernel->accessControl->can('delete', $this->resourceId) || $this->kernel->currentUser->isAdmin();
+
+        } else if ($crudConfig = $this->bundle->config($rclass->getShortName())) {
+            // Update CRUDHandler properties from config 
             $properties = [ 'canCreate', 'canUpdate', 'canDelete' ];
             foreach( $properties as $key ) {
                 $val = $crudConfig->lookup($key);
