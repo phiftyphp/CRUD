@@ -6,12 +6,13 @@ use Phifty\Web\RegionPager;
 use Phifty\Web\BootstrapRegionPager;
 use Phifty\Web\Region;
 use Phifty\Controller;
-use ReflectionClass;
 use Closure;
 use CRUD\Controller\ToolbarItemController;
 use CRUD\Controller\FilterWidgetToolbarItemController;
 use LazyRecord\BaseModel;
 use Pux\Mux;
+use ReflectionClass;
+use Exception;
 
 
 /**
@@ -192,7 +193,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public $vars = array();
 
-    /** 
+    /**
      * @var array the default collection order, which is used by orderCollection method.
      */
     public $defaultOrder = array('id', 'DESC');
