@@ -279,6 +279,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $mux;
     }
 
+
+    /**
+     * init() method will be called when the route is matched.
+     */
     public function init()
     {
         parent::init();
