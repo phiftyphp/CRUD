@@ -333,13 +333,16 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         if ($this->resourceId) {
 
-            $this->canCreate = $this->kernel->accessControl->can('create', $this->resourceId) || $this->kernel->currentUser->isAdmin();
+            $currentUser = $this->kernel->currentUser;
 
-            $this->canUpdate = $this->kernel->accessControl->can('update', $this->resourceId) || $this->kernel->currentUser->isAdmin();
+            $this->canCreate = $this->kernel->accessControl->can('create', $this->resourceId) || $currentUser->isAdmin();
 
-            $this->canDelete = $this->kernel->accessControl->can('delete', $this->resourceId) || $this->kernel->currentUser->isAdmin();
+            $this->canUpdate = $this->kernel->accessControl->can('edit', $this->resourceId) || $currentUser->isAdmin();
+
+            $this->canDelete = $this->kernel->accessControl->can('delete', $this->resourceId) || $currentUser->isAdmin();
 
         } else if ($crudConfig = $this->bundle->config($rclass->getShortName())) {
+
             // Update CRUDHandler properties from config 
             $properties = [ 'canCreate', 'canUpdate', 'canDelete' ];
             foreach( $properties as $key ) {
@@ -348,6 +351,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
                     $this->$key = $val;
                 }
             }
+
         }
 
 
