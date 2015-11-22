@@ -490,6 +490,22 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
 
+    public function getCreateRegionUrl()
+    {
+        return $this->getRoutePrefix() . '/crud/create';
+    }
+
+    public function getEditRegionUrl(BaseModel $record, array $query = array())
+    {
+        return $this->getRoutePrefix() . '/crud/edit?' . http_build_query(array_merge([ 'id' => $record->id ], $query));
+    }
+
+    public function getViewRegionUrl(BaseModel $record, array $query = array())
+    {
+        return $this->getRoutePrefix() . '/crud/view?' . http_build_query(array_merge([ 'id' => $record->id ], $query));
+    }
+
+
 
     // Region methods
     // =================================================
