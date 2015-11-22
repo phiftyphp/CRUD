@@ -455,6 +455,37 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
 
+    /**
+     *
+     * @return URL return the url of create page
+     */
+    public function getCreatePageUrl()
+    {
+        return $this->getRoutePrefix() . '/create';
+    }
+
+
+    /**
+     *
+     * @return URL return the url of create page
+     */
+    public function getEditPageUrl(BaseModel $record)
+    {
+        return $this->getRoutePrefix() . '/edit?' . http_build_query(['id' => $record->id]);
+    }
+
+
+    /**
+     *
+     * @return URL return the url of create page
+     */
+    public function getViewPageUrl(BaseModel $record)
+    {
+        return $this->getRoutePrefix() . '/view?' . http_build_query(['id' => $record->id]);
+    }
+
+
+
 
     // Region methods
     // =================================================
