@@ -335,11 +335,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
             $currentUser = $this->kernel->currentUser;
 
-            $this->canCreate = $this->kernel->accessControl->can('create', $this->resourceId) || $currentUser->isAdmin();
+            $this->canCreate = $currentUser->isAdmin() || $this->kernel->accessControl->can('create', $this->resourceId);
 
-            $this->canUpdate = $this->kernel->accessControl->can('edit', $this->resourceId) || $currentUser->isAdmin();
+            $this->canUpdate = $currentUser->isAdmin() || $this->kernel->accessControl->can('edit', $this->resourceId);
 
-            $this->canDelete = $this->kernel->accessControl->can('delete', $this->resourceId) || $currentUser->isAdmin();
+            $this->canDelete =  $currentUser->isAdmin() || $this->kernel->accessControl->can('delete', $this->resourceId);
 
         } else if ($crudConfig = $this->bundle->config($rclass->getShortName())) {
 
