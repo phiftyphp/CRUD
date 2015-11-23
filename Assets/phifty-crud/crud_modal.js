@@ -57,7 +57,6 @@ modalConfig will be used when you need to define modal options.
           clearTimeout(scrollTimer);
         }
         return scrollTimer = setTimeout((function() {
-          console.log("scrollTop " + ui.body.get(0).scrollTop);
           return $result.css({
             top: ui.body.get(0).scrollTop
           });
@@ -72,6 +71,7 @@ modalConfig will be used when you need to define modal options.
           }), 1000);
         }
       });
+      a.plug(ActionBootstrapHighlight, {});
       return a.plug(ActionMsgbox, {
         container: $result,
         fadeOut: false

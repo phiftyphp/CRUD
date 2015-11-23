@@ -55,7 +55,6 @@ CRUDModal.openFromBtn = ($btn, modalConfig) ->
 
       # delay 100ms to update the position
       scrollTimer = setTimeout (->
-        console.log("scrollTop " + ui.body.get(0).scrollTop)
         $result.css({ top: ui.body.get(0).scrollTop })
       ), 100
 
@@ -68,6 +67,7 @@ CRUDModal.openFromBtn = ($btn, modalConfig) ->
           # Remove the modal itself
           ui.dialog.foldableModal('close')
         ), 1000
+    a.plug(ActionBootstrapHighlight, {  })
     a.plug(ActionMsgbox, {
         container: $result
         fadeOut: false
