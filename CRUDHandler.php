@@ -11,6 +11,7 @@ use CRUD\Controller\ToolbarItemController;
 use CRUD\Controller\FilterWidgetToolbarItemController;
 use LazyRecord\BaseModel;
 use LazyRecord\BaseCollection;
+use LazyRecord\Exporter\CsvExporter;
 use Pux\Mux;
 use ActionKit\Action;
 use ReflectionClass;
@@ -266,6 +267,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $mux->add(''             , [$class,'indexAction'], $options);
 
         $mux->add('/summary.json', [$class, 'summaryJsonAction'], $options);
+        $mux->add('/export/csv',   [$class, 'exportCsvAction'], $options);
 
         $mux->add('/crud/index'  , [$class,'indexRegionAction'], $options);
         $mux->add('/crud/create' , [$class,'createRegionAction'], $options);
@@ -1127,6 +1129,61 @@ abstract class CRUDHandler extends BaseCRUDHandler
     }
 
 
+
+
+    public function quickCreateAction() 
+    {
+        return $this->render( $this->findTemplatePath('quick_create.html') , array());
+    }
+
+
+
+    // ==================================================================
+    // Actions for APIs
+    // ==================================================================
+
+    public function exportCsvAction()
+    {
+        // use "text/csv" according to RFC 4180.
+        $model = $this->getModel();
+        $schema = $model->getSchema();
+        header('Content-Type: text/csv');
+        header("Content-Disposition: attachment; filename=" . $schema->getTable() . ".csv");
+        $collection = $this->getCollection();
+        $outputFd = fopen('php://output', 'w');
+        $exporter = new CsvExporter($outputFd);
+        $exporter->exportCollection($collection);
+    }
+
+
+
+
+    public function summaryJsonAction()
+    {
+        // handle unfiltered collection
+        $collection = $this->getCollection();
+        return $this->toJson([
+            'numberOfTotalItems' => $collection->queryCount(),
+        ]);
+    }
+
+
+    // ==================================================================
+    // Actions for region
+    // ==================================================================
+
+    public function dialogEditRegionAction()
+    {
+        $this->editRegionActionPrepare();
+        return $this->renderEditDialog();
+    }
+
+    public function modalEditRegionAction()
+    {
+        $this->editRegionActionPrepare();
+        return $this->renderEditModal();
+    }
+
     public function editRegionActionPrepare()
     {
         $record = $this->getCurrentRecord();
@@ -1204,25 +1261,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $this->renderItem();
     }
 
-    public function dialogEditRegionAction()
-    {
-        $this->editRegionActionPrepare();
-        return $this->renderEditDialog();
-    }
-
-    public function modalEditRegionAction()
-    {
-        $this->editRegionActionPrepare();
-        return $this->renderEditModal();
-    }
-
-    public function quickCreateAction() 
-    {
-        return $this->render( $this->findTemplatePath('quick_create.html') , array());
-    }
-
-    
-
 
     public function indexRegionAction()
     {
@@ -1259,16 +1297,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $this->renderList([]);
     }
 
-    public function summaryJsonAction()
-    {
-        // handle unfiltered collection
-        $collection = $this->getCollection();
-        return $this->toJson([
-            'numberOfTotalItems' => $collection->queryCount(),
-        ]);
-    }
-
-
     /**
      * Prepare default/build-in template variable for list region.
      */
@@ -1288,9 +1316,13 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
 
+    // ==================================================================
+    // Actions for pages
+    // ==================================================================
+    
 
-    // route for pages
-    // -----------------------------------
+
+
     public function createAction()
     {
         $tiles = array();
