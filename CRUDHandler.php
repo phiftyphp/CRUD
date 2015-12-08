@@ -9,6 +9,7 @@ use Phifty\Controller;
 use Closure;
 use CRUD\Controller\ToolbarItemController;
 use CRUD\Controller\FilterWidgetToolbarItemController;
+use CRUD\TabPanel;
 use LazyRecord\BaseModel;
 use LazyRecord\BaseCollection;
 use LazyRecord\Exporter\CsvExporter;
@@ -252,6 +253,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
     ];
 
 
+
+
     /**
      * Expand routes to RouteSet
      */
@@ -373,7 +376,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     // Toolbar related methods (used in indexAction)
 
-    public function addToolbarItem(ToolbarItemController $controller)
+    protected function addToolbarItem(ToolbarItemController $controller)
     {
         // pass current CRUD handler object to the toolbar item controller.
         $controller->setHandler($this);
@@ -420,7 +423,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
     // Route related methods
-
     public function getDialogRegionPath()
     {
         return $this->getRoutePrefix() . '/crud/dialog';
@@ -446,12 +448,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $this->getRoutePrefix() . '/crud/list';
     }
 
-
     public function getListInnerRegionPath()
     {
         return $this->getRoutePrefix() . '/crud/list_inner';
     }
-
 
     public function getIndexRegionPath()
     {
@@ -473,6 +473,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     /**
      *
+     * @param BaseModel $record
      * @return URL return the url of create page
      */
     public function getEditPageUrl(BaseModel $record)
@@ -483,6 +484,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     /**
      *
+     * @param BaseModel $record
      * @return URL return the url of create page
      */
     public function getViewPageUrl(BaseModel $record)
@@ -491,17 +493,34 @@ abstract class CRUDHandler extends BaseCRUDHandler
     }
 
 
-
+    /**
+     *
+     * @return URL return the url of create region
+     */
     public function getCreateRegionUrl()
     {
         return $this->getRoutePrefix() . '/crud/create';
     }
 
+    /**
+     *
+     * @param BaseModel $record
+     * @param array $query
+     *
+     * @return URL return the url of edit region
+     */
     public function getEditRegionUrl(BaseModel $record, array $query = array())
     {
         return $this->getRoutePrefix() . '/crud/edit?' . http_build_query(array_merge([ 'id' => $record->id ], $query));
     }
 
+    /**
+     *
+     * @param BaseModel $record
+     * @param array $query
+     *
+     * @return URL return the url of view region page
+     */
     public function getViewRegionUrl(BaseModel $record, array $query = array())
     {
         return $this->getRoutePrefix() . '/crud/view?' . http_build_query(array_merge([ 'id' => $record->id ], $query));
@@ -509,36 +528,36 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
 
+    // =================================================
     // Region methods
     // =================================================
 
-
-    public function createListRegion( $args = array())
+    public function createListRegion(array $args = array())
     {
         $region = Region::create($this->getListRegionPath(), $args);
         $region->container->setAttributeValue('data-effect-class','animated flipInY');
         return $region;
     }
 
-    public function createListInnerRegion( $args = array())
+    public function createListInnerRegion(array $args = array())
     {
         $region = Region::create($this->getListInnerRegionPath(), $args);
         // $region->container->setAttributeValue('data-effect-class','animated flipInY');
         return $region;
     }
 
-    public function createIndexRegion($args = array())
+    public function createIndexRegion(array $args = array())
     {
         return Region::create($this->getIndexRegionPath(), $args);
     }
 
 
-    public function createEditRegion($args = array())
+    public function createEditRegion(array $args = array())
     {
         return Region::create($this->getEditRegionPath(), $args);
     }
 
-    public function createViewRegion($args = array())
+    public function createViewRegion(array $args = array())
     {
         return Region::create($this->getViewRegionPath(), $args);
     }
@@ -552,11 +571,13 @@ abstract class CRUDHandler extends BaseCRUDHandler
      *
      * @param string $title
      * @param mixed $renderMethod
+     *
+     * @deprecated
      */
-    public static function addTab($title,$renderMethod)
+    public function addTab($title, $renderMethod)
     {
-        $tab = new \CRUD\TabPanel($title,$renderMethod);
-        static::$tabs[] = $tab;
+        $tab = new TabPanel($title, $renderMethod);
+        $this->tabs[] = $tab;
         return $tab;
     }
 
@@ -589,6 +610,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
     }
 
 
+    /**
+     * Get the current page size.
+     *
+     * @return integer
+     */
     public function getCurrentPageSize()
     {
         static $p;
@@ -616,10 +642,17 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $this->formatters[ $name ] = $formatter;
     }
 
+
+    /**
+     * Get formatter
+     *
+     * @param string $name column name
+     * @return callable formating handler
+     */
     public function getFormatter($name)
     {
-        if ( isset($this->formatters[ $name ]) ) {
-            return $this->formatters[ $name ];
+        if (isset($this->formatters[$name])) {
+            return $this->formatters[$name];
         }
     }
 
@@ -790,7 +823,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
         /*
             XXX: since some refer column does not have a relationship, we can not join 
             the table correctly.
-
         $joined = array();
         foreach ($model->getSchema()->getColumns() as $column ) {
             if ( $ref = $column->refer) {
@@ -836,7 +868,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      *
      * @param BaseCollection
      */
-    public function orderCollection(BaseCollection $collection)
+    protected function orderCollection(BaseCollection $collection)
     {
         $orderColumn = $this->request->param('_order_column');
         $orderBy     = $this->request->param('_order_by');
@@ -873,9 +905,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * Create collection pager object from collection.
      *
      * @param LazyRecord\BaseCollection collection object.
-     * @return RegionPager
+     * @return BootstrapRegionPager
      */
-    public function createCollectionPager($collection)
+    protected function createCollectionPager(BaseCollection $collection)
     {
         $page     = $this->getCurrentPage();
         $pageSize = $this->getCurrentPageSize();

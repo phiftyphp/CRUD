@@ -89,7 +89,7 @@ abstract class BaseCRUDHandler extends Controller implements Expandable
      */
     public function getModel()
     {
-        if ( $this->_model ) {
+        if ($this->_model) {
             return $this->_model;
         }
         return $this->_model = new $this->modelClass;
@@ -101,18 +101,30 @@ abstract class BaseCRUDHandler extends Controller implements Expandable
     }
 
     /**
-     * Return the collection for list region.
+     * Create the default collection
+     *
+     * @return LazyRecord\BaseCollection
+     */
+    protected function createCollection()
+    {
+        $model = $this->getModel();
+        return $model->asCollection();
+    }
+
+    public function createDefaultCollection()
+    {
+        return $this->createCollection();
+    }
+
+    /**
+     * Return a collection for list records
      *
      * @return LazyRecord\BaseCollection
      */
     public function getCollection()
     {
-        $model = $this->getModel();
-        $collection = $model->asCollection();
-        if ( $this->debug && class_exists('FB') ) {
-            \FB::info( $collection->toSQL() );
-        }
-        return $collection;
+        // by default we return the empty collection directly
+        return $this->createDefaultCollection();
     }
 
 
