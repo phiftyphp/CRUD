@@ -1,12 +1,12 @@
 window.CRUDModal = {}
 
-ControlBuilder = {
-  buttonClass: "btn btn-success"
-}
+ControlBuilder =
+  primaryButtonClass: "btn btn-primary btn-success"
+
 ControlBuilder.createButton = (label, config) ->
   btn = document.createElement('button')
   btn.innerText = label
-  btn.className = this.buttonClass
+  btn.className = this.primaryButtonClass
   return btn
 
 ###

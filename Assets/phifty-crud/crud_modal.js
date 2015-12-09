@@ -5,14 +5,14 @@
   window.CRUDModal = {};
 
   ControlBuilder = {
-    buttonClass: "btn btn-success"
+    primaryButtonClass: "btn btn-primary btn-success"
   };
 
   ControlBuilder.createButton = function(label, config) {
     var btn;
     btn = document.createElement('button');
     btn.innerText = label;
-    btn.className = this.buttonClass;
+    btn.className = this.primaryButtonClass;
     return btn;
   };
 
