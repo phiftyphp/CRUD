@@ -18,7 +18,6 @@ $ ->
   ###
 
   $(document).on "click", ".record-create-btn", (e) ->
-    console.log("create record", e)
     e.stopPropagation()
     # config.modal may contain the options to open a modal
     CRUDModal.openFromBtn $(this), config?.modal

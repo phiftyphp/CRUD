@@ -20,7 +20,6 @@
       return false
      */
     $(document).on("click", ".record-create-btn", function(e) {
-      console.log("create record", e);
       e.stopPropagation();
       CRUDModal.openFromBtn($(this), typeof config !== "undefined" && config !== null ? config.modal : void 0);
       return false;
