@@ -1,5 +1,14 @@
 window.CRUDModal = {}
 
+ControlBuilder = {
+  buttonClass: "btn btn-success"
+}
+ControlBuilder.createButton = (label, config) ->
+  btn = document.createElement('button')
+  btn.innerText = label
+  btn.className = this.buttonClass
+  return btn
+
 ###
 
 Create a bootstrap modal with the ajax content.
