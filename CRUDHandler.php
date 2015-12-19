@@ -10,6 +10,7 @@ use Closure;
 use CRUD\Controller\ToolbarItemController;
 use CRUD\Controller\FilterWidgetToolbarItemController;
 use CRUD\TabPanel;
+use CRUD\Action\UploadSessionFile;
 use LazyRecord\BaseModel;
 use LazyRecord\BaseCollection;
 use LazyRecord\Exporter\CsvExporter;
@@ -283,6 +284,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $mux->add('/crud/modal'      , [$class , 'modalEditRegionAction'], $options);
         $mux->add('/crud/dialog'     , [$class , 'dialogEditRegionAction'], $options);
 
+        $mux->add('/import/upload'   , [$class , 'importUploadRegionAction'], $options);
 
         $mux->add('/view'            , [$class , 'viewAction'], $options);
         $mux->add('/edit'            , [$class , 'editAction'], $options);
@@ -1182,14 +1184,13 @@ abstract class CRUDHandler extends BaseCRUDHandler
         // use "text/csv" according to RFC 4180.
         $model = $this->getModel();
         $schema = $model->getSchema();
-        header('Content-Type: text/csv');
+        header('Content-Type: text/csv; charset=UTF-8');
         header("Content-Disposition: attachment; filename=" . $schema->getTable() . ".csv");
         $collection = $this->getCollection();
         $outputFd = fopen('php://output', 'w');
         $exporter = new CsvExporter($outputFd);
         $exporter->exportCollection($collection);
     }
-
 
 
 
@@ -1348,6 +1349,22 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $this->render( $this->findTemplatePath('list_inner.html'));
     }
 
+    public function importUploadRegionAction()
+    {
+        $upload = new UploadSessionFile;
+        $uploadView = $upload->asView($this->actionViewClass, [
+            'ajax' => true,
+            'submit_btn' => false,
+            'close_btn' => false,
+            '_form_controls' => false,
+        ]);
+        return $this->render($this->findTemplatePath('import_upload.html'), [ 'upload' => $upload, 'uploadView' => $uploadView ]);
+    }
+
+    public function importSelectColumnRegionAction()
+    {
+        return $this->render($this->findTemplatePath('import_map.html'));
+    }
 
 
 
