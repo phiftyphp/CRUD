@@ -116,10 +116,7 @@ $(function() {
                             <input type="button" 
                                 value="{% trans "編輯" %}"
                                 data-record-id="{{ item.id }}"
-                                data-modal-title="{{ CRUD.Object.getEditTitle(item) }}"
-                                data-modal-size="large"
-                                data-modal-side="true"
-                                data-edit-url="{{  CRUD.Object.getEditRegionPath() }}"
+                                data-record-label="{{ item.dataLabel() }}"
                                 class="record-edit-btn btn"/>
                         {% endif %}
 
