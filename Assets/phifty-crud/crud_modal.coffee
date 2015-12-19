@@ -11,7 +11,16 @@ ControlBuilder.createButton = (label, config) ->
 
 ###
 
+A CRUDModal presents the record form in a modal. There will be at least a
+submit button, close button and extra custom buttons.
+
+Users may also register customzied controls to the modal.
+
+
 Create a bootstrap modal with the ajax content.
+
+Options
+================
 
 title (string): title of the modal
 side (boolean): if it's a side modal
@@ -20,16 +29,40 @@ id (integer): the record id.
 url (string):  the url of ajax content
 controls (array): the config for creating controls
 
+Callback options
+----------------
+
+init (function): the callback for initializing modal content.
+success (function): this callback will be triggered when the form is submited successfully.
+
+
+Example
+=================
+
+    CRUDModal.open({
+      "title": "建立新的" + this.props.modelLabel,
+      "size": "lg",
+      "side": true,
+      "url": "/bs/org/crud/create",
+      "init": function(e, ui) {
+        // the modal content init callback
+        console.log("modal content is ready to be initialized.")
+      },
+      "success": function(ui, resp) {
+        console.log("form is submitted successfully")
+      }
+    })
+
 ###
+
 CRUDModal.open = (config, modalConfig) ->
 
-  defaultControls = [
-    {
-      label: '儲存'
-      primary: true
-      onClick: (e,ui) -> ui.body.find("form").submit()
-    }
-  ]
+  saveButton =
+    label: '儲存'
+    primary: true
+    onClick: (e,ui) -> ui.body.find("form").submit()
+
+  defaultControls = [saveButton]
 
   ajaxConfig =
     url: config.url
@@ -43,7 +76,6 @@ CRUDModal.open = (config, modalConfig) ->
   # converts "record id" into ajax arguments
   ajaxConfig.args.id = config.id if config.id
 
-
   ui = ModalManager.create({
     title: config.title or "Untitled"
     side: config.side or false
@@ -51,13 +83,17 @@ CRUDModal.open = (config, modalConfig) ->
     ajax: ajaxConfig
     controls: config.controls or defaultControls
   })
+
+  # When ajax content is loaded, we initialize the form inside the modal.
   ui.dialog.on "dialog.ajax.done", (e, ui) ->
-    # Initialize form in the modal
+    config.init(e, ui) if config.init
+
     form = ui.body.find("form").get(0)
     $result = $('<div/>').addClass('action-result-container')
     $(form).before($result)
 
 
+    # Update the result message container in the modal.
     scrollTimer = null
     $(ui.body).scroll (e) ->
       clearTimeout(scrollTimer) if scrollTimer
@@ -72,6 +108,7 @@ CRUDModal.open = (config, modalConfig) ->
       status: true
       clear: true
       onSuccess: (resp) ->
+        config.success(ui, resp) if config.success
         setTimeout (->
           # Remove the modal itself
           ui.dialog.foldableModal('close')

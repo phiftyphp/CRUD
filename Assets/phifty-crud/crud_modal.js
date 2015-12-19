@@ -19,7 +19,16 @@
 
   /*
   
+  A CRUDModal presents the record form in a modal. There will be at least a
+  submit button, close button and extra custom buttons.
+  
+  Users may also register customzied controls to the modal.
+  
+  
   Create a bootstrap modal with the ajax content.
+  
+  Options
+  ================
   
   title (string): title of the modal
   side (boolean): if it's a side modal
@@ -27,19 +36,42 @@
   id (integer): the record id.
   url (string):  the url of ajax content
   controls (array): the config for creating controls
+  
+  Callback options
+  ----------------
+  
+  init (function): the callback for initializing modal content.
+  success (function): this callback will be triggered when the form is submited successfully.
+  
+  
+  Example
+  =================
+  
+      CRUDModal.open({
+        "title": "建立新的" + this.props.modelLabel,
+        "size": "lg",
+        "side": true,
+        "url": "/bs/org/crud/create",
+        "init": function(e, ui) {
+          // the modal content init callback
+          console.log("modal content is ready to be initialized.")
+        },
+        "success": function(ui, resp) {
+          console.log("form is submitted successfully")
+        }
+      })
    */
 
   CRUDModal.open = function(config, modalConfig) {
-    var ajaxConfig, defaultControls, ui;
-    defaultControls = [
-      {
-        label: '儲存',
-        primary: true,
-        onClick: function(e, ui) {
-          return ui.body.find("form").submit();
-        }
+    var ajaxConfig, defaultControls, saveButton, ui;
+    saveButton = {
+      label: '儲存',
+      primary: true,
+      onClick: function(e, ui) {
+        return ui.body.find("form").submit();
       }
-    ];
+    };
+    defaultControls = [saveButton];
     ajaxConfig = {
       url: config.url,
       args: {
@@ -62,6 +94,9 @@
     });
     ui.dialog.on("dialog.ajax.done", function(e, ui) {
       var $result, a, form, scrollTimer;
+      if (config.init) {
+        config.init(e, ui);
+      }
       form = ui.body.find("form").get(0);
       $result = $('<div/>').addClass('action-result-container');
       $(form).before($result);
@@ -80,6 +115,9 @@
         status: true,
         clear: true,
         onSuccess: function(resp) {
+          if (config.success) {
+            config.success(ui, resp);
+          }
           return setTimeout((function() {
             return ui.dialog.foldableModal('close');
           }), 1000);
