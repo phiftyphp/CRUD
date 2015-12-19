@@ -2,6 +2,11 @@
 namespace CRUD\Action;
 use ActionKit\Action;
 
+
+/**
+ * UploadSessionFile uploads the file from form and save the uploaded file path
+ * in the current session.
+ */
 class UploadSessionFile extends Action
 {
     public function schema()
