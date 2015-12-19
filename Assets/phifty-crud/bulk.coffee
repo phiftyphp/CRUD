@@ -22,11 +22,6 @@ New BulkCRUD:
 
 ###
 
-
-
-
-
-
 class BulkCRUD
   handlers: {}
 

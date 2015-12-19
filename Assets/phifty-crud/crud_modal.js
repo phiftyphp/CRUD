@@ -44,10 +44,15 @@
       url: config.url,
       args: {
         _submit_btn: false,
-        _close_btn: false,
-        id: config.id
+        _close_btn: false
       }
     };
+    if (config.args) {
+      ajaxConfig.args = config.args;
+    }
+    if (config.id) {
+      ajaxConfig.args.id = config.id;
+    }
     ui = ModalManager.create({
       title: config.title || "Untitled",
       side: config.side || false,
@@ -113,11 +118,11 @@
     size = $btn.data("modal-size");
     side = $btn.data("modal-side");
     return CRUDModal.open({
-      "id": id,
       "title": title,
       "size": size,
       "side": side,
-      "url": $btn.data("edit-url")
+      "url": $btn.data("edit-url"),
+      "id": id
     });
   };
 

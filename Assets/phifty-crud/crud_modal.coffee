@@ -31,13 +31,18 @@ CRUDModal.open = (config, modalConfig) ->
     }
   ]
 
-  ajaxConfig = {
+  ajaxConfig =
     url: config.url
     args:
       _submit_btn: false
       _close_btn: false
-      id: config.id
-  }
+
+  # Override the default config arguments for ajax page
+  ajaxConfig.args = config.args if config.args
+
+  # converts "record id" into ajax arguments
+  ajaxConfig.args.id = config.id if config.id
+
 
   ui = ModalManager.create({
     title: config.title or "Untitled"
@@ -102,10 +107,10 @@ CRUDModal.openFromBtn = ($btn, modalConfig) ->
   size = $btn.data("modal-size")
   side = $btn.data("modal-side")
   CRUDModal.open({
-    "id": id
     "title": title
     "size": size
     "side": side
     "url": $btn.data("edit-url")
+    "id": id
   })
 

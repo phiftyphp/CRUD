@@ -592,10 +592,13 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $tabs;
     }
 
+    public function getRecordLabel()
+    {
+        return $this->getModel()->getLabel();
+    }
 
     public function getCreateButtonLabel() 
     {
-        // TODO: do i18n here.
         return "建立新的" . $this->getModel()->getLabel();
     }
 
