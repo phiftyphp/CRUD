@@ -2,17 +2,18 @@
 namespace CRUD\Action;
 use ActionKit\Action;
 
-/**
- * UploadSessionFile uploads the file from form and save the uploaded file path
- * in the current session.
- */
-class UploadSessionFile extends Action
+class UploadExcelFile extends Action
 {
     public function schema()
     {
         $this->param('file', 'File')
             ->label('檔案')
             ->putIn('upload');
+
+        $this->param('column_select')
+            ->label('選擇欄位對應')
+            ->renderAs('CheckboxInput')
+            ;
     }
 
     public function run()

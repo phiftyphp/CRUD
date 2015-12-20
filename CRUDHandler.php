@@ -11,6 +11,7 @@ use CRUD\Controller\ToolbarItemController;
 use CRUD\Controller\FilterWidgetToolbarItemController;
 use CRUD\TabPanel;
 use CRUD\Action\UploadSessionFile;
+use CRUD\Action\UploadExcelFile;
 use LazyRecord\BaseModel;
 use LazyRecord\BaseCollection;
 use LazyRecord\Exporter\CsvExporter;
@@ -1356,7 +1357,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function importUploadRegionAction()
     {
-        $upload = new UploadSessionFile;
+        $upload = new UploadExcelFile;
         $uploadView = $upload->asView($this->actionViewClass, [
             'ajax' => true,
             'submit_btn' => false,
