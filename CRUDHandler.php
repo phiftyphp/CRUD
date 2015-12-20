@@ -322,10 +322,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
         // XXX: currently we use FooBundle\FooBundle as the main bundle class.
         $bundleClass = "$ns\\$ns";
         if (class_exists($bundleClass)) {
-            $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance();
+            $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance($this->kernel);
         } else {
             $bundleClass = "$ns\\Application";
-            $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance();
+            $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance($this->kernel);
         }
 
         $this->vars['Handler'] = $this;
@@ -336,7 +336,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         if ($this->registerRecordAction) {
             $self = $this;
             $this->kernel->event->register('phifty.before_action',function() use($self) {
-                kernel()->action->registerAction('RecordActionTemplate', array(
+                $self->kernel->action->registerAction('RecordActionTemplate', array(
                     'namespace' => $self->namespace,
                     'model' => $self->modelName,
                     'types' => (array) $self->registerRecordAction
@@ -814,7 +814,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function isI18NEnabled()
     {
-        return ( kernel()->bundle('I18N')
+        return ($this->kernel->bundle('I18N')
             && $langColumn = $this->getModel()->getColumn('lang')
             && isset($this->bundle) && $this->bundle->config('with_lang') );
     }
