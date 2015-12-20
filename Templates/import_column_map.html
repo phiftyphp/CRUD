@@ -1,24 +1,29 @@
-<table class="table table-striped">
+{#
+vim:sw=2:ts=2:sts=2:
+#}
+<form enctype="multipart/form-data" method="post">
+  <table class="table table-striped">
     <thead>
-        <tr>
-        {% for columnHeader in columnHeaders %}
-            <th>{{columnSelect.render()|raw}}</th>
-        {% endfor %}
-        </tr>
+      <tr>
+      {% for columnHeader in columnHeaders %}
+        <th>{{columnSelect.render()|raw}}</th>
+      {% endfor %}
+      </tr>
 
-        <tr>
-        {% for columnHeader in columnHeaders %}
-            <th>{{columnHeader}}</th>
-        {% endfor %}
-        </tr>
+      <tr>
+      {% for columnHeader in columnHeaders %}
+        <th>{{columnHeader}}</th>
+      {% endfor %}
+      </tr>
     </thead>
     <tbody>
-        {% for row in previewRows %}
-        <tr>
-            {% for cell in row %}
-            <td>{{cell|truncate(10)}}</td>
-            {% endfor %}
-        </tr>
+      {% for row in previewRows %}
+      <tr>
+        {% for cell in row %}
+        <td>{{cell|truncate(10)}}</td>
         {% endfor %}
+      </tr>
+      {% endfor %}
     </tbody>
-</table>
+  </table>
+</form>
