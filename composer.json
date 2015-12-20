@@ -22,7 +22,9 @@
         "corneltek/kendo": "@dev",
         "corneltek/universal": "@dev",
         "phpsgi/funk": "@dev",
-        "phpsgi/phpsgi": "@dev"
+        "phpsgi/phpsgi": "@dev",
+        "corneltek/emailbundle": "dev-master",
+        "corneltek/adminui": "dev-master"
     },
     "autoload": {
         "psr-4": {
