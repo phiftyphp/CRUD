@@ -86,51 +86,68 @@
       ajaxConfig.args.id = config.id;
     }
     ui = ModalManager.create({
-      title: config.title || "Untitled",
-      side: config.side || false,
-      size: config.size,
-      ajax: ajaxConfig,
-      controls: config.controls || defaultControls
+      "title": config.title,
+      "side": config.side || false,
+      "size": config.size,
+      "ajax": config.ajax || ajaxConfig,
+      "controls": config.controls || defaultControls
     });
-    ui.dialog.on("dialog.ajax.done", function(e, ui) {
-      var $result, a, form, scrollTimer;
+    this._initBody(ui, config);
+    ui.dialog.foldableModal(modalConfig || 'show');
+    return ui;
+  };
+
+  CRUDModal.update = function(ui, opts) {
+    ModalFactory.update(ui, opts);
+    return this._initBody(ui, opts);
+  };
+
+  CRUDModal._initBody = function(ui, config) {
+    return ui.dialog.on("dialog.ajax.done", function(e, ui) {
+      var form, setupForm;
       if (config.init) {
         config.init(e, ui);
       }
       form = ui.body.find("form").get(0);
-      $result = $('<div/>').addClass('action-result-container');
-      $(form).before($result);
-      scrollTimer = null;
-      $(ui.body).scroll(function(e) {
-        if (scrollTimer) {
-          clearTimeout(scrollTimer);
-        }
-        return scrollTimer = setTimeout((function() {
-          return $result.css({
-            top: ui.body.get(0).scrollTop
-          });
-        }), 100);
-      });
-      a = Action.form(form, {
-        status: true,
-        clear: true,
-        onSuccess: function(resp) {
-          if (config.success) {
-            config.success(ui, resp);
+      setupForm = function(ui, form) {
+        var $result, a, scrollTimer;
+        $result = $('<div/>').addClass('action-result-container');
+        $(form).before($result);
+        scrollTimer = null;
+        $(ui.body).scroll(function(e) {
+          if (scrollTimer) {
+            clearTimeout(scrollTimer);
           }
-          return setTimeout((function() {
-            return ui.dialog.foldableModal('close');
-          }), 1000);
-        }
-      });
-      a.plug(ActionBootstrapHighlight, {});
-      return a.plug(ActionMsgbox, {
-        container: $result,
-        fadeOut: false
-      });
+          return scrollTimer = setTimeout((function() {
+            return $result.css({
+              top: ui.body.get(0).scrollTop
+            });
+          }), 100);
+        });
+        a = Action.form(form, {
+          status: true,
+          clear: true,
+          onSuccess: function(resp) {
+            if (config.success) {
+              config.success(ui, resp);
+            }
+            if (config.closeOnSuccess) {
+              return setTimeout((function() {
+                return ui.dialog.foldableModal('close');
+              }), 1000);
+            }
+          }
+        });
+        a.plug(ActionBootstrapHighlight, {});
+        return a.plug(ActionMsgbox, {
+          container: $result,
+          fadeOut: false
+        });
+      };
+      if (form) {
+        return setupForm(ui, form);
+      }
     });
-    ui.dialog.foldableModal(modalConfig || 'show');
-    return ui;
   };
 
 

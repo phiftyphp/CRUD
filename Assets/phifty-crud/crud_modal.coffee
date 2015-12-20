@@ -56,7 +56,6 @@ Example
 ###
 
 CRUDModal.open = (config, modalConfig) ->
-
   saveButton =
     label: '儲存'
     primary: true
@@ -76,52 +75,61 @@ CRUDModal.open = (config, modalConfig) ->
   # converts "record id" into ajax arguments
   ajaxConfig.args.id = config.id if config.id
 
-  ui = ModalManager.create({
-    title: config.title or "Untitled"
-    side: config.side or false
-    size: config.size
-    ajax: ajaxConfig
-    controls: config.controls or defaultControls
-  })
+  ui = ModalManager.create
+    "title": config.title
+    "side": config.side or false
+    "size": config.size
+    "ajax": config.ajax or ajaxConfig
+    "controls": config.controls or defaultControls
 
+  this._initBody(ui, config)
+
+  # XXX: the config object is defined in the BulkCRUD's constructor
+  ui.dialog.foldableModal(modalConfig or 'show')
+  return ui
+
+
+CRUDModal.update = (ui, opts) ->
+  ModalFactory.update(ui, opts)
+  this._initBody(ui, opts)
+
+
+CRUDModal._initBody = (ui, config) ->
   # When ajax content is loaded, we initialize the form inside the modal.
   ui.dialog.on "dialog.ajax.done", (e, ui) ->
     config.init(e, ui) if config.init
 
     form = ui.body.find("form").get(0)
-    $result = $('<div/>').addClass('action-result-container')
-    $(form).before($result)
 
+    setupForm = (ui, form) ->
+      $result = $('<div/>').addClass('action-result-container')
+      $(form).before($result)
 
-    # Update the result message container in the modal.
-    scrollTimer = null
-    $(ui.body).scroll (e) ->
-      clearTimeout(scrollTimer) if scrollTimer
+      # Update the result message container in the modal.
+      scrollTimer = null
+      $(ui.body).scroll (e) ->
+        clearTimeout(scrollTimer) if scrollTimer
 
-      # delay 100ms to update the position
-      scrollTimer = setTimeout (->
-        $result.css({ top: ui.body.get(0).scrollTop })
-      ), 100
+        # delay 100ms to update the position
+        scrollTimer = setTimeout (->
+          $result.css({ top: ui.body.get(0).scrollTop })
+        ), 100
 
-    # Setup Action form automatically
-    a = Action.form form,
-      status: true
-      clear: true
-      onSuccess: (resp) ->
-        config.success(ui, resp) if config.success
-        setTimeout (->
-          # Remove the modal itself
-          ui.dialog.foldableModal('close')
-        ), 1000
-    a.plug(ActionBootstrapHighlight, {  })
-    a.plug(ActionMsgbox, {
-        container: $result
-        fadeOut: false
-    })
-  # XXX: the config object is defined in the BulkCRUD's constructor
-  ui.dialog.foldableModal(modalConfig or 'show')
-  return ui
-
+      # Setup Action form automatically
+      a = Action.form form,
+        status: true
+        clear: true
+        onSuccess: (resp) ->
+          config.success(ui, resp) if config.success
+          # Remove the modal when action is executed successfully.
+          if config.closeOnSuccess
+            setTimeout (-> ui.dialog.foldableModal('close')), 1000
+      a.plug(ActionBootstrapHighlight, {  })
+      a.plug(ActionMsgbox, {
+          container: $result
+          fadeOut: false
+      })
+    setupForm(ui, form) if form
 
 ###
 

@@ -19,6 +19,10 @@ use ActionKit\Action;
 use ReflectionClass;
 use Exception;
 
+use PHPExcel_IOFactory;
+
+use FormKit\Widget\SelectInput;
+
 
 /**
  * Current CRUD template structure:
@@ -284,7 +288,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $mux->add('/crud/modal'      , [$class , 'modalEditRegionAction'], $options);
         $mux->add('/crud/dialog'     , [$class , 'dialogEditRegionAction'], $options);
 
-        $mux->add('/import/upload'   , [$class , 'importUploadRegionAction'], $options);
+        $mux->add('/import/upload'       , [$class , 'importUploadRegionAction'], $options);
+        $mux->add('/import/column-map'   , [$class , 'importColumnMapRegionAction'], $options);
 
         $mux->add('/view'            , [$class , 'viewAction'], $options);
         $mux->add('/edit'            , [$class , 'editAction'], $options);
@@ -1358,12 +1363,68 @@ abstract class CRUDHandler extends BaseCRUDHandler
             'close_btn' => false,
             '_form_controls' => false,
         ]);
-        return $this->render($this->findTemplatePath('import_upload.html'), [ 'upload' => $upload, 'uploadView' => $uploadView ]);
+        return $this->render($this->findTemplatePath('import_upload.html'), [
+            'upload' => $upload,
+            'uploadView' => $uploadView,
+        ]);
     }
 
-    public function importSelectColumnRegionAction()
+    public function importColumnMapRegionAction()
     {
-        return $this->render($this->findTemplatePath('import_map.html'));
+        $session = $this->kernel->session;
+        $uploadedFile = $session->get('_current_upload');
+
+        $schema = $this->getModel()->getSchema();
+        $columnDefinitions = $schema->getColumns();
+
+        $columnOptions = [];
+        foreach ($columnDefinitions as $definition) {
+            if (!$definition->label) {
+                continue;
+            }
+            $columnOptions[$definition->label] = $definition->name;
+        }
+
+        $columnHeaders = [];
+        $previewRows = [];
+        if (preg_match('/\.csv$/', $uploadedFile)) {
+            $fp = fopen($uploadedFile, 'r');
+            if ($_columnHeaders = fgetcsv($fp)) {
+                $columnHeaders = $_columnHeaders;
+
+                $i = 5;
+                while ($i-- && $row = fgetcsv($fp)) {
+                    $previewRows[] = $row;
+                }
+            }
+            fclose($fp);
+
+        } else if (preg_match('#.xls(x)$#', $excelPath)) {
+            // process Excel, and generate preview data
+            $excel = PHPExcel_IOFactory::load($excelPath);
+            $worksheet = $excel->getActiveSheet();
+
+            $sheetTitle = $worksheet->getTitle();
+
+
+
+
+
+            $rowIterator = $worksheet->getRowIterator();
+
+        } else {
+            // TODO: show error message
+        }
+
+        $columnSelect = new SelectInput('columns[]', [
+            'options' => $columnOptions,
+            'allow_empty' => [0, "-- 請選擇 --"],
+        ]);
+        return $this->render($this->findTemplatePath('import_column_map.html'), [
+            'columnSelect' => $columnSelect,
+            'columnHeaders' => $columnHeaders,
+            'previewRows' => $previewRows,
+        ]);
     }
 
 
@@ -1371,8 +1432,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
     // ==================================================================
     // Actions for pages
     // ==================================================================
-    
-
 
 
     public function createAction()
