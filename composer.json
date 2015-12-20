@@ -6,14 +6,30 @@
             "email": "yoanlin93@gmail.com"
         }
     ],
+    "type": "phifty-bundle",
     "require": {
+        "corneltek/installers": "dev-master"
+    },
+    "require-dev": {
+        "corneltek/phifty-core": "3.0.x-dev",
+        "corneltek/lazyrecord": "@dev",
+        "corneltek/actionkit": "@dev",
+        "corneltek/sqlbuilder": "@dev",
+        "corneltek/cliframework": "@dev",
+        "corneltek/assetkit": "@dev",
+        "corneltek/locale": "@dev",
+        "corneltek/pux": "@dev",
+        "corneltek/kendo": "@dev",
+        "corneltek/universal": "@dev",
+        "phpsgi/funk": "@dev",
+        "phpsgi/phpsgi": "@dev"
     },
     "autoload": {
         "psr-4": {
             "CRUD\\": ""
         }
     },
-    "require-dev": {
-        "corneltek/phifty-core": "3.0.x-dev"
-    }
+    "repositories": [
+        {"type": "composer", "url": "http://toran.corneltek.com/repo/private/"}
+    ]
 }
