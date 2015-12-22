@@ -259,6 +259,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
     ];
 
 
+    /**
+     * @var array An array that defines import field names.
+     */
+    protected $importFields;
 
 
     /**
@@ -291,6 +295,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         $mux->add('/import/upload'       , [$class , 'importUploadRegionAction'], $options);
         $mux->add('/import/column-map'   , [$class , 'importColumnMapRegionAction'], $options);
+        $mux->add('/import/sample'   , [$class , 'importSampleDownloadAction'], $options);
 
         $mux->add('/view'            , [$class , 'viewAction'], $options);
         $mux->add('/edit'            , [$class , 'editAction'], $options);
@@ -1370,6 +1375,29 @@ abstract class CRUDHandler extends BaseCRUDHandler
         ]);
     }
 
+    public function importSampleDownloadAction()
+    {
+        $schema = $this->getModel()->getSchema();
+        $importer = new \CRUD\Importer\ExcelImporter($this->getModel(), $this->importFields);
+        $excel = $importer->createSampleExcel();
+
+        $filename = "sample_{$this->crudId}.xlsx";
+        // Redirect output to a client’s web browser (Excel2007)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+        // If you're serving to IE over SSL, then the following may be needed
+        header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+        header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header ('Pragma: public'); // HTTP/1.0
+        $excelWriter = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        $excelWriter->save('php://output');
+        exit;
+    }
+
     public function importColumnMapRegionAction()
     {
         $session = $this->kernel->session;
@@ -1404,13 +1432,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
             // process Excel, and generate preview data
             $excel = PHPExcel_IOFactory::load($excelPath);
             $worksheet = $excel->getActiveSheet();
-
             $sheetTitle = $worksheet->getTitle();
-
-
-
-
-
             $rowIterator = $worksheet->getRowIterator();
 
         } else {

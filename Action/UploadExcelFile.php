@@ -10,8 +10,8 @@ class UploadExcelFile extends Action
             ->label('檔案')
             ->putIn('upload');
 
-        $this->param('column_select')
-            ->label('選擇欄位對應')
+        $this->param('advanced')
+            ->label('進階匯入')
             ->renderAs('CheckboxInput')
             ;
     }
@@ -27,7 +27,7 @@ class UploadExcelFile extends Action
         $session->set('_current_upload', $filePath);
         return $this->success('上傳成功', [
             'filepath' => $filePath,
-            'column_select' => intval($this->arg('column_select')),
+            'advanced' => intval($this->arg('advanced')),
         ]);
     }
 }

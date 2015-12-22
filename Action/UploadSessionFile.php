@@ -26,7 +26,6 @@ class UploadSessionFile extends Action
         $session->set('_current_upload', $filePath);
         return $this->success('上傳成功', [
             'filepath' => $filePath,
-            'column_select' => intval($this->arg('column_select')),
         ]);
     }
 }
