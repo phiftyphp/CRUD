@@ -74,6 +74,7 @@ class ExcelImporter
             $headers[] = $cell->getCalculatedValue();
         }
 
+        $record = $this->schema->newModel();
         $rows = [];
         $rowIterator->next(); // skip the header row
         while ($rowIterator->valid()) {
@@ -94,9 +95,11 @@ class ExcelImporter
                     } else {
                         $data[$key] = $text;
                     }
-
                 }
             }
+
+            $ret = $record->create($data);
+
             $rowIterator->next();
             $rows[] = $data;
         }
