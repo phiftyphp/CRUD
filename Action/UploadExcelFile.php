@@ -27,7 +27,7 @@ class UploadExcelFile extends Action
         $session->set('_current_upload', $filePath);
         return $this->success('上傳成功', [
             'filepath' => $filePath,
-            'advanced' => intval($this->arg('advanced')),
+            'advanced' => $this->arg('advanced'),
         ]);
     }
 }

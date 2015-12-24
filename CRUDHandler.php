@@ -64,7 +64,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public $reactApp;
 
-
+    protected $uploadActionClass = 'CRUD\\Action\\UploadExcelFile';
 
     /**
      * @var string resource id is used for ACL
@@ -1362,7 +1362,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     public function importUploadRegionAction()
     {
-        $upload = new UploadExcelFile;
+        $uploadActionClass = $this->uploadActionClass;
+        $upload = new $uploadActionClass;
         $uploadView = $upload->asView($this->actionViewClass, [
             'ajax' => true,
             'submit_btn' => false,
@@ -1428,9 +1429,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
             }
             fclose($fp);
 
-        } else if (preg_match('#.xls(x)$#', $excelPath)) {
+        } else if (preg_match('#.xls(x)?$#', $uploadedFile)) {
+
             // process Excel, and generate preview data
-            $excel = PHPExcel_IOFactory::load($excelPath);
+            $excel = PHPExcel_IOFactory::load($uploadedFile);
             $worksheet = $excel->getActiveSheet();
             $sheetTitle = $worksheet->getTitle();
             $rowIterator = $worksheet->getRowIterator();
