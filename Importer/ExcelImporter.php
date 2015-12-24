@@ -44,7 +44,7 @@ class ExcelImporter
         // outout headers
         foreach ($columnKeys as $index => $key) {
             $field = $this->importFields[$index];
-            $sheet->setCellValue($key . '1', $this->schema->getColumn($field)->getLabel());
+            $sheet->setCellValue($key . '1', $this->schema->getColumn($field)->name);
         }
 
         // generate sample data from placeholder
@@ -63,31 +63,42 @@ class ExcelImporter
     public function import($filepath)
     {
         $excel = PHPExcel_IOFactory::load($filepath);
-        $worksheet   = $excel->getActiveSheet();
-        $sheetTitle  = $worksheet->getTitle();
-        $rowIterator = $worksheet->getRowIterator();
+        $sheet   = $excel->getActiveSheet();
+        $sheetTitle  = $sheet->getTitle();
+        $rowIterator = $sheet->getRowIterator();
 
         $headers = array();
         $cellIterator = $rowIterator->current()->getCellIterator();
-        $cellIterator->setIterateOnlyExistingCells(false); // Loop all cells, even if it is not set
+        $cellIterator->setIterateOnlyExistingCells(true); // Loop all cells, even if it is not set
         foreach ($cellIterator as $cell) {
             $headers[] = $cell->getCalculatedValue();
         }
 
         $rows = [];
         $rowIterator->next(); // skip the header row
-        while ($maxRows-- && $rowIterator->valid()) {
+        while ($rowIterator->valid()) {
             $row = $rowIterator->current();
-
             $cellIterator = $row->getCellIterator();
             $cellIterator->setIterateOnlyExistingCells(false); // Loop all cells, even if it is not set
 
-            $rowArray = [];
-            foreach ($cellIterator as $cell) {
-                $rowArray[] = trim($cell->getCalculatedValue());
+            $data = [];
+            foreach ($cellIterator as $index => $cell) {
+                $key = $headers[$index];
+                if ($column = $this->schema->getColumn($key)) {
+                    $text = trim($cell->getCalculatedValue());
+
+                    if ($column->isa == 'int') {
+                        $data[$key] = intval($text);
+                    } else if ($column->isa == 'bool') {
+                        $data[$key] = filter_var($text, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                    } else {
+                        $data[$key] = $text;
+                    }
+
+                }
             }
             $rowIterator->next();
-            $rows[] = $rowArray;
+            $rows[] = $data;
         }
         return $rows;
     }
