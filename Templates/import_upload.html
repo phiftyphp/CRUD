@@ -1,6 +1,27 @@
+{#
+vim:sw=2:ts=2:sts=2:
+#}
 <form method="post" enctype="multipart/form-data" class="form-horizontal ajax-action">
   {{upload.renderSignatureWidget|raw}}
   {{upload.renderCsrfTokenWidget|raw}}
-  {{upload.renderField('file')|raw}}
-  {{upload.renderField('advanced')|raw}}
+
+  <div class="form-group formkit-widget-checkboxinput">
+    <label class="control-label col-lg-2">上傳檔案</label>
+    <div class="col-lg-10">
+
+      {{upload.renderWidget('file')|raw}}
+
+      <p class="help-block">
+        <a href="{{CRUD.Object.getRoutePrefix()}}/import/sample">下載範例</a>
+      </p>
+      <div class="checkbox">
+        <label>
+          {{upload.renderWidget('advanced')|raw}} 進階匯入
+        </label>
+      </div>
+
+    </div>
+  </div>
+
+
 </form>
