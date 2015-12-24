@@ -1431,11 +1431,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         } else if (preg_match('#.xls(x)?$#', $uploadedFile)) {
 
-            // process Excel, and generate preview data
-            $excel = PHPExcel_IOFactory::load($uploadedFile);
-            $worksheet = $excel->getActiveSheet();
-            $sheetTitle = $worksheet->getTitle();
-            $rowIterator = $worksheet->getRowIterator();
+            $importer = new \CRUD\Importer\ExcelImporter($this->getModel(), $this->importFields);
+            $preview = $importer->preview($uploadedFile);
+            $columnHeaders = $preview['headers'];
+            $previewRows = $preview['rows'];
 
         } else {
             // TODO: show error message
