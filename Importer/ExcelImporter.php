@@ -4,6 +4,7 @@ use PHPExcel_IOFactory;
 use LazyRecord\BaseModel;
 use LazyRecord\Schema\DeclareSchema;
 use PHPExcel;
+use Exception;
 
 /**
  * Handle data import from excel file
@@ -74,8 +75,7 @@ class ExcelImporter
             $headers[] = $cell->getCalculatedValue();
         }
 
-        $record = $this->schema->newModel();
-        $rows = [];
+        $records = [];
         $rowIterator->next(); // skip the header row
         while ($rowIterator->valid()) {
             $row = $rowIterator->current();
@@ -98,12 +98,16 @@ class ExcelImporter
                 }
             }
 
+            $record = $this->schema->newModel();
             $ret = $record->create($data);
+            if ($ret->error) {
+                throw new Exception('Import error: ' . $ret->message);
+            }
 
             $rowIterator->next();
-            $rows[] = $data;
+            $records[] = $record;
         }
-        return $rows;
+        return $records;
     }
 
     /**
@@ -144,9 +148,5 @@ class ExcelImporter
         return $return;
     }
 }
-
-
-
-
 
 
