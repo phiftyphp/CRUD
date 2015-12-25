@@ -34,8 +34,10 @@ abstract class ImportSimple extends Action
         $recordClass = $this->recordClass;
         $record = new $recordClass;
         $importer = new ExcelImporter($record, $this->importFields);
-        $importer->import($excelPath);
-        return $this->success('匯入成功 ' . get_class($this) );
+        $records = $importer->import($excelPath);
+        return $this->success('匯入成功，共 ' . count($records) . ' 筆資料匯入。', [
+            'number_of_records' => count($records),
+        ]);
     }
 }
 
