@@ -11,16 +11,13 @@ use Exception;
  */
 class ExcelImporter
 {
-    protected $model;
-
     protected $schema;
 
     protected $importFields;
 
-    public function __construct(BaseModel $model, array $importFields = null)
+    public function __construct($schema, array $importFields = null)
     {
-        $this->model = $model;
-        $this->schema = $model->getSchema();
+        $this->schema = $schema;
         $this->importFields = $importFields ?: $this->schema->getColumnNames();
     }
 

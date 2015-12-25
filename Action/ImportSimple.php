@@ -31,6 +31,7 @@ abstract class ImportSimple extends Action
             return $this->error('無上傳檔案。');
         }
 
+        // TODO: currently we only support excel files
         $recordClass = $this->recordClass;
         $record = new $recordClass;
         $importer = new ExcelImporter($record->getSchema(), $this->importFields);

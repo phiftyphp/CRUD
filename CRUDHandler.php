@@ -12,9 +12,11 @@ use CRUD\Controller\FilterWidgetToolbarItemController;
 use CRUD\TabPanel;
 use CRUD\Action\UploadSessionFile;
 use CRUD\Action\UploadExcelFile;
+use CRUD\Importer\ExcelImporter;
 use LazyRecord\BaseModel;
 use LazyRecord\BaseCollection;
-use LazyRecord\Exporter\CsvExporter;
+use CRUD\Exporter\CSVExporter;
+use CRUD\Exporter\ExcelExporter;
 use Pux\Mux;
 use ActionKit\Action;
 use ReflectionClass;
@@ -279,8 +281,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $class = get_class($this);
         $mux->add(''             , [$class,'indexAction'], $options);
 
-        $mux->add('/summary.json', [$class, 'summaryJsonAction'], $options);
-        $mux->add('/export/csv',   [$class, 'exportCsvAction'], $options);
+        $mux->add('/summary.json' , [$class , 'summaryJsonAction'] , $options);
+        $mux->add('/export/csv'   , [$class , 'exportCsvAction']   , $options);
+        $mux->add('/export/excel' , [$class , 'exportExcelAction'] , $options);
 
         $mux->add('/crud/index'  , [$class,'indexRegionAction'], $options);
         $mux->add('/crud/create' , [$class,'createRegionAction'], $options);
@@ -1190,21 +1193,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
     // Actions for APIs
     // ==================================================================
 
-    public function exportCsvAction()
-    {
-        // use "text/csv" according to RFC 4180.
-        $model = $this->getModel();
-        $schema = $model->getSchema();
-        header('Content-Type: text/csv; charset=UTF-8');
-        header("Content-Disposition: attachment; filename=" . $schema->getTable() . ".csv");
-        $collection = $this->getCollection();
-        $outputFd = fopen('php://output', 'w');
-        $exporter = new CsvExporter($outputFd);
-        $exporter->exportCollection($collection);
-    }
-
-
-
     public function summaryJsonAction()
     {
         // handle unfiltered collection
@@ -1215,8 +1203,30 @@ abstract class CRUDHandler extends BaseCRUDHandler
     }
 
 
+
     // ==================================================================
-    // Actions for region
+    // Actions for exporting data
+    // ==================================================================
+    public function exportCsvAction()
+    {
+        $model = $this->getModel();
+        $schema = $model->getSchema();
+        $collection = $this->getCollection();
+        $exporter = new CSVExporter($schema);
+        $exporter->exportOutput($collection);
+    }
+
+    public function exportExcelAction()
+    {
+        $model = $this->getModel();
+        $schema = $model->getSchema();
+        $collection = $this->getCollection();
+        $exporter = new ExcelExporter($schema);
+        $exporter->exportOutput($collection);
+    }
+
+    // ==================================================================
+    // Actions for region display
     // ==================================================================
 
     public function dialogEditRegionAction()
@@ -1380,7 +1390,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function importSampleDownloadAction()
     {
         $schema = $this->getModel()->getSchema();
-        $importer = new \CRUD\Importer\ExcelImporter($this->getModel(), $this->importFields);
+        $importer = new ExcelImporter($schema, $this->importFields);
         $excel = $importer->createSampleExcel();
 
         $filename = "sample_{$this->crudId}.xlsx";
@@ -1432,7 +1442,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         } else if (preg_match('#.xls(x)?$#', $uploadedFile)) {
 
-            $importer = new \CRUD\Importer\ExcelImporter($this->getModel(), $this->importFields);
+            $importer = new ExcelImporter($schema, $this->importFields);
             $preview = $importer->preview($uploadedFile);
             $columnHeaders = $preview['headers'];
             $previewRows = $preview['rows'];
