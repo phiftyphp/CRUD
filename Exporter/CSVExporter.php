@@ -4,18 +4,8 @@ use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\BaseCollection;
 use LazyRecord\Exporter\CSVExporter as BaseCSVExporter;
 
-class CSVExporter
+class CSVExporter extends BaseExporter
 {
-    protected $schema;
-
-    protected $exportFields;
-
-    public function __construct($schema, array $exportFields = null)
-    {
-        $this->schema = $schema;
-        $this->exportFields = $exportFields;
-    }
-
     /**
      * Export collection to PHP output stream.
      *
