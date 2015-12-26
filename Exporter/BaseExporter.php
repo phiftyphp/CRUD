@@ -16,5 +16,5 @@ abstract class BaseExporter
         $this->exportFields = $exportFields;
     }
 
-    abstract public function exportOutput(BaseCollection $collection);
+    abstract public function exportOutput(BaseCollection $collection, $attachmentName = null);
 }

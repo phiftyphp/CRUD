@@ -11,9 +11,9 @@ class CSVExporter extends BaseExporter
      *
      * @param BaseCollection $collection
      */
-    public function exportOutput(BaseCollection $collection)
+    public function exportOutput(BaseCollection $collection, $attachmentName = null)
     {
-        $filename = $this->schema->getTable() . "-" . time() . ".csv";
+        $filename = $attachmentName ?: $this->schema->getTable() . "-" . time() . ".csv";
 
         // use "text/csv" according to RFC 4180.
         header("Content-Type: text/csv; charset=UTF-8");

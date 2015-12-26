@@ -9,12 +9,15 @@ use PHPExcel_Cell;
 
 class ExcelExporter extends BaseExporter
 {
+
+    protected $excelFormat = 'Excel2007';
+
     /**
      * Export collection to PHP output stream.
      *
      * @param BaseCollection $collection
      */
-    public function exportOutput(BaseCollection $collection)
+    public function exportOutput(BaseCollection $collection, $attachmentName = null)
     {
         $excel = new PHPExcel();
         $sheet = $excel->setActiveSheetIndex(0);
@@ -47,8 +50,7 @@ class ExcelExporter extends BaseExporter
             $row++;
         }
 
-
-        $filename = "file.xlsx";
+        $filename = $attachmentName ?: $this->schema->getTable() . "-" . time() . ".xlsx";
         // Redirect output to a client’s web browser (Excel2007)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="'.$filename.'"');
@@ -60,7 +62,7 @@ class ExcelExporter extends BaseExporter
         header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
         header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
         header ('Pragma: public'); // HTTP/1.0
-        $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        $writer = PHPExcel_IOFactory::createWriter($excel, $this->excelFormat);
         $writer->save('php://output');
     }
 
