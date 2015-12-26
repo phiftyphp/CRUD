@@ -5,7 +5,6 @@ use LazyRecord\BaseCollection;
 
 abstract class BaseExporter
 {
-
     protected $schema;
 
     protected $exportFields;
@@ -15,6 +14,7 @@ abstract class BaseExporter
         $this->schema = $schema;
         $this->exportFields = $exportFields;
     }
+
 
     abstract public function exportOutput(BaseCollection $collection, $attachmentName = null);
 }

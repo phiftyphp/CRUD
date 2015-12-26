@@ -12,6 +12,13 @@ class ExcelExporter extends BaseExporter
 
     protected $excelFormat = 'Excel2007';
 
+    protected $fileExtension = 'xlsx';
+
+    protected function defaultFilename()
+    {
+        return $this->schema->getTable() . "-" . time() . "." . $this->fileExtension;
+    }
+
     /**
      * Export collection to PHP output stream.
      *
@@ -50,7 +57,7 @@ class ExcelExporter extends BaseExporter
             $row++;
         }
 
-        $filename = $attachmentName ?: $this->schema->getTable() . "-" . time() . ".xlsx";
+        $filename = $attachmentName ?: $this->defaultFilename();
         // Redirect output to a client’s web browser (Excel2007)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="'.$filename.'"');
