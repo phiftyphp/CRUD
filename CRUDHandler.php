@@ -362,6 +362,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
             $this->canDelete =  $currentUser->isAdmin() || $this->kernel->accessControl->can('delete', $this->resourceId);
 
+            $this->canExport =  $currentUser->isAdmin() || $this->kernel->accessControl->can('export', $this->resourceId);
+
+            $this->canImport =  $currentUser->isAdmin() || $this->kernel->accessControl->can('import', $this->resourceId);
+
         } else if ($crudConfig = $this->bundle->config($rclass->getShortName())) {
 
             // Update CRUDHandler properties from config 
