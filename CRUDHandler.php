@@ -257,7 +257,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @var array The navigation stack definition
      */
     protected $navStack = [
-        ['label' => 'Dashboard', 'href' => '/bs'],
+        ['label' => '主頁', 'href' => '/bs'],
     ];
 
 
