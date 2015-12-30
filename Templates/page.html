@@ -1,7 +1,6 @@
 {% set AdminUI = Kernel.bundle('AdminUI') %}
 {% extends AdminUI.getBasePageTemplate() %}
-{% block admin_panel %}
-    {{ parent() }}
+{% block page_content %}
     {% if tiles %}
         {% for tile in tiles %}
             {{ tile | raw }}
