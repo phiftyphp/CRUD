@@ -359,7 +359,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         }
 
 
-        $this>initPermissions();
+        $this->initPermissions();
 
         /*
          * TODO:  Move this to before render CRUD page, keep init method simple
@@ -1547,5 +1547,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
             'indexRegion' => $indexRegion,
         ));
     }
+
 
 }
