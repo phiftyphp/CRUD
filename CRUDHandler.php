@@ -352,6 +352,35 @@ abstract class CRUDHandler extends BaseCRUDHandler
             });
         }
 
+
+        $this>initPermissions();
+
+        /*
+         * TODO:  Move this to before render CRUD page, keep init method simple
+
+        if ( $this->isI18NEnabled() ) {
+            $this->primaryFields[] = 'lang';
+        }
+        */
+        $this->initNavBar();
+    }
+
+
+    protected function initNavBar()
+    {
+        $this->navStack[] = [
+            'label' => $this->getListTitle(),
+            'href'  => $this->getRoutePrefix(),
+        ];
+
+    }
+
+
+    protected function initPermissions()
+    {
+        $rclass = new ReflectionClass($this);
+        $ns = $rclass->getNamespaceName();
+
         if ($this->resourceId) {
 
             $currentUser = $this->kernel->currentUser;
@@ -378,21 +407,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
             }
 
         }
-
-
-        /*
-         * TODO:  Move this to before render CRUD page, keep init method simple
-
-        if ( $this->isI18NEnabled() ) {
-            $this->primaryFields[] = 'lang';
-        }
-        */
-        $this->navStack[] = [
-            'label' => $this->getListTitle(),
-            'href'  => $this->getRoutePrefix(),
-        ];
     }
-
 
     // Toolbar related methods (used in indexAction)
 
