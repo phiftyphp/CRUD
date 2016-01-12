@@ -383,8 +383,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     protected function initPermissions()
     {
-        $rclass = new ReflectionClass($this);
-
         if ($this->resourceId) {
 
             $currentUser = $this->kernel->currentUser;
