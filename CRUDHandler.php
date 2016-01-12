@@ -60,6 +60,12 @@ use FormKit\Widget\SelectInput;
 abstract class CRUDHandler extends BaseCRUDHandler
 {
     /**
+     * @var ReflectionClass the reflection class of the CRUDHandler.
+     */
+    private $reflect;
+
+
+    /**
      * @var string The react application name
      *
      * This is unused for now.
@@ -324,8 +330,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $this->actionViewOptions['submit_btn'] = true;
         $this->actionViewOptions['_form_controls'] = true;
 
-        $rclass = new ReflectionClass($this);
-        $ns = $rclass->getNamespaceName();
+        $this->reflect = new ReflectionClass($this);
+        $ns = $this->reflect->getNamespaceName();
 
         // XXX: currently we use FooBundle\FooBundle as the main bundle class.
         $bundleClass = "$ns\\$ns";
@@ -375,11 +381,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     }
 
-
     protected function initPermissions()
     {
         $rclass = new ReflectionClass($this);
-        $ns = $rclass->getNamespaceName();
 
         if ($this->resourceId) {
 
@@ -395,10 +399,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
             $this->canImport =  $currentUser->isAdmin() || $this->kernel->accessControl->can('import', $this->resourceId);
 
-        } else if ($crudConfig = $this->bundle->config($rclass->getShortName())) {
+        } else if ($crudConfig = $this->bundle->config($this->reflect->getShortName())) {
 
             // Update CRUDHandler properties from config 
-            $properties = [ 'canCreate', 'canUpdate', 'canDelete' ];
+            $properties = ['canCreate', 'canUpdate', 'canDelete', 'canExport', 'canImport'];
             foreach( $properties as $key ) {
                 $val = $crudConfig->lookup($key);
                 if ( $val !== null ) {
