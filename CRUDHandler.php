@@ -1233,7 +1233,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $model = $this->getModel();
         $schema = $model->getSchema();
         $collection = $this->getCollection();
-        $exporter = new CSVExporter($schema);
+        // $exporter = new CSVExporter($schema);
+        $exporter = new ExcelExporter($schema);
+        $exporter->setFormat('CSV');
         $exporter->exportOutput($collection);
     }
 

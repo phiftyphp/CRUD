@@ -10,7 +10,6 @@ use Exception;
 
 class ExcelExporter extends BaseExporter
 {
-
     protected $excelFormat = 'Excel2007';
 
     protected $fileExtension = 'xlsx';
@@ -20,6 +19,16 @@ class ExcelExporter extends BaseExporter
         'Excel5' => 'xls',
         'Excel2003XML' => 'xml',
         'CSV' => 'csv',
+    ];
+
+    static public $formatContentHeaders = [
+        'Excel2007'    => 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Excel5'       => 'Content-Type: application/vnd.ms-excel',
+        'Excel2003XML' => 'Content-Type: text/xml',
+        'PDF'          => 'Content-Type: application/pdf',
+        'ODS'          => 'Content-Type: application/vnd.oasis.opendocument.spreadsheet',
+        'CSV'          => ['Content-Type: application/octet-stream', 'Content-Transfer-Encoding: binary'],
+        // 'CSV'          => ['Content-Type: text/csv; charset=UTF-16LE'],
     ];
 
     protected function defaultFilename()
@@ -92,8 +101,19 @@ class ExcelExporter extends BaseExporter
         }
 
         $filename = $attachmentName ?: $this->defaultFilename();
-        // Redirect output to a client’s web browser (Excel2007)
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // Redirect output to a client’s web browser
+
+        if (isset(self::$formatContentHeaders[$this->excelFormat])) {
+            $headers = (array) self::$formatContentHeaders[$this->excelFormat];
+            foreach ($headers as $header) {
+                header($header);
+            }
+        } else {
+            header("Content-Type: application/octet-stream");
+        }
+
+
+
         header('Content-Disposition: attachment;filename="'.$filename.'"');
         header('Cache-Control: max-age=0');
         // If you're serving to IE 9, then the following may be needed
@@ -104,7 +124,19 @@ class ExcelExporter extends BaseExporter
         header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
         header ('Pragma: public'); // HTTP/1.0
         $writer = PHPExcel_IOFactory::createWriter($excel, $this->excelFormat);
-        $writer->save('php://output');
+
+        if ($this->excelFormat == 'CSV') {
+            ob_start();
+            // $writer->setExcelCompatibility(true);
+            $writer->save('php://output');
+            $content = ob_get_contents();
+            ob_clean();
+            echo chr(255).chr(254);
+            // echo iconv("UTF-8", "UTF-16LE//IGNORE", $content);
+            echo mb_convert_encoding($content,"UTF-16LE","UTF-8");
+        } else {
+            $writer->save('php://output');
+        }
     }
 
 }
