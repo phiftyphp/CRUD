@@ -6,6 +6,7 @@ use LazyRecord\Exporter\CSVExporter as BaseCSVExporter;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Cell;
+use Exception;
 
 class ExcelExporter extends BaseExporter
 {
@@ -14,9 +15,42 @@ class ExcelExporter extends BaseExporter
 
     protected $fileExtension = 'xlsx';
 
+    static public $supportedFormats = [
+        'Excel2007' => 'xlsx',
+        'Excel5' => 'xls',
+        'Excel2003XML' => 'xml',
+        'CSV' => 'csv',
+    ];
+
     protected function defaultFilename()
     {
         return $this->schema->getTable() . "-" . time() . "." . $this->fileExtension;
+    }
+
+    public function getSupportedFormatNames()
+    {
+        return array_keys(self::$supportedFormats);
+    }
+
+    public function getSupportedFormats()
+    {
+        return self::$supportedFormats;
+    }
+
+    public function isSupportedFormat($format)
+    {
+        return isset(self::$supportedFormats[$format]);
+    }
+
+
+    public function setFormat($format)
+    {
+        if ($this->isSupportedFormat($format)) {
+            $this->excelFormat = $format;
+            $this->fileExtension = self::$supportedFormats[$format];
+        } else {
+            throw new Exception("Unsupported format $format");
+        }
     }
 
     /**
