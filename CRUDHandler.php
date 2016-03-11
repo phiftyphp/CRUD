@@ -265,8 +265,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     protected $navStack = [
         ['label' => '主頁', 'href' => '/bs'],
     ];
-
-
+	
     /**
      * @var array An array that defines import field names.
      */

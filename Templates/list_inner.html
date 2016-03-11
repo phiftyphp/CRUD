@@ -107,11 +107,12 @@ $(function() {
                     {# record operation column #}
                     <td class="controls" data-record-id="{{item.id}}">
 
+                        {% block item_controls %}
+
                         <div class="btn-group pull-right">
                         {% block extra_buttons %}
 
                         {% endblock %}
-
                         {% if CRUD.Object.canUpdate %}
                             <input type="button" 
                                 value="{% trans "編輯" %}"
@@ -137,6 +138,7 @@ $(function() {
                                 onclick=" window.open('{{ CRUD.Object.getEditRegionPath() }}?id={{ item.id }}&in_window=1','Edit {{item.id}}','width=700,height=600'); return false;"/>
                         {% endif %}
                         </div>
+                        {% endblock %}
 
                     </td>
                 </tr>
