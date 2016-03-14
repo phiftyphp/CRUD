@@ -8,6 +8,7 @@ class CRUD extends Bundle
     {
         return array(
             'phifty-crud',
+            'crudapp',
             'tchooser'
         );
     }
