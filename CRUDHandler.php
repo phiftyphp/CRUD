@@ -70,7 +70,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      *
      * This is unused for now.
      */
-    public $reactApp;
+    protected $reactListApp;
 
     protected $uploadActionClass = 'CRUD\\Action\\UploadExcelFile';
 
@@ -1305,9 +1305,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
         ]);
 
         // If reactApp (CRUDListApp) is defined, render a template to initialize the React App
-        if ($this->reactApp) {
+        if ($this->reactListApp) {
             return $this->render($this->findTemplatePath('react/list.html'), [
-                'ReactAppName'   => $this->reactApp,
+                'ReactAppName'   => $this->reactListApp,
                 'ReactAppConfig' => $this->buildReactAppConfig(),
             ]);
         }
