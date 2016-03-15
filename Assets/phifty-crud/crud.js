@@ -7,11 +7,11 @@ vim:sw=2:ts=2:sts=2:
 (function() {
   var CRUD;
 
-  if (window.Phifty === "undefined") {
+  if (typeof window.Phifty === "undefined") {
     window.Phifty = {};
   }
 
-  if (window.CRUD === "undefined") {
+  if (typeof window.CRUD === "undefined") {
     window.CRUD = {};
   }
 

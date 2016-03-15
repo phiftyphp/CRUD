@@ -1,8 +1,8 @@
 ###
 vim:sw=2:ts=2:sts=2:
 ###
-window.Phifty = {} if window.Phifty is "undefined"
-window.CRUD = {} if window.CRUD is "undefined"
+window.Phifty = {} if typeof window.Phifty is "undefined"
+window.CRUD = {} if typeof window.CRUD is "undefined"
 
 CRUD = Phifty.CRUD =
   closeEditRegion: (el) ->

@@ -5,8 +5,7 @@ CRUD initialization process
 Should be loaded at the beginning when the page is loaded.
 
 ###
-
-window.CRUD = {}
+window.CRUD = {} if typeof window.CRUD is "undefined"
 CRUD.init = ->
   # TODO: use reactjs to render the widgets
 

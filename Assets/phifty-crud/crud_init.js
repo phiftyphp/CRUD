@@ -8,7 +8,9 @@ Should be loaded at the beginning when the page is loaded.
  */
 
 (function() {
-  window.CRUD = {};
+  if (typeof window.CRUD === "undefined") {
+    window.CRUD = {};
+  }
 
   CRUD.init = function() {
 
