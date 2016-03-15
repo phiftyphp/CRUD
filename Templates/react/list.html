@@ -1,10 +1,10 @@
 {% block body %}
-{% set elementId = uniqid(ReactAppName) %}
-<div id="{{elementId}}" class="react-app"> </div>
+<div id="{{ReactElementId}}" class="react-app"> </div>
 <script>
 jQuery(function() {
-    var app = React.createElement({{ReactAppName}}, {{ReactAppConfig|json_encode|raw}});
-    React.render(app, document.getElementById('{{elementId}}'));
+  React.render(
+      React.createElement({{ReactAppName}}, {{ReactAppConfig|json_encode|raw}}),
+      document.getElementById('{{ReactElementId}}'));
 });
 </script>
 {% endblock %}

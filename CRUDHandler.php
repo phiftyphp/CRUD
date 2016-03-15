@@ -1307,6 +1307,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         // If reactApp (CRUDListApp) is defined, render a template to initialize the React App
         if ($this->reactListApp) {
             return $this->render($this->findTemplatePath('react/list.html'), [
+                'ReactElementId' => uniqid($this->reactListApp),
                 'ReactAppName'   => $this->reactListApp,
                 'ReactAppConfig' => $this->buildReactAppConfig(),
             ]);
