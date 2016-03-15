@@ -964,7 +964,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param array $args template arguments.
      * @param array $engineOptions engine options.
      */
-    public function render($template , array $args = array(), array $engineOptions = array() )
+    protected function render($template , array $args = array(), array $engineOptions = array() )
     {
         // merge variables
         $args = array_merge($this->vars , $args);
@@ -1005,68 +1005,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     }
 
 
-    /**
-     * Render list region template.
-     *
-     * @param array $args template arguments
-     * @return string template content.
-     */
-    public function renderList( $args = array() )
-    {
-        return $this->render( $this->findTemplatePath('list.html') , $args);
-    }
 
-
-
-
-
-    public function renderEditModal($args = array())
-    {
-        return $this->render($this->findTemplatePath('modal.html') , $args);
-    }
-
-
-    /**
-     * Render dialog region tempilate.
-     */
-    public function renderEditDialog( $args = array() )
-    {
-        return $this->render($this->findTemplatePath('dialog.html') , $args);
-    }
-
-    /**
-     * Render edit region template.
-     *
-     * @param array $args template arguments.
-     * @return string template content.
-     */
-    public function renderEdit($args = array())
-    {
-        return $this->render($this->findTemplatePath('edit.html') , $args);
-    }
-
-
-    /**
-     * Render record in read-only view page
-     *
-     * @param array $args
-     * @return string template content.
-     */
-    public function renderView($args = array())
-    {
-        return $this->render($this->findTemplatePath('view.html'), $args);
-    }
-
-
-    /**
-     * Render general item region for ajax UI update.
-     *
-     * @param array $args template arguments
-     */
-    public function renderItem( $args = array() )
-    {
-        return $this->render( $this->findTemplatePath('item.html') , $args);
-    }
 
 
     /**
@@ -1081,15 +1020,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
     {
         return $this->render( $this->findTemplatePath('page.html') , $args);
     }
-
-
-    public function renderCrudIndex( $args = array() )
-    {
-        return $this->render( $this->findTemplatePath('index.html') , $args);
-    }
-
-
-
 
 
 
@@ -1254,13 +1184,13 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function dialogEditRegionAction()
     {
         $this->editRegionActionPrepare();
-        return $this->renderEditDialog();
+        return $this->render($this->findTemplatePath('dialog.html'), []);
     }
 
     public function modalEditRegionAction()
     {
         $this->editRegionActionPrepare();
-        return $this->renderEditModal();
+        return $this->render($this->findTemplatePath('modal.html'), []);
     }
 
     public function editRegionActionPrepare()
@@ -1285,7 +1215,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function editRegionAction()
     {
         $this->editRegionActionPrepare();
-        return $this->renderEdit();
+        return $this->render($this->findTemplatePath('edit.html') , []);
     }
 
     public function viewRegionActionPrepare()
@@ -1303,7 +1233,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function viewRegionAction()
     {
         $this->viewRegionActionPrepare();
-        return $this->renderView();
+        return $this->render($this->findTemplatePath('view.html'), $args);
     }
 
 
@@ -1327,7 +1257,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
             throw new Exception('Creating new record requires permission.');
         }
         $this->createRegionActionPrepare();
-        return $this->renderEdit();
+        return $this->render($this->findTemplatePath('edit.html') , []);
     }
 
 
@@ -1337,7 +1267,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
             throw new Exception('Creating new record requires permission.');
         }
         $this->editRegionActionPrepare();
-        return $this->renderItem();
+        return $this->render( $this->findTemplatePath('item.html') , $args);
     }
 
 
@@ -1346,13 +1276,12 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $tiles = array();
         // the old way: this renders the content in the same request.
         // $tiles[] = $this->editRegionAction();
-
         // here we clone the request for the region.
         $tiles[] = $listRegion = $this->createListRegion($_REQUEST);
-        return $this->renderCrudIndex( array( 
-            'tiles' => $tiles,
+        return $this->render( $this->findTemplatePath('index.html'), [
+            'tiles'      => $tiles,
             'listRegion' => $listRegion,
-        ));
+        ]);
     }
 
     /**
@@ -1372,8 +1301,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
             // so here is the number of total items
             'NumberOfTotalItems' => $collection->queryCount(),
         ]);
-
-        return $this->renderList([]);
+        return $this->render($this->findTemplatePath('list.html'), []);
     }
 
     /**
