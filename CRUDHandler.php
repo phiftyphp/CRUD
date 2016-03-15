@@ -1016,9 +1016,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param array $args template arguments.
      * @return string template content
      */
-    public function renderPageWrapper( $args = array() )
+    protected function renderPageWrapper( $args = array() )
     {
-        return $this->render( $this->findTemplatePath('page.html') , $args);
+        return $this->render($this->findTemplatePath('page.html') , $args);
     }
 
 
@@ -1429,7 +1429,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $tiles[] = $createRegion = Region::create( $this->getCreateRegionPath(), array_merge($_REQUEST, [ 
             '_form_controls' => true,
         ]));
-        return $this->renderPageWrapper([
+        return $this->render($this->findTemplatePath('page.html') , [
             'tiles' => $tiles,
             'createRegion' => $createRegion,
         ]);
@@ -1447,7 +1447,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $tiles[] = Region::create($this->getEditRegionPath(), array_merge($_REQUEST, [
             '_form_controls' => true,
         ]));
-        return $this->renderPageWrapper(array( 'tiles' => $tiles ));
+        return $this->render($this->findTemplatePath('page.html') , array( 'tiles' => $tiles ));
     }
 
     /**
@@ -1461,7 +1461,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $tiles[] = Region::create($this->getViewRegionPath(), array_merge($_REQUEST, [
             '_form_controls' => true,
         ]));
-        return $this->renderPageWrapper(array( 'tiles' => $tiles ));
+        return $this->render($this->findTemplatePath('page.html'), ['tiles' => $tiles ]);
     }
 
 
@@ -1471,10 +1471,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
     {
         $tiles   = array();
         $tiles[] = $indexRegion = $this->createIndexRegion();
-        return $this->renderPageWrapper(array( 
+        return $this->render($this->findTemplatePath('page.html'), [
             'tiles' => $tiles,
             'indexRegion' => $indexRegion,
-        ));
+        ]);
     }
 
 
