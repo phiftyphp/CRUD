@@ -1,9 +1,13 @@
 ###
-#
-# Initialize CRUD front-end component intiailziation
-#
+
+CRUD initialization process
+
+Should be loaded at the beginning when the page is loaded.
+
 ###
-$ ->
+
+window.CRUD = {}
+CRUD.init = ->
   # TODO: use reactjs to render the widgets
 
   ### 
@@ -22,7 +26,6 @@ $ ->
     # config.modal may contain the options to open a modal
     CRUDModal.openFromBtn $(this), config?.modal
     return false
-
 
   # initialize column sort buttons
   $(document).on "click", ".column-sort", (e) ->

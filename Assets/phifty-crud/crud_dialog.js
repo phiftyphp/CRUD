@@ -10,7 +10,7 @@
       $.get(path, args, function(html) {
         var $el, dialogOptions;
         $el = $(html);
-        Phifty.CRUD.initEditRegion($el, {
+        CRUD.initEditRegion($el, {
           setupAction: function(a) {
             return a.plug(ActionMsgbox, {
               disableScroll: true,

@@ -5,7 +5,7 @@ class CRUDDialog
 
     $.get path, args, (html) ->
       $el = $(html)
-      Phifty.CRUD.initEditRegion($el,{
+      CRUD.initEditRegion($el,{
         setupAction: (a) ->
           a.plug ActionMsgbox,
           disableScroll: true

@@ -1,11 +1,10 @@
 ###
 vim:sw=2:ts=2:sts=2:
 ###
+window.Phifty = {} if window.Phifty is "undefined"
+window.CRUD = {} if window.CRUD is "undefined"
 
-
-window.Phifty = {} unless window.Phifty
-
-Phifty.CRUD =
+CRUD = Phifty.CRUD =
   closeEditRegion: (el) ->
     r = Region.of(el)
     if $.scrollTo
@@ -37,5 +36,3 @@ Phifty.CRUD =
     $el.find('.ajax-action').each (i,f) ->
       a = Action.form(f, actionOptions)
       opts.setupAction(a) if opts.setupAction
-
-

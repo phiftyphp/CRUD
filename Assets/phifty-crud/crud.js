@@ -5,11 +5,17 @@ vim:sw=2:ts=2:sts=2:
  */
 
 (function() {
-  if (!window.Phifty) {
+  var CRUD;
+
+  if (window.Phifty === "undefined") {
     window.Phifty = {};
   }
 
-  Phifty.CRUD = {
+  if (window.CRUD === "undefined") {
+    window.CRUD = {};
+  }
+
+  CRUD = Phifty.CRUD = {
     closeEditRegion: function(el) {
       var r;
       r = Region.of(el);
