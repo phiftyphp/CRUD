@@ -28,11 +28,7 @@
         "corneltek/emailbundle": "dev-master",
         "corneltek/adminui": "dev-master"
     },
-    "autoload": {
-        "psr-4": {
-            "CRUD\\": ""
-        }
-    },
+    "autoload": { "psr-4": { "CRUD\\": "" } },
     "extra": { "branch-alias": { "dev-master": "3.1.x-dev" } },
     "repositories": [
         {"type": "composer", "url": "https://toran.corneltek.com/repo/private/"}
