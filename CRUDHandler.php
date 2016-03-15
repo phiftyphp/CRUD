@@ -964,7 +964,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param array $args template arguments.
      * @param array $engineOptions engine options.
      */
-    protected function render($template , array $args = array(), array $engineOptions = array() )
+    public function render($template , array $args = array(), array $engineOptions = array() )
     {
         // merge variables
         $args = array_merge($this->vars , $args);
