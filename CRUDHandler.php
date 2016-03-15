@@ -1286,6 +1286,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
     /**
      * Render list panel.
+     *
+     * The list panel operates the list_inner region with some filter controls.
      */
     public function listRegionAction()
     {
@@ -1301,8 +1303,60 @@ abstract class CRUDHandler extends BaseCRUDHandler
             // so here is the number of total items
             'NumberOfTotalItems' => $collection->queryCount(),
         ]);
+
+        // If reactApp (CRUDListApp) is defined, render a template to initialize the React App
+        if ($this->reactApp) {
+            return $this->render($this->findTemplatePath('react/list.html'), [
+                'ReactAppName'   => $this->reactApp,
+                'ReactAppConfig' => $this->buildReactAppConfig(),
+            ]);
+        }
         return $this->render($this->findTemplatePath('list.html'), []);
     }
+
+    protected function buildReactAppConfig()
+    {
+        return [
+            "crudId"           => $this->crudId,
+            "basepath"         => $this->getRoutePrefix(),
+            "namespace"        => $this->namespace,
+            "model"            => $this->modelName,
+            "modelLabel"       => $this->getRecordLabel(),
+            "csrfToken"        => $this->getCSRFToken(),
+            "permissions"      => $this->getPermissionConfig(),
+            "disableSelection" => true,
+            "controls"         => $this->buildReactAppControlsConfig(),
+        ];
+    }
+
+    /**
+     * buildReactAppControlsConfig builds the control definitions 
+     * for the react app.
+     */
+    protected function buildReactAppControlsConfig()
+    {
+        $controls = [];
+        if ($this->canCreate) {
+            $controls[] = [
+                "label" => $this->getCreateButtonLabel(),
+                "feature" => "create"
+            ];
+        }
+        if ($this->canImport) {
+            $controls[] = [
+                "label" => "Import",
+                "feature" => "import"
+            ];
+        }
+        if ($this->canExport) {
+            $controls[] = [
+                "label" => "Export",
+                "feature" => "export",
+            ];
+        }
+        return $controls;
+    }
+
 
     /**
      * Prepare default/build-in template variable for list region.
