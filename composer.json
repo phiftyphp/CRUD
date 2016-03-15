@@ -1,12 +1,14 @@
 {
     "name": "corneltek/crud",
+    "type": "phifty-bundle",
+    "description": "CRUD bundle for phifty framework application",
+    "license": "proprietary",
     "authors": [
         {
             "name": "c9s",
             "email": "yoanlin93@gmail.com"
         }
     ],
-    "type": "phifty-bundle",
     "require": {
         "corneltek/installers": "dev-master"
     },
@@ -31,7 +33,8 @@
             "CRUD\\": ""
         }
     },
+    "extra": { "branch-alias": { "dev-master": "3.1.x-dev" } },
     "repositories": [
-        {"type": "composer", "url": "http://toran.corneltek.com/repo/private/"}
+        {"type": "composer", "url": "https://toran.corneltek.com/repo/private/"}
     ]
 }
