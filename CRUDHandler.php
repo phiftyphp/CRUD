@@ -286,7 +286,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $class = get_class($this);
         $mux->add(''             , [$class,'indexAction'], $options);
 
-        $mux->add('/summary.json' , [$class , 'summaryJsonAction'] , $options);
+        $mux->add('/summary' , [$class , 'summaryAction'], $options);
         $mux->add('/export/csv'   , [$class , 'exportCsvAction']   , $options);
         $mux->add('/export/excel' , [$class , 'exportExcelAction'] , $options);
 
@@ -1143,7 +1143,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     // Actions for APIs
     // ==================================================================
 
-    public function summaryJsonAction()
+    public function summaryAction()
     {
         // handle unfiltered collection
         $collection = $this->getCollection();

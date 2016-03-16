@@ -38,7 +38,7 @@ export default class CRUDListActionCreators {
 
   updateSummary(baseUrl, args) {
     var that = this;
-    $.getJSON(baseUrl + "/summary.json", args, function(summary) {
+    $.getJSON(baseUrl + "/summary", args, function(summary) {
       that.dispatcher.dispatch({ 
         "type": ActionTypes.SUMMARY_UPDATE,
         "summary": summary
