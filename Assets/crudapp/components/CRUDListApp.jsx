@@ -1,6 +1,5 @@
 "use strict";
 
-import OrgFilterControl from './OrgFilterControl';
 import CRUDListKeywordFilterControl from './CRUDListKeywordFilterControl';
 import CRUDListSelectionSection from './CRUDListSelectionSection';
 import CRUDListRegion from './CRUDListRegion';
