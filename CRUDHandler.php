@@ -146,7 +146,10 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public $debug = false;
 
 
-
+    /**
+     * @var array Fields that are allowed for searching.
+     */
+    public $searchQueryFields = [];
 
     /**
      * @var array model fields for quicksearch
@@ -287,6 +290,8 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $mux->add(''             , [$class,'indexAction'], $options);
 
         $mux->add('/summary' , [$class , 'summaryAction'], $options);
+        $mux->add('/search', [$class, 'searchAction'], $options);
+
         $mux->add('/export/csv'   , [$class , 'exportCsvAction']   , $options);
         $mux->add('/export/excel' , [$class , 'exportExcelAction'] , $options);
 
@@ -864,7 +869,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
             the table correctly.
         $joined = array();
         foreach ($model->getSchema()->getColumns() as $column ) {
-            if ( $ref = $column->refer) {
+            if ($ref = $column->refer) {
                 if ( isset($joined[$ref]) )
                     continue;
                 $joined[ $ref ] = true;
@@ -1151,6 +1156,23 @@ abstract class CRUDHandler extends BaseCRUDHandler
             'numberOfTotalItems' => $collection->queryCount(),
         ]);
     }
+
+    public function searchAction()
+    {
+        $model = $this->getModel();
+        $schema = $model->getSchema();
+        $collection = $this->getCollection();
+        $request = $this->getRequest();
+        foreach ($this->searchQueryFields as $field) {
+            if ($queryParam = $request->param($field)) {
+                $collection->where()
+                    ->equal($field, $queryParam)
+                    ;
+            }
+        }
+        return $this->toJson($collection->toArray());
+    }
+
 
 
 
