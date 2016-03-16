@@ -111,7 +111,7 @@ Which generates the input name with
       config = this.config;
       data = this.data;
       label = this.uiSettings.label || this.data[this.uiSettings.labelBy] || "Untitled";
-      $cover = AdminUI.createTag({
+      $cover = CRUD.createTag({
         label: label,
         onRemove: function(e) {
           if (config.deleteAction && data.id) {
@@ -184,7 +184,7 @@ Which generates the input name with
       var $cover, config, data, ref;
       config = this.config;
       data = this.data;
-      $cover = AdminUI.createTextTag(data, {
+      $cover = CRUD.createTextTag(data, {
         onClose: function(e) {
           if (config.deleteAction && data.id) {
             return runAction(config.deleteAction, {
@@ -219,7 +219,7 @@ Which generates the input name with
       var $close, $cover, $keyField, config, data;
       config = this.config;
       data = this.data;
-      $cover = AdminUI.createFileCover(data);
+      $cover = CRUD.createFileCover(data);
       $close = $('<div/>').addClass('close').click(function() {
         if (config.deleteAction && data.id) {
           return runAction(config.deleteAction, {
@@ -255,7 +255,7 @@ Which generates the input name with
       var $cover, $keyField, config, data;
       config = this.config;
       data = this.data;
-      $cover = AdminUI.createResourceCover(data, {
+      $cover = CRUD.createResourceCover(data, {
         onClose: function(e) {
           return runAction(config.deleteAction, {
             id: data[config.primaryKey]
@@ -287,7 +287,7 @@ Which generates the input name with
       var $cover, $keyField, config, self;
       self = this;
       config = this.config;
-      $cover = AdminUI.createImageCover({
+      $cover = CRUD.createImageCover({
         thumb: this.data.thumb,
         image: this.data.image,
         title: this.data.title,

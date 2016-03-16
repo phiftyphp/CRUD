@@ -80,7 +80,7 @@ class CRUDList.NewTextItemView extends CRUDList.NewBaseItemView
     config = @config
     data = @data
     label = @uiSettings.label or @data[ @uiSettings.labelBy ] or "Untitled"
-    $cover = AdminUI.createTag
+    $cover = CRUD.createTag
       label: label
       onRemove: (e) ->
         if config.deleteAction and data.id
@@ -123,7 +123,7 @@ class CRUDList.TextItemView extends CRUDList.BaseItemView
   render: ->
     config = @config
     data = @data
-    $cover = AdminUI.createTextTag data,
+    $cover = CRUD.createTextTag data,
       onClose: (e) ->
         if config.deleteAction and data.id
           runAction config.deleteAction,
@@ -139,7 +139,7 @@ class CRUDList.FileItemView extends CRUDList.BaseItemView
   render: ->
     config = @config
     data = @data
-    $cover = AdminUI.createFileCover(data)
+    $cover = CRUD.createFileCover(data)
     $close = $('<div/>').addClass('close').click ->
         if config.deleteAction and data.id
           runAction config.deleteAction,
@@ -156,7 +156,7 @@ class CRUDList.ResourceItemView extends CRUDList.BaseItemView
   render: ->
     config = @config
     data = @data
-    $cover = AdminUI.createResourceCover data,
+    $cover = CRUD.createResourceCover data,
       onClose: (e) ->
         runAction config.deleteAction,
           { id: data[config.primaryKey] },
@@ -169,7 +169,7 @@ class CRUDList.ImageItemView extends CRUDList.BaseItemView
   render: ->
     self = this
     config = @config
-    $cover = AdminUI.createImageCover
+    $cover = CRUD.createImageCover
       thumb: @data.thumb
       image: @data.image
       title: @data.title
