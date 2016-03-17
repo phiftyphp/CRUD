@@ -10,5 +10,6 @@ collections:
     - quick_crud.js
     - aut.js
     - crud_init.js
+    watch: 'coffee -wc *.coffee'
   - css:
     - crud.css
