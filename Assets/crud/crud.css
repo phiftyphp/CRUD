@@ -8,3 +8,46 @@ ul.chooser li {
     padding: 3px 5px;
     border: 1px solid #ccc;
 }
+
+.crud-relation-app {
+
+}
+
+.crud-relation-item {
+  position: relative;
+}
+
+.crud-relation-item {
+  box-shadow: 1px 1px 5px rgba(120,120,120,0.2);
+}
+
+.crud-relation-item.block {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.crud-relation-item.float {
+  float: left;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.crud-relation-item .remove-btn {
+  background: rgba(200, 200, 200, 0.2);
+  color: #fff;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding: 3px 6px;
+  text-align: center;
+}
+
+.crud-relation-item:hover .remove-btn {
+  background: rgba(200, 200, 200, 0.5);
+}
+
+.crud-relation-item .remove-btn .fa {
+  margin:0;
+  text-align: center;
+  vertical-align: middle;
+}
