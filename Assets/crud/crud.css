@@ -51,3 +51,11 @@ ul.chooser li {
   text-align: center;
   vertical-align: middle;
 }
+
+.crud-rel-item-add {
+  cursor: pointer;
+}
+
+.crud-rel-item-add:hover {
+  background: rgba(124, 188, 59, 0.5);
+}
