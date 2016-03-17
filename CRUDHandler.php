@@ -129,6 +129,14 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public $predefined = array();
 
 
+    /**
+     * @var string[] fields that are allowed to be predefined from request
+     * parameters
+     */
+    protected $applyRequestFields;
+
+
+
 
     /**
      * @var bool use the default template defined in CRUD bundle, so you don't
@@ -149,7 +157,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     /**
      * @var array Fields that are allowed for searching.
      */
-    public $searchQueryFields = [];
+    protected $searchQueryFields = [];
 
     /**
      * @var array model fields for quicksearch
@@ -212,7 +220,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
     /**
-     * @var array template variables.
+     * @var array template variables, used to render template
      */
     public $vars = array();
 
@@ -923,26 +931,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
         }
     }
 
-    /**
-     * Load record from the primary key (id) of current http request.
-     *
-     * @return mixed Record object.
-     */
-    public function loadRecord($id = NULL)
-    {
-        if ($this->currentRecord) {
-            return $this->currentRecord;
-        }
-
-        $record = $this->getModel();
-        if (!$id) {
-            $id = intval($this->request->param('id'));
-        }
-        if ($id) {
-            $record->load(intval($id));
-        }
-        return $record;
-    }
 
 
     /**
@@ -1040,17 +1028,47 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $this->predefined;
     }
 
+
+    /**
+     * Return the current record
+     *
+     * @return LazyRecord\BaseModel
+     */
     public function getCurrentRecord()
     {
-        if( $this->currentRecord )
+        if ($this->currentRecord) {
             return $this->currentRecord;
+        }
         return $this->currentRecord = $this->loadRecord();
+    }
+
+    /**
+     * Load record from the primary key (id) of current http request.
+     *
+     * The record object might be new record object (without loaded data)
+     *
+     * @return LazyRecord\BaseModel The record object.
+     */
+    public function loadRecord($id = NULL)
+    {
+        if ($this->currentRecord) {
+            return $this->currentRecord;
+        }
+
+        $record = $this->getModel();
+        if (!$id) {
+            $id = intval($this->request->param('id'));
+        }
+        if ($id) {
+            $record->load(intval($id));
+        }
+        return $record;
     }
 
     /**
      * Create record action object from record
      *
-     * @return ActionKit\RecordAction
+     * @return ActionKit\RecordAction\BaseRecordAction
      */
     public function getRecordAction(BaseModel $record)
     {
@@ -1061,7 +1079,14 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $action;
     }
 
-    public function getCurrentAction()
+
+    /**
+     * getCurrentAction returns the action object of the current
+     * record.
+     *
+     * @return ActionKit\RecordAction\BaseRecordAction
+     */
+    protected function getCurrentAction()
     {
         if ($this->currentAction) {
             return $this->currentAction;
@@ -1157,6 +1182,11 @@ abstract class CRUDHandler extends BaseCRUDHandler
         ]);
     }
 
+
+    /**
+     * Provide the search functionality to return matched collection in JSON
+     * format response.
+     */
     public function searchAction()
     {
         $model = $this->getModel();
@@ -1218,16 +1248,27 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function editRegionActionPrepare()
     {
         $record = $this->getCurrentRecord();
+        $action = $this->getCurrentAction();
         $isCreate = $record->id ? false : true;
 
         // if the record is not loaded, we can use predefined values
-        if( $isCreate ) {
-            foreach( $this->getDefaultData() as $k => $v ) {
-                $record->{ $k } = $v;
+        if ($isCreate) {
+            foreach ($this->getDefaultData() as $k => $v) {
+                $record->set($k, $v);
             }
         }
+
+        // Apply predefined parameters from the query
+        $request = $this->getRequest();
+        if ($this->applyRequestFields) {
+            foreach ($this->applyRequestFields as $fieldName) {
+                $param = $request->param($fieldName);
+                $record->set($fieldName, $param);
+            }
+        }
+
         $this->assignCRUDVars(array(
-            'Action' => $this->getCurrentAction(),
+            'Action' => $action,
             'Record' => $record,
         ));
     }
@@ -1264,9 +1305,19 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $record = $this->getCurrentRecord();
 
         // set predefined data.
-        foreach( $this->getDefaultData() as $k => $v ) {
-            $record->{ $k } = $v;
+        foreach ($this->getDefaultData() as $k => $v) {
+            $record->set($k,$v);
         }
+
+        // Apply predefined parameters from the query
+        $request = $this->getRequest();
+        if ($this->applyRequestFields) {
+            foreach ($this->applyRequestFields as $fieldName) {
+                $param = $request->param($fieldName);
+                $record->set($fieldName, $param);
+            }
+        }
+
         $this->assignCRUDVars(array(
             'Action' => $this->getCurrentAction(),
             'Record' => $record,
