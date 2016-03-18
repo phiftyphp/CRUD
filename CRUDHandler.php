@@ -1248,7 +1248,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function editRegionActionPrepare()
     {
         $record = $this->getCurrentRecord();
-        $action = $this->getCurrentAction();
         $isCreate = $record->id ? false : true;
 
         // if the record is not loaded, we can use predefined values
@@ -1262,15 +1261,18 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $request = $this->getRequest();
         if ($this->applyRequestFields) {
             foreach ($this->applyRequestFields as $fieldName) {
-                $param = $request->param($fieldName);
-                $record->set($fieldName, $param);
+                if ($param = $request->param($fieldName)) {
+                    $record->set($fieldName, $param);
+                }
             }
         }
 
-        $this->assignCRUDVars(array(
+        // create action after the record data is set
+        $action = $this->getCurrentAction();
+        $this->assignCRUDVars([
             'Action' => $action,
             'Record' => $record,
-        ));
+        ]);
     }
 
     /* editRegionAction_{{ id }} template must be declare */
@@ -1313,15 +1315,18 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $request = $this->getRequest();
         if ($this->applyRequestFields) {
             foreach ($this->applyRequestFields as $fieldName) {
-                $param = $request->param($fieldName);
-                $record->set($fieldName, $param);
+                if ($param = $request->param($fieldName)) {
+                    $record->set($fieldName, $param);
+                }
             }
         }
 
-        $this->assignCRUDVars(array(
-            'Action' => $this->getCurrentAction(),
+        // create action after the record data is set
+        $action = $this->getCurrentAction();
+        $this->assignCRUDVars([
+            'Action' => $action,
             'Record' => $record,
-        ));
+        ]);
     }
 
     public function createRegionAction()
