@@ -86,3 +86,10 @@ CRUD.init = ->
         $hint.fadeIn()
       ), ->
         $hint.fadeOut()
+
+    if typeof Holder != 'undefined'
+      Holder.run domain: 'crud.list'
+    if jQuery.fn.facebox
+      $('a[rel*=facebox]').facebox
+        closeImage: '/assets/facebox/src/closelabel.png'
+        loadingImage: '/assets/facebox/src/loading.gif'
