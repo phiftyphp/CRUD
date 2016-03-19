@@ -126,7 +126,7 @@
         });
         a = Action.form(form, {
           status: true,
-          clear: true,
+          clear: false,
           onSuccess: function(resp) {
             if (config.success) {
               config.success(ui, resp);
@@ -176,6 +176,7 @@
       "title": title,
       "size": size,
       "side": side,
+      "closeOnSuccess": true,
       "url": $btn.data("edit-url"),
       "id": id
     });

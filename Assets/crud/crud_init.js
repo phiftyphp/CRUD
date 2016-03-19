@@ -72,7 +72,7 @@ Should be loaded at the beginning when the page is loaded.
         popup: true
       });
       $el.find(".collapsible").collapse();
-      return $el.find(".v-field .hint").each(function(i, e) {
+      $el.find(".v-field .hint").each(function(i, e) {
         var $hint;
         $hint = $(this);
         $hint.hide().css({
@@ -88,6 +88,17 @@ Should be loaded at the beginning when the page is loaded.
           return $hint.fadeOut();
         });
       });
+      if (typeof Holder !== 'undefined') {
+        Holder.run({
+          domain: 'crud.list'
+        });
+      }
+      if (jQuery.fn.facebox) {
+        return $('a[rel*=facebox]').facebox({
+          closeImage: '/assets/facebox/src/closelabel.png',
+          loadingImage: '/assets/facebox/src/loading.gif'
+        });
+      }
     });
   };
 

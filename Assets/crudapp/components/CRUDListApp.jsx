@@ -376,7 +376,7 @@ export default {
       if (controlConfig.feature == "create") {
         var control =
           <div className="btn-group">
-            <button className="btn btn-success" onClick={this.handleCreateAction.bind(this,controlConfig)}>{controlConfig.label}</button>
+            <button className="btn btn-primary" onClick={this.handleCreateAction.bind(this,controlConfig)}>{controlConfig.label}</button>
           </div>
           ;
         controls.push(control);
@@ -407,14 +407,17 @@ export default {
         <div className="clearfix custom-row row">
 
           {this.props.disableSelection ? null :
-          <CRUDListSelectionSection 
-            ref="selectionSection" 
-            selectionStore={this.state.context.selectionStore}
-            app={this}
-            context={this.state.context}
-            />}
+          <div className="col-md-4 pull-left">
+            <CRUDListSelectionSection 
+              ref="selectionSection" 
+              selectionStore={this.state.context.selectionStore}
+              app={this}
+              context={this.state.context}
+              />
+          </div>
+          }
 
-          <div className="upon-table-pager col-md-6 pull-right">
+          <div className="upon-table-pager col-md-8 pull-right">
             <div className="form-inline">
               <CRUDListPageSizeControl 
                 ref="pageSize" 

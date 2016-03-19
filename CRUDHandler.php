@@ -116,6 +116,12 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public $canBulkDelete = false;
 
 
+    /**
+     * @var boolean whether to disable bulk seletion
+     */
+    public $disableSelection = false;
+
+
 
     /**
      * @var boolean Can user edit record in new window ?
@@ -1184,15 +1190,13 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
 
     /**
-     * Provide the search functionality to return matched collection in JSON
-     * format response.
+     * search method applied request query to collection
      */
-    public function searchAction()
+    protected function search($request)
     {
         $model = $this->getModel();
         $schema = $model->getSchema();
         $collection = $this->getCollection();
-        $request = $this->getRequest();
         foreach ($this->searchQueryFields as $field) {
             if ($queryParam = $request->param($field)) {
                 $collection->where()
@@ -1200,6 +1204,17 @@ abstract class CRUDHandler extends BaseCRUDHandler
                     ;
             }
         }
+        return $collection;
+    }
+
+    /**
+     * Provide the search functionality to return matched collection in JSON
+     * format response.
+     */
+    public function searchAction()
+    {
+        $request = $this->getRequest();
+        $collection = $this->search($request);
         return $this->toJson($collection->toArray());
     }
 
@@ -1403,7 +1418,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
             "modelLabel"       => $this->getRecordLabel(),
             "csrfToken"        => $this->getCSRFToken(),
             "permissions"      => $this->getPermissionConfig(),
-            "disableSelection" => true,
+            "disableSelection" => $this->disableSelection,
             "controls"         => $this->buildReactAppControlsConfig(),
         ];
     }

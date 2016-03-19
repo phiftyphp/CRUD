@@ -33,7 +33,7 @@ export default React.createClass({
 
   render: function() {
     return (
-      <div className="toggle-filter-container col-md-6 pull-left">
+      <div className="toggle-filter-container">
         <a href="#" className="text-primary filter-item active">
           全部{this.props.app.props.modelLabel} ({this.state.numberOfTotalItems})
         </a>

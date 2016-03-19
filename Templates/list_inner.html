@@ -150,21 +150,6 @@ $(function() {
     {% endif %}
     </div><!-- crud-list -->
 {% endblock %}
-
 {{ CRUD.Pager|raw }}
-
 {% block script %}
-<script>
-jQuery(document).ready(function($) {
-    if (typeof Holder !== "undefined") {
-        Holder.run({ domain: 'crud.list' });
-    }
-    if (jQuery.fn.facebox) {
-        $('a[rel*=facebox]').facebox({
-            closeImage: '/assets/facebox/src/closelabel.png',
-            loadingImage: '/assets/facebox/src/loading.gif'
-        });
-    }
-})
-</script>
 {% endblock %}
