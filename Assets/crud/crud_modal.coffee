@@ -118,7 +118,7 @@ CRUDModal._initBody = (ui, config) ->
       # Setup Action form automatically
       a = Action.form form,
         status: true
-        clear: true
+        clear: false
         onSuccess: (resp) ->
           config.success(ui, resp) if config.success
           # Remove the modal when action is executed successfully.
@@ -155,6 +155,7 @@ CRUDModal.openFromBtn = ($btn, modalConfig) ->
     "title": title
     "size": size
     "side": side
+    "closeOnSuccess": true
     "url": $btn.data("edit-url")
     "id": id
   })
