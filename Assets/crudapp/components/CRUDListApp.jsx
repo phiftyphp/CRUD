@@ -34,7 +34,7 @@ export default {
     "modelLabel": React.PropTypes.string.isRequired,
     "controls": React.PropTypes.array,
     // csrf token is needed for sending actions
-    "csrfToken": React.PropTypes.string.isRequired,
+    "csrfToken": React.PropTypes.string,
 
     "disableSelection": React.PropTypes.bool
   },
@@ -136,7 +136,10 @@ export default {
         "content": "匯入中...",
         "controls": []
       });
-      runAction("OrgBundle::Action::ImportOrgSimple", { "_csrf_token": that.props.csrfToken }, function(resp) {
+      var params = {};
+
+      // TODO: Rename ImportOrgSimple to customized action name
+      runAction("OrgBundle::Action::ImportOrgSimple", params , function(resp) {
         if (resp.success) {
           CRUDModal.update(ui, {
             "title": "匯入完畢",
@@ -271,20 +274,13 @@ export default {
 
   handleRecordDelete: function(e) {
     e.stopPropagation();
-
     var $btn = $(e.currentTarget);
     if (!$btn.data("delete-action")) {
       console.error("data-delete-action undefined");
+      return;
     }
-
     var id = $btn.data("record-id");
-
-    // retrieve csrf token through API.
-    var csrf = this.props.csrfToken;
-    runAction($btn.data("delete-action"),
-                     { "id": id, "_csrf_token": csrf },
-                     { "confirm": "確認刪除? ", "removeTr": $btn }
-                    );
+    runAction($btn.data("delete-action"), { "id": id }, { "confirm": "確認刪除? ", "removeTr": $btn });
   },
 
 

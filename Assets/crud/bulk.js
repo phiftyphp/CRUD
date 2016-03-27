@@ -185,8 +185,7 @@ New BulkCRUD:
     BulkCRUD.prototype.sendAction = function(action, params, cb) {
       params = $.extend({
         "__action": action,
-        "__ajax_request": 1,
-        "_csrf_token": this.csrfToken
+        "__ajax_request": 1
       }, params);
       return $.ajax({
         url: '/bs',

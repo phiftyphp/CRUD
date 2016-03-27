@@ -8,8 +8,7 @@ $(function() {
         table: $table,
         menu: $menu,
         namespace: '{{ CRUD.Object.namespace }}',
-        model: '{{ CRUD.Object.modelName }}',
-        csrfToken: '{{ CRUD.Object.getCSRFToken() }}'
+        model: '{{ CRUD.Object.modelName }}'
     });
 
 {# Here comes the generic plugins #}
@@ -125,8 +124,7 @@ $(function() {
                             <input type="button" 
                                 value="{% trans "刪除" %}"
                                 class="record-delete-btn btn"
-                                data-record-id="{{ item.id }}"
-                                data-csrf-token="{{ CRUD.Object.getCSRFToken() }}"
+                                data-record-id="{{item.id}}"
                                 data-delete-action="{{ CRUD.Object.namespace }}::Action::Delete{{ CRUD.Object.modelName }}"
                                 />
                         {% endif %}

@@ -166,7 +166,6 @@ class BulkCRUD
     params = $.extend {
       "__action": action
       "__ajax_request": 1
-      "_csrf_token": @csrfToken
     }, params
     $.ajax
       url: '/bs',

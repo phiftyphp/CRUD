@@ -1136,16 +1136,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
         ));
     }
 
-    public function getCSRFToken()
-    {
-        if ($action = $this->getCurrentAction()) {
-            if ($token = $action->getCSRFToken()) {
-                return $token;
-            }
-        }
-        return $this->kernel->actionService['csrf_token'];
-    }
-
     /**
      * Create Action View from Action object.
      *
@@ -1416,7 +1406,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
             "namespace"        => $this->namespace,
             "model"            => $this->modelName,
             "modelLabel"       => $this->getRecordLabel(),
-            "csrfToken"        => $this->getCSRFToken(),
             "permissions"      => $this->getPermissionConfig(),
             "disableSelection" => $this->disableSelection,
             "controls"         => $this->buildReactAppControlsConfig(),
