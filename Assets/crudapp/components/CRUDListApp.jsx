@@ -338,7 +338,7 @@ export default {
 
   renderImportControl: function() {
     var control =
-      <div className="btn-group">
+      <div key="import" className="btn-group">
         <button className="btn btn-material-grey-700" onClick={this.handleImportAction}>匯入</button>
       </div>;
     return control;
@@ -346,7 +346,7 @@ export default {
 
   renderExportControl: function() {
     var control =
-      <div className="btn-group">
+      <div key="export" className="btn-group">
         <div className="dropdown">
           <button className="btn btn-default btn-material-grey-700 dropdown-toggle" type="button" data-toggle="dropdown">
             匯出&nbsp;
@@ -371,7 +371,7 @@ export default {
     for (let controlConfig of this.props.controls) {
       if (controlConfig.feature == "create") {
         var control =
-          <div className="btn-group">
+          <div key={controlConfig.feature} className="btn-group">
             <button className="btn btn-primary" onClick={this.handleCreateAction.bind(this,controlConfig)}>{controlConfig.label}</button>
           </div>
           ;
