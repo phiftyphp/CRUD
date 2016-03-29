@@ -9,11 +9,18 @@ ul.chooser {
 .crud-record-item {
   position: relative;
   box-shadow: 1px 1px 5px rgba(120, 120, 120, 0.2); }
+  .crud-record-item.add {
+    cursor: pointer; }
+    .crud-record-item.add:hover {
+      background: rgba(124, 188, 59, 0.5); }
   .crud-record-item.is.text-cover {
     position: relative;
     padding: 5px 5px 5px 12px;
     border-left: 5px solid #009688;
-    overflow: hidden; }
+    overflow: hidden;
+    margin-bottom: 5px; }
+    .crud-record-item.is.text-cover.add {
+      border: 0; }
     .crud-record-item.is.text-cover .date-label {
       background: #009688;
       position: absolute;
@@ -35,8 +42,10 @@ ul.chooser {
       line-height: 140%;
       text-transform: uppercase;
       margin: 0;
-      padding: 0; }
+      padding: 0;
+      margin-top: 3px; }
     .crud-record-item.is.text-cover .header .subtitle {
+      margin-top: 3px;
       text-transform: uppercase; }
     .crud-record-item.is.text-cover .desc {
       margin-top: 10px;
@@ -59,7 +68,7 @@ ul.chooser {
       transform: translateX(200px); }
     .crud-record-item.is.text-cover:hover .footer .controls {
       transform: translateX(0); }
-    .crud-record-item.is.text-cover .code {
+    .crud-record-item.is.text-cover .text {
       line-height: 18px;
       vertical-align: middle;
       display: inline-block; }
@@ -94,10 +103,5 @@ ul.chooser {
     margin: 0;
     text-align: center;
     vertical-align: middle; }
-
-.crud-record-item-add {
-  cursor: pointer; }
-  .crud-record-item-add:hover {
-    background: rgba(124, 188, 59, 0.5); }
 
 /*# sourceMappingURL=crud.css.map */

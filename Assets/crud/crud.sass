@@ -9,16 +9,25 @@ ul.chooser
 
 .crud-rel-app
 
+
 .crud-record-item
   position: relative
   box-shadow: 1px 1px 5px rgba(120, 120, 120, 0.2)
 
+  &.add
+    cursor: pointer
+    &:hover
+      background: rgba(124, 188, 59, 0.5)
 
   &.is.text-cover
     position: relative
     padding: 5px 5px 5px 12px
     border-left: 5px solid #009688
     overflow: hidden
+    margin-bottom: 5px
+
+    &.add
+      border: 0
 
     .date-label
       background: #009688
@@ -44,7 +53,9 @@ ul.chooser
         text-transform: uppercase
         margin: 0
         padding: 0
+        margin-top: 3px
       .subtitle
+        margin-top: 3px
         text-transform: uppercase
     .desc
       margin-top: 10px
@@ -71,7 +82,7 @@ ul.chooser
       .footer .controls
         transform: translateX(0)
 
-    .code
+    .text
       line-height: 18px
       vertical-align: middle
       display: inline-block
@@ -113,8 +124,3 @@ ul.chooser
     text-align: center
     vertical-align: middle
 
-.crud-record-item-add
-  cursor: pointer
-
-  &:hover
-    background: rgba(124, 188, 59, 0.5)
