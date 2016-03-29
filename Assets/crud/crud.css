@@ -28,6 +28,8 @@ ul.chooser {
       color: #f0f0f0;
       border-radius: 0 0 5px 5px;
       box-shadow: 1px 0 5px rgba(100, 100, 100, 0.5); }
+      .crud-record-item.is.text-cover .date-label .date {
+        font-weight: bold; }
     .crud-record-item.is.text-cover .header .title {
       font-size: 2em;
       line-height: 140%;
