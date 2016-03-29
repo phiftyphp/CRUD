@@ -13,3 +13,4 @@ collections:
     watch: 'coffee -wc *.coffee'
   - css:
     - crud.css
+    watch: 'sass --compass --watch crud.sass'
