@@ -9,6 +9,65 @@ ul.chooser {
 .crud-record-item {
   position: relative;
   box-shadow: 1px 1px 5px rgba(120, 120, 120, 0.2); }
+  .crud-record-item.is.text-cover {
+    position: relative;
+    padding: 5px 5px 5px 12px;
+    border-left: 5px solid #009688;
+    overflow: hidden; }
+    .crud-record-item.is.text-cover .date-label {
+      background: #009688;
+      position: absolute;
+      top: 0;
+      right: 10%;
+      background: #009688;
+      position: absolute;
+      top: 0;
+      right: 10%;
+      padding: 2px 10px;
+      font-size: 10px;
+      color: #f0f0f0;
+      border-radius: 0 0 5px 5px;
+      box-shadow: 1px 0 5px rgba(100, 100, 100, 0.5); }
+    .crud-record-item.is.text-cover .header .title {
+      font-size: 2em;
+      line-height: 140%;
+      text-transform: uppercase;
+      margin: 0;
+      padding: 0; }
+    .crud-record-item.is.text-cover .header .subtitle {
+      text-transform: uppercase; }
+    .crud-record-item.is.text-cover .desc {
+      margin-top: 10px;
+      color: #a0a0a0;
+      max-width: 380px;
+      padding: 0; }
+    .crud-record-item.is.text-cover .footer {
+      padding: 0;
+      margin-top: 10px;
+      color: #a0a0a0; }
+      .crud-record-item.is.text-cover .footer .column {
+        float: left;
+        margin-right: 10px; }
+      .crud-record-item.is.text-cover .footer .btn-group {
+        margin: 0; }
+      .crud-record-item.is.text-cover .footer .btn {
+        margin: 0; }
+    .crud-record-item.is.text-cover .footer .controls {
+      transition: transform ease 500ms;
+      transform: translateX(200px); }
+    .crud-record-item.is.text-cover:hover .footer .controls {
+      transform: translateX(0); }
+    .crud-record-item.is.text-cover .code {
+      line-height: 18px;
+      vertical-align: middle;
+      display: inline-block; }
+    .crud-record-item.is.text-cover .tag {
+      display: inline-block;
+      background: #f0f0f0;
+      border-radius: 7px;
+      padding: 0 5px;
+      line-height: 18px;
+      vertical-align: middle; }
   .crud-record-item.block {
     display: block;
     margin-bottom: 5px; }
