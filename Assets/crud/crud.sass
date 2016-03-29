@@ -1,0 +1,50 @@
+ul.chooser
+  margin: 6px 2px
+  list-style: none
+
+  li
+    margin: 2px
+    padding: 3px 5px
+    border: 1px solid #ccc
+
+.crud-rel-app
+
+.crud-record-item
+  position: relative
+  box-shadow: 1px 1px 5px rgba(120, 120, 120, 0.2)
+
+  &.block
+    display: block
+    margin-bottom: 5px
+
+  &.float
+    float: left
+    margin-right: 5px
+    margin-bottom: 5px
+
+  .remove-btn
+    background: rgba(200, 200, 200, 0.3)
+    transition: all ease 500ms
+    color: #000
+    position: absolute
+    top: 0px
+    right: 0px
+    padding: 3px 6px
+    text-align: center
+
+  &:hover .remove-btn
+    background: rgba(255, 255, 255, 0.6)
+
+  &:hover .remove-btn:hover
+    background: rgba(255, 255, 255, 1)
+
+  .remove-btn .fa
+    margin: 0
+    text-align: center
+    vertical-align: middle
+
+.crud-record-item-add
+  cursor: pointer
+
+  &:hover
+    background: rgba(124, 188, 59, 0.5)
