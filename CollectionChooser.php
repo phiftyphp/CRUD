@@ -1,7 +1,7 @@
 <?php
 namespace CRUD;
 use Phifty\Controller;
-use Phifty\Routing\ExpandableController;
+use Pux\Controller\ExpandableController;
 
 /**
  * The CollectionChooser CRUD provides 
