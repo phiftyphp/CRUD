@@ -368,24 +368,26 @@ export default {
 
 
     var controls = [];
-    for (let controlConfig of this.props.controls) {
+
+    this.pros.controls.forEach(function(controlConfig, i) {
       if (controlConfig.feature == "create") {
         var control =
           <div key={controlConfig.feature} className="btn-group">
-            <button className="btn btn-primary" onClick={this.handleCreateAction.bind(this,controlConfig)}>{controlConfig.label}</button>
+            <button className="btn btn-success" 
+            onClick={this.handleCreateAction.bind(this,controlConfig)}>
+              {controlConfig.label}
+            </button>
           </div>
           ;
         controls.push(control);
       } else if (controlConfig.feature == "export") {
 
-        var control = this.renderExportControl();
-        controls.push(control);
+        controls.push(this.renderExportControl());
 
       } else if (controlConfig.feature == "import") {
-        var control = this.renderImportControl();
-        controls.push(control);
+        controls.push(this.renderImportControl());
       }
-    }
+    });
 
     var controlSection =
       <div className="control-section">
