@@ -369,7 +369,7 @@ export default {
 
     var controls = [];
 
-    this.props.controls.forEach(function(controlConfig, i) {
+    this.props.controls.forEach((controlConfig, i) => {
       if (controlConfig.feature == "create") {
         var control =
           <div key={controlConfig.feature} className="btn-group">
