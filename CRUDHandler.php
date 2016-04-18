@@ -15,8 +15,6 @@ use CRUD\Action\UploadExcelFile;
 use CRUD\Importer\ExcelImporter;
 use LazyRecord\BaseModel;
 use LazyRecord\BaseCollection;
-use CRUD\Exporter\CSVExporter;
-use CRUD\Exporter\ExcelExporter;
 use Pux\Mux;
 use ActionKit\Action;
 use ReflectionClass;
@@ -59,18 +57,14 @@ use FormKit\Widget\SelectInput;
  */
 abstract class CRUDHandler extends BaseCRUDHandler
 {
+    use CRUDReactListApp;
+    use CRUDExporter;
+
+
     /**
      * @var ReflectionClass the reflection class of the CRUDHandler.
      */
     private $reflect;
-
-
-    /**
-     * @var string The react application name
-     *
-     * This is unused for now.
-     */
-    protected $reactListApp;
 
     protected $uploadActionClass = 'CRUD\\Action\\UploadExcelFile';
 
@@ -1209,31 +1203,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
     }
 
 
-
-
-    // ==================================================================
-    // Actions for exporting data
-    // ==================================================================
-    public function exportCsvAction()
-    {
-        $model = $this->getModel();
-        $schema = $model->getSchema();
-        $collection = $this->getCollection();
-        // $exporter = new CSVExporter($schema);
-        $exporter = new ExcelExporter($schema);
-        $exporter->setFormat('CSV');
-        $exporter->exportOutput($collection);
-    }
-
-    public function exportExcelAction()
-    {
-        $model = $this->getModel();
-        $schema = $model->getSchema();
-        $collection = $this->getCollection();
-        $exporter = new ExcelExporter($schema);
-        $exporter->exportOutput($collection);
-    }
-
     // ==================================================================
     // Actions for region display
     // ==================================================================
@@ -1398,49 +1367,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $this->render($this->findTemplatePath('list.html'), []);
     }
 
-    protected function buildReactAppConfig()
-    {
-        return [
-            "crudId"           => $this->crudId,
-            "basepath"         => $this->getRoutePrefix(),
-            "namespace"        => $this->namespace,
-            "model"            => $this->modelName,
-            "modelLabel"       => $this->getRecordLabel(),
-            "permissions"      => $this->getPermissionConfig(),
-            "disableSelection" => $this->disableSelection,
-            "controls"         => $this->buildReactAppControlsConfig(),
-        ];
-    }
-
-    /**
-     * buildReactAppControlsConfig builds the control definitions 
-     * for the react app.
-     */
-    protected function buildReactAppControlsConfig()
-    {
-        $controls = [];
-        if ($this->canCreate) {
-            $controls[] = [
-                "label" => $this->getCreateButtonLabel(),
-                "feature" => "create"
-            ];
-        }
-        if ($this->canImport) {
-            $controls[] = [
-                "label" => "Import",
-                "feature" => "import"
-            ];
-        }
-        if ($this->canExport) {
-            $controls[] = [
-                "label" => "Export",
-                "feature" => "export",
-            ];
-        }
-        return $controls;
-    }
-
-
     /**
      * Prepare default/build-in template variable for list region.
      */
@@ -1472,7 +1398,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
             'uploadView' => $uploadView,
         ]);
     }
-
 
     public function importSampleDownloadAction()
     {
