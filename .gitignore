@@ -1,1 +1,3 @@
 manifest.php
+node_modules
+.sass-cache
