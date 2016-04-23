@@ -1190,6 +1190,59 @@ abstract class CRUDHandler extends Controller implements Expandable
 
 
     /**
+     * Create a CRUD action from existing record object.
+     *
+     * We only invoke action runenr to load the action class. we don't generate
+     * the action class manually here.
+     *
+     * @param BaseModel $record
+     * @param string $prefix Action prefix
+     * @return ActionKit\RecordAction\BaseRecordAction
+     */
+    protected function createModelActionClass(BaseModel $record, $prefix, array $args = array(), $options = array())
+    {
+        $actionClass = $this->getModelActionClass($record, $prefix);
+        // $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class,$type);
+        // $options['record'] = $record->id ? $record : null;
+        $options['record'] = $record;
+        return new $actionClass($args , $options);
+    }
+
+    protected function getModelActionClass(BaseModel $record, $prefix)
+    {
+        $recordClass = get_class($record);
+        $refclass = new ReflectionClass($record);
+        $actionClassNamespace = str_replace('\\Model\\','\\Action\\', $refclass->getNamespaceName());
+        $actionClassShortName = ucfirst($prefix) . $refclass->getShortName();
+        $actionClass = $actionClassNamespace . '\\' . $actionClassShortName;
+
+        // XXX: normally this won't be triggered when CRUDHandler::init() method is not called.
+        if (!class_exists($actionClass, true)) {
+            kernel()->actionRunner->loadActionClass($actionClass);
+        }
+
+        // Generate the default action and try to require it.
+        if (!class_exists($actionClass)) {
+            $baseAction = $prefix . 'RecordAction';
+            $template = new RecordActionTemplate;
+            if ($generatedAction = $template->generate($actionClass, [
+                'extends' => '\\ActionKit\\RecordAction\\' . $baseAction,
+                'properties' => [
+                    'recordClass' => $recordClass,
+                ],
+            ])) {
+                $generatedAction->load();
+            }
+        }
+
+        if (!class_exists($actionClass)) {
+            throw new Exception("Can not load action class '$actionClass' from model " . get_class($record));
+        }
+        return $actionClass;
+    }
+
+
+    /**
      * getCurrentAction returns the action object of the current
      * record.
      *
