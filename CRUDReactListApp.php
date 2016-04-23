@@ -18,15 +18,15 @@ trait CRUDReactListApp {
             "modelLabel"       => $this->getRecordLabel(),
             "permissions"      => $this->getPermissionConfig(),
             "disableSelection" => $this->disableSelection,
-            "controls"         => $this->buildReactAppControlsConfig(),
+            "controls"         => $this->buildReactListAppControlsConfig(),
         ];
     }
 
     /**
-     * buildReactAppControlsConfig builds the control definitions 
+     * buildReactListAppControlsConfig builds the control definitions 
      * for the react app.
      */
-    protected function buildReactAppControlsConfig()
+    protected function buildReactListAppControlsConfig()
     {
         $controls = [];
         if ($this->canCreate) {
