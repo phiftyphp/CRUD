@@ -20,6 +20,9 @@ use Pux\Expandable;
 use ActionKit\Action;
 use ReflectionClass;
 use Exception;
+use Universal\Http\HttpRequest;
+
+use ActionKit\ActionTemplate\RecordActionTemplate;
 
 use PHPExcel_IOFactory;
 
@@ -400,10 +403,12 @@ abstract class CRUDHandler extends Controller implements Expandable
         }
 
         // Derive options from request
-        $request = $this->getRequest();
-        $useFormControls = $request->param('_form_controls');
-        $this->actionViewOptions['submit_btn'] = true;
-        $this->actionViewOptions['_form_controls'] = true;
+        if ($request = $this->getRequest()) {
+            if ($useFormControls = $request->param('_form_controls')) {
+                $this->actionViewOptions['submit_btn'] = true;
+                $this->actionViewOptions['_form_controls'] = true;
+            }
+        }
 
         $this->reflect = new ReflectionClass($this);
         $this->namespace = $ns = $this->reflect->getNamespaceName();
@@ -1280,7 +1285,7 @@ abstract class CRUDHandler extends Controller implements Expandable
     /**
      * search method applied request query to collection
      */
-    protected function search($request)
+    protected function search(HttpRequest $request)
     {
         $model = $this->getModel();
         $schema = $model->getSchema();
@@ -1301,8 +1306,7 @@ abstract class CRUDHandler extends Controller implements Expandable
      */
     public function searchAction()
     {
-        $request = $this->getRequest();
-        $collection = $this->search($request);
+        $collection = $this->search($this->getRequest());
         return $this->toJson($collection->toArray());
     }
 
