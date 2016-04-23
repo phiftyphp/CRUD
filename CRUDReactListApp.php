@@ -3,11 +3,8 @@ namespace CRUD;
 
 trait CRUDReactListApp {
 
-
     /**
      * @var string The react application name
-     *
-     * This is unused for now.
      */
     protected $reactListApp;
 

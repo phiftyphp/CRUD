@@ -16,6 +16,7 @@ use CRUD\Importer\ExcelImporter;
 use LazyRecord\BaseModel;
 use LazyRecord\BaseCollection;
 use Pux\Mux;
+use Pux\Expandable;
 use ActionKit\Action;
 use ReflectionClass;
 use Exception;
@@ -55,10 +56,58 @@ use FormKit\Widget\SelectInput;
  * Front-end path is mounted on /bs/{crudId or templateId}
  *
  */
-abstract class CRUDHandler extends BaseCRUDHandler
+abstract class CRUDHandler extends Controller implements Expandable
 {
     use CRUDReactListApp;
     use CRUDExporter;
+
+    protected $kernel;
+
+    /**
+     * @var string plugin name space
+     */
+    public $namespace;
+
+    /**
+     * @var string Model class, full-qualified model class.
+     */
+    public $modelClass;
+
+    /**
+     * @var string model short class name, optional, can be extracted from 
+     *            full-qualified model class name 
+     */
+    public $modelName;
+
+
+    /**
+     * @var string CRUD ID, which is the namespace of template path or can be used in URL.
+     *
+     *    /bs/{{ crud_id }}
+     *    Templates/{{crud_id}}/edit.html
+     *
+     */
+    public $crudId;
+
+
+    /**
+     * @var string The template path ID (default to crudId)
+     */
+    public $templateId;
+
+
+    /**
+     * @var string the custom template namespace
+     *
+     * Fallback to @CRUD namespace if the override template does not exists.
+     */
+    public $customTemplateNamespace;
+
+    /**
+     * @var Phifty\Model model object for cache, please use getModel() method
+     */
+    protected $_model;
+
 
 
     /**
@@ -328,13 +377,27 @@ abstract class CRUDHandler extends BaseCRUDHandler
         return $mux;
     }
 
-
     /**
      * init() method will be called when the route is matched.
      */
     public function init()
     {
-        parent::init();
+        $this->vars['CRUD']['Object'] = $this;
+        $this->kernel = kernel();
+
+        // Dynamic initialization
+        if (! $this->modelName) {
+            $modelRefl = new ReflectionClass($this->modelClass);
+            $this->modelName = $modelRefl->getShortName();
+        }
+
+
+        if (! $this->crudId) {
+            $this->crudId = \Phifty\Inflector::getInstance()->underscore($this->modelName);;
+        }
+        if (! $this->templateId) {
+            $this->templateId = $this->crudId;
+        }
 
         // Derive options from request
         $request = $this->getRequest();
@@ -343,7 +406,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
         $this->actionViewOptions['_form_controls'] = true;
 
         $this->reflect = new ReflectionClass($this);
-        $ns = $this->reflect->getNamespaceName();
+        $this->namespace = $ns = $this->reflect->getNamespaceName();
 
         // XXX: currently we use FooBundle\FooBundle as the main bundle class.
         $bundleClass = "$ns\\$ns";
@@ -382,6 +445,41 @@ abstract class CRUDHandler extends BaseCRUDHandler
         */
         $this->initNavBar();
     }
+
+    /**
+     * Get model object.
+     *
+     * @return Phifty\Model
+     */
+    public function getModel()
+    {
+        if ($this->_model) {
+            return $this->_model;
+        }
+        return $this->_model = new $this->modelClass;
+    }
+
+    public function getModelClass()
+    {
+        return $this->modelClass;
+    }
+
+    /**
+     * Create the default collection
+     *
+     * @return LazyRecord\BaseCollection
+     */
+    protected function createCollection()
+    {
+        $model = $this->getModel();
+        return $model->asCollection();
+    }
+
+    public function createDefaultCollection()
+    {
+        return $this->createCollection();
+    }
+
 
 
     protected function initNavBar()
@@ -772,7 +870,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      * @param string $name template variable name.
      * @param mixed $value template variable value.
      */
-    public function assign( $name , $value )
+    public function assign($name, $value)
     {
         $this->vars[ $name ] = $value;
     }
@@ -860,8 +958,6 @@ abstract class CRUDHandler extends BaseCRUDHandler
             && isset($this->bundle) && $this->bundle->config('with_lang') );
     }
 
-
-
     /**
      * Return the collection for list region.
      *
@@ -869,7 +965,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
      */
     public function getCollection()
     {
-        $collection = parent::getCollection();
+        $collection = $this->createDefaultCollection();
 
         // find the refer attribute and try to join these table.
         /*
@@ -970,11 +1066,13 @@ abstract class CRUDHandler extends BaseCRUDHandler
     // =================================================
     public function findTemplatePath($filename)
     {
-        if ($this->useDefaultTemplate) {
-            return '@' . $this->getDefaultTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
-        }
-
         $loader = $this->kernel->twig->loader;
+        if ($this->useDefaultTemplate) {
+            $templatePath =  '@' . $this->getDefaultTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
+            if ($loader->exists($templatePath)) {
+                return $templatePath;
+            }
+        }
 
         // Check the template file existence for the current bundle, if the
         // template file is not found in the current bundle, it fallback to
@@ -982,6 +1080,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
 
         // If we're app bundle
         $customTemplatePath = '@' . $this->namespace . DIRECTORY_SEPARATOR . $this->getTemplateId() . DIRECTORY_SEPARATOR . $filename;
+        if ($loader->exists($customTemplatePath . '.twig')) {
+            return $customTemplatePath . '.twig';
+        }
         if ($loader->exists($customTemplatePath)) {
             return $customTemplatePath;
         }
@@ -989,6 +1090,9 @@ abstract class CRUDHandler extends BaseCRUDHandler
         // find the custom template path for CRUD base templates
         $customTemplatePath = '@' . $this->getCustomTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
         // $customTemplatePath = '@' . $this->getCustomTemplateNamespace() . DIRECTORY_SEPARATOR . $this->getTemplateId() . DIRECTORY_SEPARATOR . $filename;
+        if ($loader->exists($customTemplatePath . '.twig')) {
+            return $customTemplatePath . '.twig';
+        }
         if ($loader->exists($customTemplatePath)) {
             return $customTemplatePath;
         }
@@ -1557,7 +1661,4 @@ abstract class CRUDHandler extends BaseCRUDHandler
             'canEditInNewWindow'  => $this->canEditInNewWindow,
         ];
     }
-
-
-
 }
