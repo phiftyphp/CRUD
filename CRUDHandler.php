@@ -1212,11 +1212,10 @@ abstract class CRUDHandler extends Controller implements Expandable
     {
         $recordClass = get_class($record);
         $refclass = new ReflectionClass($record);
-        $actionClassNamespace = str_replace('\\Model\\','\\Action\\', $refclass->getNamespaceName());
+        $actionClassNamespace = str_replace('\\Model','\\Action', $refclass->getNamespaceName());
         $actionClassShortName = ucfirst($prefix) . $refclass->getShortName();
         $actionClass = $actionClassNamespace . '\\' . $actionClassShortName;
 
-        // XXX: normally this won't be triggered when CRUDHandler::init() method is not called.
         if (!class_exists($actionClass, true)) {
             kernel()->actionRunner->loadActionClass($actionClass);
         }
