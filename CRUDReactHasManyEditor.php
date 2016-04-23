@@ -7,6 +7,14 @@ use ActionKit\Action;
 
 trait CRUDReactHasManyEditor
 {
+    /**
+     * itemDesc describes the relationship between data and the placeholder designed in the UI
+     * and defines how the cover view should be built
+     *
+     * @return array
+     */
+    abstract public function itemDesc();
+
     public function buildReactHasManyEditorConfig(BaseModel $parentRecord, $relationId)
     {
         $modelClass = $this->getModelClass();
