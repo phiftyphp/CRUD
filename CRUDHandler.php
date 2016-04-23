@@ -62,6 +62,7 @@ use FormKit\Widget\SelectInput;
 abstract class CRUDHandler extends Controller implements Expandable
 {
     use CRUDReactListApp;
+    use CRUDReactHasManyEditor;
     use CRUDExporter;
 
     protected $kernel;
@@ -1521,7 +1522,7 @@ abstract class CRUDHandler extends Controller implements Expandable
             return $this->render($this->findTemplatePath('react/list.html'), [
                 'ReactElementId' => uniqid($this->reactListApp),
                 'ReactAppName'   => $this->reactListApp,
-                'ReactAppConfig' => $this->buildReactAppConfig(),
+                'ReactAppConfig' => $this->buildReactListAppConfig(),
             ]);
         }
         return $this->render($this->findTemplatePath('list.html'), []);
@@ -1717,4 +1718,7 @@ abstract class CRUDHandler extends Controller implements Expandable
             'canEditInNewWindow'  => $this->canEditInNewWindow,
         ];
     }
+
+
+
 }

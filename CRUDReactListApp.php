@@ -8,7 +8,7 @@ trait CRUDReactListApp {
      */
     protected $reactListApp;
 
-    protected function buildReactAppConfig()
+    public function buildReactListAppConfig()
     {
         return [
             "crudId"           => $this->crudId,
