@@ -17,6 +17,7 @@ trait CRUDReactHasManyEditor
      *
      * @return array
      */
+    // NOTE: abstract is removed because
     // abstract public function itemDesc();
     public function itemDesc()
     {
