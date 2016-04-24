@@ -23,10 +23,10 @@ trait CRUDReactHasManyEditor
     {
         $controls = [];
         if ($this->canUpdate) {
-            $controls[] = ['feature' => 'edit'];
+            $controls[] = ['action' => 'edit'];
         }
         if ($this->canDelete) {
-            $controls[] = ['feature' => 'delete'];
+            $controls[] = ['action' => 'delete'];
         }
         return [ 'controls' => $controls ];
     }

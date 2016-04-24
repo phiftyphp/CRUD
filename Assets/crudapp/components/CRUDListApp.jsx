@@ -71,7 +71,7 @@ export default {
     this.state.context.summaryStore.removeChangeListener(this.handleSummaryChange);
   },
 
-  handleCreateAction: function(controlConfig, e) {
+  handleCreateAction: function(e) {
     e.stopPropagation();
 
     var that = this;
@@ -336,20 +336,40 @@ export default {
   // renderFilterSection: function() { },
 
 
-  renderImportControl: function() {
-    var control =
-      <div key="import" className="btn-group">
-        <button className="btn btn-material-grey-700" onClick={this.handleImportAction}>匯入</button>
+  /**
+   * @param {object} controlConfig
+   */
+  renderCreateControl: function(controlConfig) {
+    return <div key={"create"} className="btn-group">
+        <button className="btn btn-success"
+        onClick={this.handleCreateAction}>
+          {controlConfig.label||'建立'}
+        </button>
       </div>;
-    return control;
   },
 
-  renderExportControl: function() {
-    var control =
+  /**
+   * @param {object} controlConfig
+   */
+  renderImportControl: function(controlConfig) {
+    return 
+      <div key="import" className="btn-group">
+        <button className="btn btn-material-grey-700" onClick={this.handleImportAction}>
+          {controlConfig.label||'匯入'}
+        </button>
+      </div>;
+  },
+
+  /**
+   * @param {object} controlConfig
+   */
+  renderExportControl: function(controlConfig) {
+    return
       <div key="export" className="btn-group">
         <div className="dropdown">
           <button className="btn btn-default btn-material-grey-700 dropdown-toggle" type="button" data-toggle="dropdown">
-            匯出&nbsp;
+            {controlConfig.label||'匯出'}
+            &nbsp;
             <span className="caret"></span>
           </button>
           <ul className="dropdown-menu">
@@ -359,44 +379,36 @@ export default {
         </div>
       </div>
     ;
-    return control;
   },
 
+  renderControls: function(controls) {
+    var childViews = [];
 
-  render: function() {
-    var that = this;
-
-
-    var controls = [];
-
-    this.props.controls.forEach((controlConfig, i) => {
-      if (controlConfig.feature == "create") {
-        var control =
-          <div key={controlConfig.feature} className="btn-group">
-            <button className="btn btn-success" 
-            onClick={this.handleCreateAction.bind(this,controlConfig)}>
-              {controlConfig.label}
-            </button>
-          </div>
-          ;
-        controls.push(control);
-      } else if (controlConfig.feature == "export") {
-
-        controls.push(this.renderExportControl());
-
-      } else if (controlConfig.feature == "import") {
-        controls.push(this.renderImportControl());
+    controls.forEach((controlConfig, i) => {
+      var a = controlConfig.action || controlConfig.feature;
+      switch (a) {
+        case "create":
+          childViews.push(this.renderCreateControl(controlConfig));
+          break;
+        case "export":
+          childViews.push(this.renderExportControl(controlConfig));
+          break;
+        case "import":
+          childViews.push(this.renderImportControl(controlConfig));
+          break;
       }
     });
-
-    var controlSection =
-      <div className="control-section">
+    return <div className="control-section">
         <div className="btn-toolbar">
-          {controls}
+          {childViews}
         </div>
       </div>
       ;
+  },
 
+  render: function() {
+    var that = this;
+    var controlSection = this.renderControls(this.props.controls);
     return (
       <div className="crud-list-container">
         {controlSection}
