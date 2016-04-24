@@ -49,9 +49,9 @@ trait CRUDReactHasManyEditor
         } else if ($viewBuilder = $this->itemViewBuilder()) {
             // Translate string class name into JsNewObject class
             if (is_string($viewBuilder)) {
-                $config['viewbuilder'] = new JsNewObject($viewBuilder);
+                $config['viewBuilder'] = new JsNewObject($viewBuilder);
             } else {
-                $config['viewbuilder'] = $viewBuilder;
+                $config['viewBuilder'] = $viewBuilder;
             }
         } else {
             throw new Exception('You should explicitly either declare itemDesc or itemViewBuilder');
