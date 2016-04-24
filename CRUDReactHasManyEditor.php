@@ -17,7 +17,18 @@ trait CRUDReactHasManyEditor
      *
      * @return array
      */
-    public function itemDesc() { return null; }
+    // abstract public function itemDesc();
+    public function itemDesc()
+    {
+        $controls = [];
+        if ($this->canUpdate) {
+            $controls[] = ['feature' => 'edit'];
+        }
+        if ($this->canDelete) {
+            $controls[] = ['feature' => 'delete'];
+        }
+        return [ 'controls' => $controls ];
+    }
 
 
     /**
@@ -28,7 +39,7 @@ trait CRUDReactHasManyEditor
      *
      * @return string
      */
-    public function itemViewBuilder() { return null; };
+    public function itemViewBuilder() { return null; }
 
     public function buildReactHasManyEditorConfig(BaseModel $parentRecord, $relationId)
     {
@@ -44,17 +55,15 @@ trait CRUDReactHasManyEditor
             'parentAction' => $parentRecord->id ? 'edit' : 'create',
         ];
 
-        if ($itemDesc = $this->itemDesc()) {
-            $config['itemDesc'] = $this->itemDesc();
-        } else if ($viewBuilder = $this->itemViewBuilder()) {
+        $config['itemDesc'] = $this->itemDesc();
+
+        if ($viewBuilder = $this->itemViewBuilder()) {
             // Translate string class name into JsNewObject class
             if (is_string($viewBuilder)) {
-                $config['viewBuilder'] = new JsNewObject($viewBuilder);
+                $config['viewBuilder'] = new JsSymbol($viewBuilder);
             } else {
                 $config['viewBuilder'] = $viewBuilder;
             }
-        } else {
-            throw new Exception('You should explicitly either declare itemDesc or itemViewBuilder');
         }
 
         $config['schema'] = ['primaryKey' => $schema->primaryKey];

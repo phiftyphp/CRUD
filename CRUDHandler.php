@@ -242,8 +242,6 @@ abstract class CRUDHandler extends Controller implements Expandable
     );
 
 
-    public $parentRelationship;
-
     /**
      * @var array register CRUD Action automatically
      */
