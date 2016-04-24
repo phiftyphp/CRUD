@@ -81,7 +81,7 @@ trait CRUDReactHasManyEditor
             // Always delete record by primary key
             $deleteActionClass = $this->getModelActionClass($model, 'Delete');
             $config['delete'] = [
-                'action' => str_replace('\\', '::', $deleteActionClass),
+                'action'  => str_replace('\\', '::', $deleteActionClass),
                 'confirm' => '確認刪除?',
             ];
         }
