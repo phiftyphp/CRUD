@@ -7,6 +7,7 @@ use ActionKit\Action;
 use Exception;
 use PJSON\JsSymbol;
 use PJSON\JsFunctionCall;
+use PJSON\JsNewObject;
 
 trait CRUDReactHasManyEditor
 {
@@ -46,7 +47,12 @@ trait CRUDReactHasManyEditor
         if ($itemDesc = $this->itemDesc()) {
             $config['itemDesc'] = $this->itemDesc();
         } else if ($viewBuilder = $this->itemViewBuilder()) {
-            $config['viewbuilder'] = $viewBuilder;
+            // Translate string class name into JsNewObject class
+            if (is_string($viewBuilder)) {
+                $config['viewbuilder'] = new JsNewObject($viewBuilder);
+            } else {
+                $config['viewbuilder'] = $viewBuilder;
+            }
         } else {
             throw new Exception('You should explicitly either declare itemDesc or itemViewBuilder');
         }
