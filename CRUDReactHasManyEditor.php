@@ -4,6 +4,9 @@ namespace CRUD;
 
 use LazyRecord\BaseModel;
 use ActionKit\Action;
+use Exception;
+use PJSON\JsSymbol;
+use PJSON\JsFunctionCall;
 
 trait CRUDReactHasManyEditor
 {
@@ -13,7 +16,18 @@ trait CRUDReactHasManyEditor
      *
      * @return array
      */
-    abstract public function itemDesc();
+    public function itemDesc() { return null; }
+
+
+    /**
+     * itemViewBuilder could be used when you have custom view builder rather
+     * than just itemDesc.
+     *
+     * 
+     *
+     * @return string
+     */
+    public function itemViewBuilder() { return null; };
 
     public function buildReactHasManyEditorConfig(BaseModel $parentRecord, $relationId)
     {
@@ -29,7 +43,13 @@ trait CRUDReactHasManyEditor
             'parentAction' => $parentRecord->id ? 'edit' : 'create',
         ];
 
-        $config['itemDesc'] = $this->itemDesc();
+        if ($itemDesc = $this->itemDesc()) {
+            $config['itemDesc'] = $this->itemDesc();
+        } else if ($viewBuilder = $this->itemViewBuilder()) {
+            $config['viewbuilder'] = $viewBuilder;
+        } else {
+            throw new Exception('You should explicitly either declare itemDesc or itemViewBuilder');
+        }
 
         $config['schema'] = ['primaryKey' => $schema->primaryKey];
 
