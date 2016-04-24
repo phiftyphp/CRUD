@@ -23,7 +23,7 @@ trait CRUDReactHasManyEditor
      * itemViewBuilder could be used when you have custom view builder rather
      * than just itemDesc.
      *
-     * 
+     * note that, the name of the view builder should be the javascript class name.
      *
      * @return string
      */
