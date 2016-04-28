@@ -191,7 +191,10 @@ export default {
     });
   },
 
-  handleSummaryChange: function() {
+  /**
+   * @param {Event}
+   */
+  handleSummaryChange: function(e) {
     var summary = this.state.context.summaryStore.getSummary();
     if (this.refs.selectionSection) {
       this.refs.selectionSection.setState({ "numberOfTotalItems": summary.numberOfTotalItems });
@@ -205,7 +208,10 @@ export default {
     }
   },
 
-  handleFilterChange: function() {
+  /**
+   * @param {Event}
+   */
+  handleFilterChange: function(e) {
     this.state.context.actionCreators.updateSummary(this.props.basepath, this.state.context.filterStore.getArgs());
     if (this.refs.pagination) {
       this.refs.pagination.setState({
@@ -215,6 +221,9 @@ export default {
     }
   },
 
+  /**
+   * @param {Event}
+   */
   handleSelect: function(e) {
     e.stopPropagation()
     var $input = $(e.currentTarget);
@@ -233,6 +242,8 @@ export default {
 
   /**
    * handleRowSelect add the checkbox into selectionStore
+   *
+   * @param {Event}
    */
   handleRowSelect: function(e) {
     e.stopPropagation();
@@ -254,6 +265,9 @@ export default {
     }
   },
 
+  /**
+   * @param {Event}
+   */
   handleSelectAll: function(e) {
     var that = this;
     e.stopPropagation();
@@ -272,6 +286,9 @@ export default {
     });
   },
 
+  /**
+   * @param {Exception}
+   */
   handleRecordDelete: function(e) {
     e.stopPropagation();
     var $btn = $(e.currentTarget);
@@ -284,7 +301,9 @@ export default {
   },
 
 
-
+  /**
+   * @param {jQuery} $region
+   */
   initListManager: function($region) {
     var that = this;
     this.table = $region.find('.crud-list table');
@@ -317,10 +336,11 @@ export default {
     // generic to be passed from app props
     this.table.on("click", ".record-edit-btn", this.handleEditAction);
     this.table.on("click", ".record-delete-btn", this.handleRecordDelete);
-
-  
   },
 
+  /**
+   * @param {HTMLElement} controlConfig
+   */
   onRegionLoaded: function(regionDom) {
     var $region = $(regionDom);
     if (this._initTimer) {
@@ -381,6 +401,9 @@ export default {
     ;
   },
 
+  /**
+   * @param {Array<object>} target
+   */
   renderControls: function(controls) {
     var childViews = [];
 

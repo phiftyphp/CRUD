@@ -2,7 +2,7 @@
 <div id="{{ReactElementId}}" class="react-app"> </div>
 <script>
 jQuery(function() {
-  React.render(
+  ReactDOM.render(
       React.createElement({{ReactAppName}}, {{ReactAppConfig|json_encode|raw}}),
       document.getElementById('{{ReactElementId}}'));
 });
