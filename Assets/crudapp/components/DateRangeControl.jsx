@@ -18,7 +18,7 @@ export default React.createClass({
 
   handleStartDateChange: function(e, datestr) {
     if (!datestr) {
-      var input = this.refs.fromDateInput.getDOMNode();
+      var input = React.findDOMNode(this.refs.fromDateInput);
       datestr = input.value;
     }
     jQuery.cookie("dateRangeFrom", datestr);
@@ -27,7 +27,7 @@ export default React.createClass({
 
   handleEndDateChange: function(e, datestr) {
     if (!datestr) {
-      var input = this.refs.toDateInput.getDOMNode();
+      var input = React.findDOMNode(this.refs.toDateInput);
       datestr = input.value;
     }
     jQuery.cookie("dateRangeTo", datestr);

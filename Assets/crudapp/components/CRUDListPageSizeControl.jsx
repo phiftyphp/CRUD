@@ -17,7 +17,7 @@ export default React.createClass({
   },
 
   handleChange: function(e) {
-    var pageSize = this.refs.sizeSelect.getDOMNode().value;
+    var pageSize = React.findDOMNode(this.refs.sizeSelect).value;
 
     // when page size is updated, update the pagination component
     this.props.context.actionCreators.changePageSize(pageSize);
