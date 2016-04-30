@@ -39,7 +39,7 @@ export default React.createClass({
           callback();
         }
         if (that.props.onLoad) {
-          that.props.onLoad(React.findDOMNode(that.refs.content));
+          that.props.onLoad(ReactDOM.findDOMNode(that.refs.content));
         }
       }
     });
@@ -47,7 +47,7 @@ export default React.createClass({
 
   setRegionContent: function(content) {
     if (this.refs.content) {
-      var el = React.findDOMNode(this.refs.content);
+      var el = ReactDOM.findDOMNode(this.refs.content);
       if (el) {
         el.innerHTML = content;
       }

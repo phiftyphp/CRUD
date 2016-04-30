@@ -18,7 +18,7 @@ export default React.createClass({
 
   handleStartDateChange: function(e, datestr) {
     if (!datestr) {
-      var input = React.findDOMNode(this.refs.fromDateInput);
+      var input = ReactDOM.findDOMNode(this.refs.fromDateInput);
       datestr = input.value;
     }
     jQuery.cookie("dateRangeFrom", datestr);
@@ -27,7 +27,7 @@ export default React.createClass({
 
   handleEndDateChange: function(e, datestr) {
     if (!datestr) {
-      var input = React.findDOMNode(this.refs.toDateInput);
+      var input = ReactDOM.findDOMNode(this.refs.toDateInput);
       datestr = input.value;
     }
     jQuery.cookie("dateRangeTo", datestr);
@@ -46,8 +46,8 @@ export default React.createClass({
   initDatePicker: function() {
     var that = this;
     if (this.state.rangeType == 'custom') {
-      var from = React.findDOMNode(this.refs.fromDateInput);
-      var to = React.findDOMNode(this.refs.toDateInput);
+      var from = ReactDOM.findDOMNode(this.refs.fromDateInput);
+      var to = ReactDOM.findDOMNode(this.refs.toDateInput);
 
       $(from).datepicker({
         dateFormat: 'yy/mm/dd',
