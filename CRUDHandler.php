@@ -1303,7 +1303,7 @@ abstract class CRUDHandler extends BaseCRUDHandler
     public function viewRegionAction()
     {
         $this->viewRegionActionPrepare();
-        return $this->render($this->findTemplatePath('view.html'), $args);
+        return $this->render($this->findTemplatePath('view.html'), []);
     }
 
 
