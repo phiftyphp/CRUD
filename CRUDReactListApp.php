@@ -8,6 +8,11 @@ trait CRUDReactListApp {
      */
     protected $reactListApp;
 
+    /**
+     * Export config array for building react list app
+     *
+     * @return array
+     */
     public function buildReactListAppConfig()
     {
         return [

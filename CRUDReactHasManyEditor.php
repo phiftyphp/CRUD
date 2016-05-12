@@ -42,6 +42,28 @@ trait CRUDReactHasManyEditor
      */
     public function itemViewBuilder() { return null; }
 
+
+    /**
+     * Build reference info from parent record.
+     *
+     * @param BaseModel $parentRecord
+     * @param string $relationId
+     * @return array
+     */
+    protected function buildRecordReferences(BaseModel $parentRecord, $relationId)
+    {
+        $parentSchema = $parentRecord->getSchema();
+        $relationship = $parentSchema->getRelation($relationId);
+        $refs = [];
+        $refs[ $relationship['foreign_column'] ] = [
+            'record'              => $parentRecord->toArray(),
+            'key'                 => $relationship['self_column'],
+            'referedRelationship' => $relationship->accessor,
+        ];
+        return $refs;
+    }
+
+
     public function buildReactHasManyEditorConfig(BaseModel $parentRecord, $relationId)
     {
         $modelClass = $this->getModelClass();
@@ -68,14 +90,7 @@ trait CRUDReactHasManyEditor
         }
 
         $config['schema'] = ['primaryKey' => $schema->primaryKey];
-
-        $parentSchema = $parentRecord->getSchema();
-        $relationship = $parentSchema->getRelation($relationId);
-        $config['references'][ $relationship['foreign_column'] ] = [
-            'record' => $parentRecord->toArray(),
-            'key' => $relationship['self_column'],
-            'referedRelationship' => $relationship->accessor,
-        ];
+        $config['references'] = $this->buildRecordReferences($parentRecord, $relationId);
 
         if ($this->canDelete) {
             // Always delete record by primary key

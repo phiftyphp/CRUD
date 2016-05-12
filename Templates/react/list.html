@@ -1,10 +1,3 @@
 {% block body %}
-<div id="{{ReactElementId}}" class="react-app"> </div>
-<script>
-jQuery(function() {
-  ReactDOM.render(
-      React.createElement({{ReactAppName}}, {{ReactAppConfig|json_encode|raw}}),
-      document.getElementById('{{ReactElementId}}'));
-});
-</script>
+{% reactapp ReactAppName with ReactAppConfig %}
 {% endblock %}

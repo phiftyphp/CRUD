@@ -46,7 +46,7 @@ ul.chooser
       .date
         font-weight: bold
 
-    .header
+    .item-header
       .title
         font-size: 2em
         line-height: 140%
@@ -57,12 +57,12 @@ ul.chooser
       .subtitle
         margin-top: 3px
         text-transform: uppercase
-    .desc
+    .item-desc
       margin-top: 10px
       color: #a0a0a0
       max-width: 380px
       padding: 0
-    .footer
+    .item-footer
       padding: 0
       margin-top: 10px
       color: #a0a0a0
@@ -74,12 +74,11 @@ ul.chooser
         margin: 0
       .btn
         margin: 0
-
-    .footer .controls
-      transition: transform ease 500ms
-      transform: translateX(200px)
+      & .controls
+        transition: transform ease 500ms
+        transform: translateX(200px)
     &:hover
-      .footer .controls
+      .item-footer .controls
         transform: translateX(0)
 
     .text
