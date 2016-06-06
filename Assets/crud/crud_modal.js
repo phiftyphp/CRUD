@@ -138,11 +138,11 @@
             }
           }
         });
-        a.plug(ActionBootstrapHighlight, {});
-        return a.plug(ActionMsgbox, {
+        a.plug(new ActionBootstrapHighlight);
+        return a.plug(new ActionMsgbox({
           container: $result,
           fadeOut: false
-        });
+        }));
       };
       if (form) {
         return setupForm(ui, form);

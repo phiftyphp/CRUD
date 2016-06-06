@@ -124,11 +124,11 @@ CRUDModal._initBody = (ui, config) ->
           # Remove the modal when action is executed successfully.
           if config.closeOnSuccess
             setTimeout (-> ui.dialog.foldableModal('close')), 1000
-      a.plug(ActionBootstrapHighlight, {  })
-      a.plug(ActionMsgbox, {
-          container: $result
-          fadeOut: false
-      })
+      a.plug(new ActionBootstrapHighlight)
+      a.plug(new ActionMsgbox({
+        container: $result
+        fadeOut: false
+      }))
     setupForm(ui, form) if form
 
 ###
