@@ -61,7 +61,7 @@ use FormKit\Widget\SelectInput;
  */
 abstract class CRUDHandler extends Controller implements Expandable
 {
-    use CRUDReactListApp;
+    use CRUDReactListEditor;
     use CRUDExporter;
 
     protected $kernel;
