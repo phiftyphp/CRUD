@@ -6,7 +6,7 @@ namespace CRUD;
  *
  * CRUDReactListApp should be deprecated.
  */
-trait CRUDReactListEditor extends CRUDReactListApp {
+trait CRUDReactListEditor {
     /**
      * @var string The react application name
      */
