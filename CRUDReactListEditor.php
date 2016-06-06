@@ -10,7 +10,7 @@ trait CRUDReactListEditor {
     /**
      * @var string The react application name
      */
-    protected $reactListApp = 'CRUDReactListEditor';
+    protected $reactListApp = 'CRUDListEditor';
 
     /**
      * Export config array for building react list app
