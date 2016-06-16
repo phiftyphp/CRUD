@@ -1,5 +1,5 @@
 {
-    "name": "corneltek/crud",
+    "name": "phifty/crud",
     "type": "phifty-bundle",
     "description": "CRUD bundle for phifty framework application",
     "license": "proprietary",
@@ -10,27 +10,8 @@
         }
     ],
     "require": {
-        "corneltek/installers": "dev-master"
-    },
-    "require-dev": {
-        "corneltek/phifty-core": "3.0.x-dev",
-        "corneltek/lazyrecord": "@dev",
-        "corneltek/actionkit": "@dev",
-        "corneltek/sqlbuilder": "@dev",
-        "corneltek/cliframework": "@dev",
-        "corneltek/assetkit": "@dev",
-        "corneltek/locale": "@dev",
-        "corneltek/pux": "@dev",
-        "corneltek/kendo": "@dev",
-        "corneltek/universal": "@dev",
-        "phpsgi/funk": "@dev",
-        "phpsgi/phpsgi": "@dev",
-        "corneltek/emailbundle": "dev-master",
-        "corneltek/adminui": "dev-master"
+        "composer/installers": "~1.0.0"
     },
     "autoload": { "psr-4": { "CRUD\\": "" } },
-    "extra": { "branch-alias": { "dev-master": "3.1.x-dev" } },
-    "repositories": [
-        {"type": "composer", "url": "https://toran.corneltek.com/repo/private/"}
-    ]
+    "extra": { "branch-alias": { "dev-master": "3.1.x-dev" } }
 }
