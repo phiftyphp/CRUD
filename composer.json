@@ -9,10 +9,7 @@
             "email": "yoanlin93@gmail.com"
         }
     ],
-    "require": {
-        "phifty/phifty": "^3.1.0",
-        "composer/installers": "~1.0.0"
-    },
+    "require": { "composer/installers": "dev-master" },
     "autoload": { "psr-4": { "CRUD\\": "" } },
     "extra": { "branch-alias": { "dev-master": "3.1.x-dev" } }
 }
