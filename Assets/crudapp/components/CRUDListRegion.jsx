@@ -49,7 +49,9 @@ export default React.createClass({
     if (this.refs.content) {
       var el = ReactDOM.findDOMNode(this.refs.content);
       if (el) {
-        el.innerHTML = content;
+        // innerHTML assignment will ignore javascripts
+        // el.innerHTML = content;
+        jQuery(el).html(content);
       }
     }
   },

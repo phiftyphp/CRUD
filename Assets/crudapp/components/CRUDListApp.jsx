@@ -14,8 +14,8 @@ import CRUDListSelectionStore from '../stores/CRUDListSelectionStore';
 
 import BulkManager from './BulkManager';
 
-var Dispatcher = require('flux').Dispatcher;
-var React = require('react');
+import {Dispatcher} from "flux";
+import React from "react";
 
 export default {
 
@@ -59,7 +59,6 @@ export default {
   },
 
   componentDidMount: function() {
-
     // the summary should be updated when filter is changed.
     this.state.context.filterStore.addChangeListener(this.handleFilterChange);
     this.state.context.summaryStore.addChangeListener(this.handleSummaryChange);
