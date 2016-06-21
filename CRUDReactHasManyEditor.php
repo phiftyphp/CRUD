@@ -22,6 +22,9 @@ trait CRUDReactHasManyEditor
     public function itemDesc()
     {
         $controls = [];
+        if ($this->canCreate) {
+            $controls[] = ['action' => 'create'];
+        }
         if ($this->canUpdate) {
             $controls[] = ['action' => 'edit'];
         }
