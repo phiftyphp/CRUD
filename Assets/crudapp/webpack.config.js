@@ -12,12 +12,12 @@ module.exports = {
       {
         'test': /\.tsx?$/,
         'loaders': ['ts-loader'],
-        'exclude': [/node_modules/,nodeModulesPath]
+        'exclude': [/node_modules/,excludePaths]
       },
       {
-      test: /\.(js|jsx)$/,
-      loaders: ['babel-loader'],
-      exclude: excludePaths
+        'test': /\.(jsx?)$/,
+        'loaders': ['babel'],
+        'exclude': [/node_modules/,excludePaths]
       }
     ]
   },
