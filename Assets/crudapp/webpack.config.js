@@ -8,11 +8,18 @@ module.exports = {
   entry: __dirname + '/entry.js',
   output: { path: __dirname, filename: './bundle.js' },
   module: {
-    loaders: [{
+    loaders: [
+      {
+        'test': /\.tsx?$/,
+        'loaders': ['ts-loader'],
+        'exclude': [/node_modules/,nodeModulesPath]
+      },
+      {
       test: /\.(js|jsx)$/,
       loaders: ['babel-loader'],
       exclude: excludePaths
-    }]
+      }
+    ]
   },
   externals: {
     // don't bundle the 'react' npm package with our bundle.js
@@ -20,7 +27,7 @@ module.exports = {
     'react': 'React'
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['', '.ts', '.tsx', '.js', '.jsx'],
     fallback: [ path.join(__dirname, "node_modules"), phifty.moduleDirectory],
     alias: aliases
   },
