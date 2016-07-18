@@ -1,96 +1,64 @@
 var constants = require('../constants/CRUDRecordCollectionConstants');
-var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var ActionTypes = constants.ActionTypes;
 
-var CHANGE_EVENT = 'change';
+import CRUDStore from "./CRUDStore";
 
-export default class CRUDRecordCollectionStore extends EventEmitter {
+/**
+ * CRUDRecordCollectionStore loads records from CRUDHandler
+ *
+ * this class provides addRecord, removeRecord
+ */
+export default class CRUDRecordCollectionStore extends CRUDStore {
 
   /**
    * @param {flux.Dispatcher} dispatcher
    * @param {object} config { primaryKey:'id', url: '...', query: { ...search params... } }
    */
   constructor(dispatcher, config) {
-    super();
-    var that = this;
-    this.config = config;
-    this.primaryKey = config.primaryKey || 'id'
-    this.records = {};
-    this.dispatchToken = dispatcher.register(function(action) {
+    var url = config.url;
+
+    // replace the tailing "/search" to make it backward compatible.
+    var baseUrl = url.replace(/\/search$/,''); 
+
+    super({
+      'primaryKey': config.primaryKey || 'id',
+      'page': 1,
+      'params': config.query,
+      'baseUrl': config.baseUrl || baseUrl,
+    });
+
+    this.dispatchToken = dispatcher.register((action) => {
       switch(action.type) {
         case ActionTypes.ADD_RECORD:
-          that.addRecord(action.index, action.record);
+          this.addRecord(action.index, action.record);
           break;
         case ActionTypes.REMOVE_RECORD:
-          that.removeRecord(action.index)
+          this.removeRecord(action.index)
           break;
         case ActionTypes.LOAD_RECORDS:
-          that.loadRecords();
+          this.loadRecords();
           break;
       }
     });
   }
 
-
+  /**
+   * Load records into the store
+   *
+   * @deprecated
+   */
   loadRecords() {
-    var that = this;
-    var primaryKey = this.config.primaryKey || 'id';
+    var primaryKey = this.getPrimaryKey();
     this.records = {};
-    $.getJSON(this.config.url, this.config.query || {}, function(records) {
-      console.log('loaded records', records);
-      if (records instanceof Array) {
-        records.forEach(function(record) {
-          var index = record[primaryKey];
-          that.records[index] = record;
-        });
+    super.search(this.config.url, this.config.query || {}).done((records, done) => {
+      let i = 0 , len = records.length;
+      for (; i < len; i++) {
+        let record = records[i];
+        var key = record[primaryKey];
+        this.records[key] = record;
       }
-      that.emitChangeEvent();
+      done();
     });
-  }
-
-  hasRecord(index) {
-    return this.records[index] ? true : false;
-  }
-
-  addRecord(record) {
-    var index = record[this.primaryKey];
-    this.records[index] = record;
-    this.emitChangeEvent();
-  }
-
-  removeRecord(record) {
-    var index = record[this.primaryKey];
-    delete this.records[index];
-    this.emitChangeEvent();
-  }
-
-  removeAll() {
-    this.records = {};
-    this.emitChangeEvent();
-  }
-
-  objects() {
-    var objs = [];
-    for (var k in this.records) {
-      objs.push(this.records[k]);
-    }
-    return objs;
-  }
-
-  keys() {
-    return this.records.keys();
-  }
-
-  emitChangeEvent() {
-    this.emit(CHANGE_EVENT);
-  }
-
-  addChangeListener(callback) {
-    this.on(CHANGE_EVENT, callback);
-  }
-
-  removeChangeListener(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
   }
 }
