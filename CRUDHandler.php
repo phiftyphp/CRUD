@@ -64,6 +64,9 @@ abstract class CRUDHandler extends Controller implements Expandable
     use CRUDReactListEditor;
     use CRUDExporter;
 
+    use CRUDSearchActions;
+    use CRUDListActions;
+
     protected $kernel;
 
     /**
@@ -206,15 +209,6 @@ abstract class CRUDHandler extends Controller implements Expandable
     public $debug = false;
 
 
-    /**
-     * @var array Fields that are allowed for searching.
-     */
-    protected $searchQueryFields = [];
-
-    /**
-     * @var array model fields for quicksearch
-     */
-    public $quicksearchFields;
 
     /**
      * Current action object. (created from currentRecord)
@@ -286,25 +280,12 @@ abstract class CRUDHandler extends Controller implements Expandable
     public $primaryFields;
 
 
-    /**
-     * @var array column id list for crud list page.
-     */
-    public $listColumns;
-
 
     /**
      * Define filter columns to show the filter widgets
      */
     public $filterColumns = array();
 
-    /**
-     * @var array not so important columns for crud list page.
-     */
-    public $listRightColumns = array();
-
-    public $listMiddleColumns = array();
-
-    protected $_listColumnNames = array();
 
     /**
      * @var array tab panel objects
@@ -593,15 +574,6 @@ abstract class CRUDHandler extends Controller implements Expandable
         return $this->getRoutePrefix() . '/crud/view';
     }
 
-    public function getListRegionPath()
-    {
-        return $this->getRoutePrefix() . '/crud/list';
-    }
-
-    public function getListInnerRegionPath()
-    {
-        return $this->getRoutePrefix() . '/crud/list_inner';
-    }
 
     public function getIndexRegionPath()
     {
@@ -916,44 +888,6 @@ abstract class CRUDHandler extends Controller implements Expandable
         ;
     }
 
-    /**
-     * Returns list title
-     *
-     * @return string title string for list view.
-     */
-    public function getListTitle()
-    {
-        // return __('%1 Management' , $this->getModel()->getLabel() );
-        return __('%1 管理' , $this->getModel()->getLabel() );
-    }
-
-    /**
-     * Get list columns for list view.
-     */
-    public function getListColumns()
-    {
-        if ( $this->_listColumnNames ) {
-            return $this->_listColumnNames;
-        }
-
-        $this->kernel->event->trigger('phifty.crud.list_column_before',$this);
-
-        $columnNames = array();
-        if ( $this->listColumns ) {
-            $columnNames = array_merge($this->listColumns,
-                $this->listMiddleColumns,
-                $this->listRightColumns
-            );
-        } else {
-            // $columnNames = $this->getModel()->getColumnNames();
-            $columnNames = $this->getModel()->getRenderableColumnNames();
-        }
-
-        return $this->_listColumnNames = $columnNames;
-    }
-
-
-
     public function isI18NEnabled()
     {
         return ($this->kernel->bundle('I18N')
@@ -994,16 +928,8 @@ abstract class CRUDHandler extends Controller implements Expandable
 
 
         if ($this->quicksearchFields) {
-            if ( $q = $this->request->param('_q') ) {
-                $w = $collection->where();
-                $c = 0;
-                foreach( $this->quicksearchFields as $field ) {
-                    if ( $c++ < 1 ) {
-                        $w = $w->like( $field , '%' . $q . '%' );
-                    } else {
-                        $w = $w->or()->like( $field , '%' . $q . '%' );
-                    }
-                }
+            if ($q = $this->request->param('_q')) {
+                $this->appendCollectionConditions($collection->where());
             }
         }
         $this->orderCollection($collection);
@@ -1332,33 +1258,6 @@ abstract class CRUDHandler extends Controller implements Expandable
     }
 
 
-    /**
-     * search method applied request query to collection
-     */
-    protected function search(HttpRequest $request)
-    {
-        $model = $this->getModel();
-        $schema = $model->getSchema();
-        $collection = $this->getCollection();
-        foreach ($this->searchQueryFields as $field) {
-            if ($queryParam = $request->param($field)) {
-                $collection->where()
-                    ->equal($field, $queryParam)
-                    ;
-            }
-        }
-        return $collection;
-    }
-
-    /**
-     * Provide the search functionality to return matched collection in JSON
-     * format response.
-     */
-    public function searchAction()
-    {
-        $collection = $this->search($this->getRequest());
-        return $this->toJson($collection->toArray());
-    }
 
 
     // ==================================================================
@@ -1494,52 +1393,7 @@ abstract class CRUDHandler extends Controller implements Expandable
         ]);
     }
 
-    /**
-     * Render list panel.
-     *
-     * The list panel operates the list_inner region with some filter controls.
-     */
-    public function listRegionAction()
-    {
-        // init toolbar controls here, because we need to show the panel.
-        $this->initToolbarControls();
-        $region = $this->createListInnerRegion($_REQUEST);
-        $this->assign('listInnerRegion', $region);
 
-        // please note that we will get all items in list region since we don't have constraint
-        $collection = $this->getCollection();
-
-        $this->assignCRUDVars([
-            // so here is the number of total items
-            'NumberOfTotalItems' => $collection->queryCount(),
-        ]);
-
-        // If reactApp (CRUDListApp) is defined, render a template to initialize the React App
-        if ($this->reactListApp) {
-            return $this->render($this->findTemplatePath('react/list.html'), [
-                'ReactElementId' => uniqid($this->reactListApp),
-                'ReactAppName'   => $this->reactListApp,
-                'ReactAppConfig' => $this->buildReactListAppConfig(),
-            ]);
-        }
-        return $this->render($this->findTemplatePath('list.html'), []);
-    }
-
-    /**
-     * Prepare default/build-in template variable for list region.
-     */
-    public function listInnerRegionAction()
-    {
-        // init toolbar controls here, becase we need to handle the logic
-        $this->initToolbarControls();
-        $collection = $this->getCollection();
-        $this->assignCRUDVars(array(
-            'Items'   => $collection,
-            'Pager'   => $this->createCollectionPager($collection),
-            'Columns' => $this->getListColumns(),
-        ));
-        return $this->render( $this->findTemplatePath('list_inner.html'));
-    }
 
     public function importUploadRegionAction()
     {

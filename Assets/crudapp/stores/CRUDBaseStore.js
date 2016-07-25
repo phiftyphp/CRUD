@@ -1,20 +1,22 @@
 var EventEmitter = require('events').EventEmitter;
 var CHANGE_EVENT = 'change';
 
-class CRUDBaseStore extends EventEmitter
+export default class CRUDBaseStore extends EventEmitter
 {
-  /********************************************
-   * event related methods
-   ********************************************/
-  emitChangeEvent() {
-    this.emit(CHANGE_EVENT);
-  }
-
-  addChangeListener(callback) {
-    this.on(CHANGE_EVENT, callback);
-  }
-
-  removeChangeListener(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
+  /**
+   * config:
+   * - baseUrl: {string} a CRUD handler could be mount to any base url.
+   * - page: {number} the start page.
+   * - pageSize: {number} the page size.
+   * - params: {object} the default parameters that will be used in *every* request.
+   */
+  constructor(config) {
+    super();
+    this.config = config;
+    // the default params that will be used in *every* request.
+    this.params = config.params || {};
+    this.currentPage = config.page || 1;
+    this.baseUrl = config.baseUrl;
+    this.records = {};
   }
 }

@@ -76,7 +76,7 @@ trait CRUDReactHasManyEditor
         // The base config
         $config = [
             'title' => $schema->getLabel(),
-            'basepath' => '/bs/'.$this->crudId, // TODO: remove this dependency, is there a way to predefine this?
+            'baseUrl' => '/bs/'.$this->crudId, // TODO: remove this dependency, is there a way to predefine this?
             'crudId' => $this->crudId,
             'parentAction' => $parentRecord->id ? 'edit' : 'create',
         ];

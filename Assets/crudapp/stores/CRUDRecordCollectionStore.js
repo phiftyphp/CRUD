@@ -1,6 +1,10 @@
-var constants = require('../constants/CRUDRecordCollectionConstants');
+var constants = require('../constants/CRUDStoreActionIds');
 var assign = require('object-assign');
 var ActionTypes = constants.ActionTypes;
+
+
+var EventEmitter = require('events').EventEmitter;
+var CHANGE_EVENT = 'change';
 
 import CRUDStore from "./CRUDStore";
 
@@ -14,20 +18,15 @@ export default class CRUDRecordCollectionStore extends CRUDStore {
   /**
    * @param {flux.Dispatcher} dispatcher
    * @param {object} config { primaryKey:'id', url: '...', query: { ...search params... } }
+   *
    */
   constructor(dispatcher, config) {
-    var url = config.url;
-
-    // replace the tailing "/search" to make it backward compatible.
-    var baseUrl = url.replace(/\/search$/,''); 
-
     super({
       'primaryKey': config.primaryKey || 'id',
       'page': 1,
       'params': config.query,
-      'baseUrl': config.baseUrl || baseUrl,
+      'baseUrl': config.baseUrl || (config.url ? config.url.replace(/\/search$/,'') : null),
     });
-
     this.dispatchToken = dispatcher.register((action) => {
       switch(action.type) {
         case ActionTypes.ADD_RECORD:
@@ -40,25 +39,6 @@ export default class CRUDRecordCollectionStore extends CRUDStore {
           this.loadRecords();
           break;
       }
-    });
-  }
-
-  /**
-   * Load records into the store
-   *
-   * @deprecated
-   */
-  loadRecords() {
-    var primaryKey = this.getPrimaryKey();
-    this.records = {};
-    super.search(this.config.url, this.config.query || {}).done((records, done) => {
-      let i = 0 , len = records.length;
-      for (; i < len; i++) {
-        let record = records[i];
-        var key = record[primaryKey];
-        this.records[key] = record;
-      }
-      done();
     });
   }
 }

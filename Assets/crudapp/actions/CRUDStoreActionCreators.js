@@ -1,6 +1,6 @@
-var ActionTypes = require('../constants/CRUDRecordCollectionConstants').ActionTypes;
+var ActionTypes = require('../constants/CRUDStoreActionIds').ActionTypes;
 
-export default class CRUDRecordCollectionActionCreators {
+export default class CRUDStoreActionCreators {
   constructor(dispatcher) {
     this.dispatcher = dispatcher;
   }

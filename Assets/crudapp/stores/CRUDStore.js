@@ -1,28 +1,14 @@
+
 import CRUDBaseStore from "./CRUDBaseStore";
+
+var EventEmitter = require('events').EventEmitter;
+var CHANGE_EVENT = 'change';
 
 /**
  * CRUDStore defines the basic functions for CRUD.
  */
-class CRUDStore extends CRUDBaseStore
+export default class CRUDStore extends CRUDBaseStore
 {
-
-  /**
-   * config:
-   * - baseUrl: {string} a CRUD handler could be mount to any base url.
-   * - page: {number} the start page.
-   * - pageSize: {number} the page size.
-   * - params: {object} the default parameters that will be used in *every* request.
-   */
-  constructor(config) {
-    super();
-    this.config = config;
-    // the default params that will be used in *every* request.
-    this.params = config.params || {};
-    this.currentPage = config.page || 1;
-    this.baseUrl = config.baseUrl;
-    this.records = {};
-  }
-
   getSearchUrl() {
     return this.baseUrl + "/search";
   }
@@ -40,7 +26,7 @@ class CRUDStore extends CRUDBaseStore
    */
   search(_params) {
     let $deferred = jQuery.Deferred();
-    let params = Object.create(this.params, _params);
+    let params = this.buildParams(_params);
     $.getJSON(this.getSearchUrl(), params, (response) => {
       if (response instanceof Array) {
         $deferred.resolve(response, this.emitChangeEvent);
@@ -49,6 +35,15 @@ class CRUDStore extends CRUDBaseStore
       }
     });
     return $deferred;
+  }
+
+  /**
+   * Build request parameters
+   *
+   * merge the default parameters and the overrides.
+   */
+  buildParams(_params) {
+    return Object.create(this.params, _params);
   }
 
   /**
@@ -108,6 +103,27 @@ class CRUDStore extends CRUDBaseStore
   }
 
   /**
+   * Load records into the store
+   *
+   * @deprecated
+   */
+  loadRecords() {
+    var primaryKey = this.getPrimaryKey();
+    this.records = {};
+
+    let url = this.getSearchUrl();
+    this.search(url, this.buildParams()).done((records, done) => {
+      let i = 0 , len = records.length;
+      for (; i < len; i++) {
+        let record = records[i];
+        let key = record[primaryKey];
+        this.records[key] = record;
+      }
+      done();
+    });
+  }
+
+  /**
    * add one record to the store by it's primary key 
    *
    * @param {Object<Record>}
@@ -118,6 +134,7 @@ class CRUDStore extends CRUDBaseStore
     this.records[key] = record;
     this.emitChangeEvent();
   }
+
 
   /**
    * remove one record by the record object.
@@ -140,6 +157,19 @@ class CRUDStore extends CRUDBaseStore
   }
 
 
+  /********************************************
+   * event related methods
+   ********************************************/
+  emitChangeEvent() {
+    this.emit(CHANGE_EVENT);
+  }
 
+  addChangeListener(callback) {
+    this.on(CHANGE_EVENT, callback);
+  }
+
+  removeChangeListener(callback) {
+    this.removeListener(CHANGE_EVENT, callback);
+  }
 }
 

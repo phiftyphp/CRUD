@@ -17,7 +17,7 @@ trait CRUDReactListApp {
     {
         return [
             "crudId"           => $this->crudId,
-            "basepath"         => $this->getRoutePrefix(),
+            "baseUrl"         => $this->getRoutePrefix(),
             "namespace"        => $this->namespace,
             "model"            => $this->modelName,
             "modelLabel"       => $this->getRecordLabel(),
