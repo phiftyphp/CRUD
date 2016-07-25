@@ -6,7 +6,9 @@ var EventEmitter = require('events').EventEmitter;
 var CHANGE_EVENT = 'change';
 
 /**
- * CRUDStore defines the basic functions for CRUD.
+ * CRUDStore defines the basic functions for CRUD
+ *
+ * Map Store
  */
 export default class CRUDStore extends CRUDBaseStore
 {
@@ -49,34 +51,6 @@ export default class CRUDStore extends CRUDBaseStore
     return this.config.pageSize || 10;
   }
 
-  /**
-   * the search API doesn't change the data defined in the store, it returns a
-   * jQuery.Deferred object and you can setup a done callback on it.
-   *
-   * @param {Function} callback: (records, done) { done(); }
-   * @return {jQuery.Deferred}
-   */
-  search(_params) {
-    let $deferred = jQuery.Deferred();
-    let params = this.buildParams(_params);
-    $.getJSON(this.getSearchUrl(), params, (response) => {
-      if (response instanceof Array) {
-        $deferred.resolve(response, this.emitChangeEvent.bind(this));
-      } else {
-        $deferred.reject(response);
-      }
-    });
-    return $deferred;
-  }
-
-  /**
-   * Build request parameters
-   *
-   * merge the default parameters and the overrides.
-   */
-  buildParams(_params) {
-    return Object.assign(this.params, _params);
-  }
 
   /**
    * Switch page to {page}
@@ -186,21 +160,5 @@ export default class CRUDStore extends CRUDBaseStore
   removeAll() {
     this.records = {};
     this.emitChangeEvent();
-  }
-
-
-  /********************************************
-   * event related methods
-   ********************************************/
-  emitChangeEvent() {
-    super.emit(CHANGE_EVENT);
-  }
-
-  addChangeListener(callback) {
-    this.on(CHANGE_EVENT, callback);
-  }
-
-  removeChangeListener(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
   }
 }

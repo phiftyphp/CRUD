@@ -1,5 +1,5 @@
 import React from "react";
-import CRUDRecordCollectionStore  from "../stores/CRUDRecordCollectionStore";
+import CRUDStore  from "../stores/CRUDStore";
 import CRUDStoreActionCreators from "../actions/CRUDStoreActionCreators";
 import ImageCoverViewBuilder from "../viewbuilder/ImageCoverViewBuilder";
 import TextCoverViewBuilder from "../viewbuilder/TextCoverViewBuilder";
@@ -129,7 +129,7 @@ export default React.createClass({
 
     // predefined the load behavior
     // TODO: should we move the loader config to loadRecords action method?
-    state.recordCollectionStore = new CRUDRecordCollectionStore(dispatcher, {
+    this.store = new CRUDStore(dispatcher, {
       "baseUrl": this.props.baseUrl,
       "params": this.buildReferenceParams(this.props.load ? this.props.load.query : {} || {})
     });
@@ -140,7 +140,7 @@ export default React.createClass({
   },
 
   componentDidMount: function() {
-    this.state.recordCollectionStore.addChangeListener(this.handleStoreChange);
+    this.store.addChangeListener(this.handleStoreChange);
     // "update" or "edit" should trigger record loading.
     if (this.props.parentAction != "create") {
       this.state.recordCollectionActionCreators.loadRecords();
@@ -148,7 +148,7 @@ export default React.createClass({
   },
 
   componentWillUnmount: function() {
-    this.state.recordCollectionStore.removeChangeListener(this.handleStoreChange);
+    this.store.removeChangeListener(this.handleStoreChange);
   },
 
 
@@ -180,7 +180,7 @@ export default React.createClass({
 
   /********** BINDING METHODS ***********/
   handleStoreChange: function() {
-    var records = this.state.recordCollectionStore.objects();
+    var records = this.store.objects();
     this.setState({ '_records': records });
   },
 
@@ -203,7 +203,7 @@ export default React.createClass({
     var defer = CRUDRelModal.open("新增" + this.props.title, this.props.baseUrl + "/crud/edit", params);
     defer.done(function(resp) {
       if (resp.success && typeof resp.data !== "undefined") {
-        that.state.recordCollectionStore.addRecord(resp.data);
+        that.store.addRecord(resp.data);
       } else {
         console.error("failed to add record", resp);
       }
@@ -232,8 +232,8 @@ export default React.createClass({
     defer.done(function(resp) {
       if (resp.success && typeof resp.data !== "undefined") {
         // Sometimes resp.data doesnt contains all fields
-        //   that.state.recordCollectionStore.addRecord(resp.data);
-        that.state.recordCollectionStore.loadRecords(resp.data);
+        //   that.state.store.addRecord(resp.data);
+        that.store.loadRecords(resp.data);
       } else {
         console.error("failed to add record", resp);
       }
@@ -270,7 +270,7 @@ export default React.createClass({
 
         config.onSuccess = (resp) => {
           // TODO: remove the item when success
-          this.state.recordCollectionStore.removeRecord(item);
+          this.store.removeRecord(item);
         };
         config.onError = (resp) => { };
 
