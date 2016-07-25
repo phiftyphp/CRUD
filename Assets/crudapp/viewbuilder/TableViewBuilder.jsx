@@ -75,12 +75,17 @@ export default class TableViewBuilder extends BaseViewBuilder {
 
     return <tr key={key}>
       {this.itemDesc.columns.map(function(col, i) {
-        var keys = col.key.split(/\./);
-        var k;
-        var v = record;
-        while (k = keys.pop()) {
+        let keys = col.key.split(/\./);
+        let k;
+        let v = record;
+        while ((k = keys.shift()) && v) {
           v = v[k];
         }
+
+        if (col.formatter && col.formatter instanceof Function) {
+          v = col.formatter(v);
+        }
+
         // Render form fields
         return <td key={i}>
           <span style={col.style}>{v}</span>

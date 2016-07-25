@@ -57,8 +57,4 @@ trait CRUDSearchActions {
         $collection = $this->search($this->getRequest());
         return $this->toJson($collection->toArray());
     }
-
-
-
-
 }
