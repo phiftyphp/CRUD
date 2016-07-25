@@ -114,14 +114,14 @@ export default class BaseViewBuilder {
    */
   renderItemControls(target, record, controls) {
     return <div className="btn-group">
-      {controls.map((control, i) => {
+      {controls ? controls.map((control, i) => {
         switch (control.action || control.feature) {
           case "edit":
             return this.renderEditButton(target, record);
           case "delete":
             return this.renderDeleteButton(target, record);
         }
-      })}
+      }) : null}
     </div>;
   }
 

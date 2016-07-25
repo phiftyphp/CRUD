@@ -1,6 +1,7 @@
 
 import CRUDBaseStore from "./CRUDBaseStore";
-
+import CRUDStoreActionIds from "../constants/CRUDStoreActionIds";
+var ActionTypes = CRUDStoreActionIds.ActionTypes;
 var EventEmitter = require('events').EventEmitter;
 var CHANGE_EVENT = 'change';
 
@@ -9,6 +10,37 @@ var CHANGE_EVENT = 'change';
  */
 export default class CRUDStore extends CRUDBaseStore
 {
+  /**
+   * @param {flux.Dispatcher} dispatcher
+   * @param {object} config { primaryKey:'id', url: '...', query: { ...search params... } }
+   */
+  constructor(dispatcher, config) {
+    super({
+      'primaryKey': config.primaryKey || 'id',
+      'page': 1,
+      'params': config.query,
+      'baseUrl': config.baseUrl || (config.url ? config.url.replace(/\/search$/,'') : null),
+    });
+    this.dispatchToken = dispatcher.register((action) => {
+      switch(action.type) {
+        case ActionTypes.ADD_RECORD:
+          this.addRecord(action.index, action.record);
+          break;
+        case ActionTypes.REMOVE_RECORD:
+          this.removeRecord(action.index)
+          break;
+        case ActionTypes.LOAD_RECORDS:
+          this.loadRecords();
+          break;
+        case ActionTypes.APPEND_RECORDS:
+          // TODO: fix me
+          this.loadRecords();
+          break;
+      }
+    });
+  }
+
+
   getSearchUrl() {
     return this.baseUrl + "/search";
   }
@@ -29,7 +61,7 @@ export default class CRUDStore extends CRUDBaseStore
     let params = this.buildParams(_params);
     $.getJSON(this.getSearchUrl(), params, (response) => {
       if (response instanceof Array) {
-        $deferred.resolve(response, this.emitChangeEvent);
+        $deferred.resolve(response, this.emitChangeEvent.bind(this));
       } else {
         $deferred.reject(response);
       }
@@ -43,7 +75,7 @@ export default class CRUDStore extends CRUDBaseStore
    * merge the default parameters and the overrides.
    */
   buildParams(_params) {
-    return Object.create(this.params, _params);
+    return Object.assign(this.params, _params);
   }
 
   /**
@@ -59,7 +91,7 @@ export default class CRUDStore extends CRUDBaseStore
     });
     $.getJSON(this.getSearchUrl(), params, (response) => {
       if (response instanceof Array) {
-        $deferred.resolve(response, this.emitChangeEvent);
+        $deferred.resolve(response, this.emitChangeEvent.bind(this));
       } else {
         $deferred.reject(response);
       }
@@ -113,7 +145,7 @@ export default class CRUDStore extends CRUDBaseStore
 
     let url = this.getSearchUrl();
     this.search(url, this.buildParams()).done((records, done) => {
-      let i = 0 , len = records.length;
+      let i = 0, len = records.length;
       for (; i < len; i++) {
         let record = records[i];
         let key = record[primaryKey];
@@ -161,7 +193,7 @@ export default class CRUDStore extends CRUDBaseStore
    * event related methods
    ********************************************/
   emitChangeEvent() {
-    this.emit(CHANGE_EVENT);
+    super.emit(CHANGE_EVENT);
   }
 
   addChangeListener(callback) {
@@ -172,4 +204,3 @@ export default class CRUDStore extends CRUDBaseStore
     this.removeListener(CHANGE_EVENT, callback);
   }
 }
-

@@ -87,7 +87,7 @@ export default class TableViewBuilder extends BaseViewBuilder {
         </td>;
       })}
       <td key="controls">
-        {this.renderItemControls(target,record, this.itemDesc.controls)}
+        {this.renderItemControls(target,record, this.itemDesc.controls || [])}
         {formFields}
       </td>
     </tr>;
