@@ -28,7 +28,9 @@ export default {
     /*
      * the baseUrl of a CRUD handler, usually "/bs"
      */
-    "baseUrl": React.PropTypes.string.isRequired,
+    "baseUrl": React.PropTypes.string,
+    "basepath": React.PropTypes.string, // previous property
+
     "namespace": React.PropTypes.string.isRequired,
     "model": React.PropTypes.string.isRequired,
     "modelLabel": React.PropTypes.string.isRequired,
@@ -62,7 +64,7 @@ export default {
     // the summary should be updated when filter is changed.
     this.state.context.filterStore.addChangeListener(this.handleFilterChange);
     this.state.context.summaryStore.addChangeListener(this.handleSummaryChange);
-    this.state.context.actionCreators.updateSummary(this.props.baseUrl, this.state.context.filterStore.getArgs());
+    this.state.context.actionCreators.updateSummary((this.props.baseUrl || this.props.basepath), this.state.context.filterStore.getArgs());
   },
 
   componentWillUnmount: function() {
@@ -78,7 +80,7 @@ export default {
       "title": "建立新的" + this.props.modelLabel,
       "size": "large",
       "side": true,
-      "url": this.props.baseUrl + "/crud/create",
+      "url": (this.props.basepath || this.props.baseUrl) + "/crud/create",
       "closeOnSuccess": true,
       "init": function(e, ui) {
         // the modal content init callback
@@ -99,7 +101,7 @@ export default {
       "size": "large",
       "side": true,
       "closeOnSuccess": true,
-      "url": this.props.baseUrl + "/crud/edit",
+      "url": (this.props.basepath || this.props.baseUrl) + "/crud/edit",
       "id": parseInt($btn.data("recordId")),
       "init": function(e, ui) {
         // the modal content init callback
@@ -114,14 +116,14 @@ export default {
   handleExcelExportAction: function(e) {
     // get the arguments from current state
     var params = this.refs.region.getCurrentQueryParams();
-    var url = this.props.baseUrl + "/export/excel?" + jQuery.param(params);
+    var url = (this.props.basepath || this.props.baseUrl) + "/export/excel?" + jQuery.param(params);
     window.location = url;
   },
 
   handleCsvExportAction: function(e) {
     // get the arguments from current state
     var params = this.refs.region.getCurrentQueryParams();
-    var url = this.props.baseUrl + "/export/csv?" + jQuery.param(params);
+    var url = (this.props.basepath || this.props.baseUrl) + "/export/csv?" + jQuery.param(params);
     window.location = url;
   },
 
@@ -159,7 +161,7 @@ export default {
       CRUDModal.update(ui, {
         "title": "選擇對應欄位",
         "ajax": {
-          "url": that.props.baseUrl + "/import/column-map"
+          "url": (this.props.basepath || that.props.baseUrl) + "/import/column-map"
         },
         "controls": [],
         "init": function(e, ui) {
@@ -173,7 +175,7 @@ export default {
       "title": "匯入資料",
       "size": "large",
       "side": true,
-      "url": that.props.baseUrl + "/import/upload",
+      "url": (this.props.basepath || that.props.baseUrl) + "/import/upload",
       "init": function(e, ui) {
         // the modal content init callback
       },
@@ -211,7 +213,7 @@ export default {
    * @param {Event}
    */
   handleFilterChange: function(e) {
-    this.state.context.actionCreators.updateSummary(this.props.baseUrl, this.state.context.filterStore.getArgs());
+    this.state.context.actionCreators.updateSummary((this.props.basepath||this.props.baseUrl), this.state.context.filterStore.getArgs());
     if (this.refs.pagination) {
       this.refs.pagination.setState({
         "pageSize": this.state.context.filterStore.getPageSize(),
@@ -464,8 +466,8 @@ export default {
             </div>
           </div>
         </div>
-        <CRUDListRegion ref="region" 
-          path={this.props.baseUrl + "/crud/list_inner"} 
+        <CRUDListRegion ref="region"
+          path={(this.props.baseUrl || this.props.basepath) + "/crud/list_inner"} 
           context={this.state.context}
           filterStore={this.state.context.filterStore} 
           args={this.state.filters} 
