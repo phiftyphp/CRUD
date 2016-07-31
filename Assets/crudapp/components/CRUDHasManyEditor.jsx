@@ -123,18 +123,16 @@ export default React.createClass({
   getInitialState: function() {
 
     // create a dispatcher object in each editor scope.
-    var dispatcher = new Dispatcher;
+    this.dispatcher = new Dispatcher;
     var state = {};
-    state.dispatcher = dispatcher;
 
     // predefined the load behavior
     // TODO: should we move the loader config to loadRecords action method?
-    this.store = new CRUDStore(dispatcher, {
+    this.store = new CRUDStore(this.dispatcher, {
       "baseUrl": this.props.baseUrl,
-      "params": this.buildReferenceParams(this.props.load ? this.props.load.query : {} || {})
+      "params": this.buildReferenceParams({})
     });
-
-    state.recordCollectionActionCreators = new CRUDStoreActionCreators(dispatcher);
+    this.storeActionCreators = new CRUDStoreActionCreators(this.dispatcher);
     state._records = [];
     return state;
   },
@@ -143,7 +141,7 @@ export default React.createClass({
     this.store.addChangeListener(this.handleStoreChange);
     // "update" or "edit" should trigger record loading.
     if (this.props.parentAction != "create") {
-      this.state.recordCollectionActionCreators.loadRecords();
+      this.storeActionCreators.loadRecords();
     }
   },
 
@@ -168,7 +166,7 @@ export default React.createClass({
    * @param {object} predefinedParameters
    */
   buildReferenceParams: function(predefinedParameters) {
-    var params = Object.assign({}, predefinedParameters);
+    var params = _.extend({}, predefinedParameters || {});
     if (this.props.references) {
       for (var foreignKey in this.props.references) {
         var referenceInfo = this.props.references[foreignKey];
@@ -223,17 +221,17 @@ export default React.createClass({
     var params = this.buildReferenceParams();
 
     if (this.props.schema.primaryKey) {
-      params[ this.props.schema.primaryKey ] = item[ this.props.schema.primaryKey ];
+      params[this.props.schema.primaryKey] = item[ this.props.schema.primaryKey];
     } else {
       params.id = item.id;
     }
 
     var defer = CRUDRelModal.open("編輯" + this.props.title, this.props.baseUrl + "/crud/edit", params);
-    defer.done(function(resp) {
+    defer.done((resp) => {
       if (resp.success && typeof resp.data !== "undefined") {
         // Sometimes resp.data doesnt contains all fields
         //   that.state.store.addRecord(resp.data);
-        that.store.loadRecords(resp.data);
+        this.store.loadRecords(resp.data);
       } else {
         console.error("failed to add record", resp);
       }

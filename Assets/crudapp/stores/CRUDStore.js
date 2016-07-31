@@ -17,10 +17,11 @@ export default class CRUDStore extends CRUDBaseStore
    * @param {object} config { primaryKey:'id', url: '...', query: { ...search params... } }
    */
   constructor(dispatcher, config) {
+    // console.log('CRUDStore', config);
     super({
       'primaryKey': config.primaryKey || 'id',
       'page': 1,
-      'params': config.query,
+      'params': config.params || config.query,
       'baseUrl': config.baseUrl || (config.url ? config.url.replace(/\/search$/,'') : null),
     });
     this.dispatchToken = dispatcher.register((action) => {
@@ -36,41 +37,10 @@ export default class CRUDStore extends CRUDBaseStore
           break;
         case ActionTypes.APPEND_RECORDS:
           // TODO: fix me
-          this.loadRecords();
+          // this.loadRecords();
           break;
       }
     });
-  }
-
-
-  getSearchUrl() {
-    return this.baseUrl + "/search";
-  }
-
-  getPageSize() {
-    return this.config.pageSize || 10;
-  }
-
-
-  /**
-   * Switch page to {page}
-   *
-   * @param {number} page page number.
-   * @return {jQuery.Deferred}
-   */
-  page(page) {
-    let params = Object.create(this.params, {
-      page: this.currentPage,
-      pagenum: this.getPageSize()
-    });
-    $.getJSON(this.getSearchUrl(), params, (response) => {
-      if (response instanceof Array) {
-        $deferred.resolve(response, this.emitChangeEvent.bind(this));
-      } else {
-        $deferred.reject(response);
-      }
-    });
-    return $deferred;
   }
 
 
@@ -79,11 +49,6 @@ export default class CRUDStore extends CRUDBaseStore
    */
   load(id) {
 
-  }
-
-
-  getPrimaryKey() {
-    return this.config.primaryKey || 'id';
   }
 
   /**
@@ -118,7 +83,7 @@ export default class CRUDStore extends CRUDBaseStore
     this.records = {};
 
     let url = this.getSearchUrl();
-    this.search(url, this.buildParams()).done((records, done) => {
+    this.search(url, {}).done((records, done) => {
       let i = 0, len = records.length;
       for (; i < len; i++) {
         let record = records[i];
