@@ -929,7 +929,7 @@ abstract class CRUDHandler extends Controller implements Expandable
 
         if ($this->quicksearchFields) {
             if ($q = $this->request->param('_q')) {
-                $this->appendCollectionConditions($collection->where());
+                $this->appendCollectionConditions($collection->where(), $q);
             }
         }
         $this->orderCollection($collection);
@@ -1329,7 +1329,7 @@ abstract class CRUDHandler extends Controller implements Expandable
     public function viewRegionAction()
     {
         $this->viewRegionActionPrepare();
-        return $this->render($this->findTemplatePath('view.html'), $args);
+        return $this->render($this->findTemplatePath('view.html'), []);
     }
 
 

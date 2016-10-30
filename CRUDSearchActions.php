@@ -36,11 +36,11 @@ trait CRUDSearchActions {
     /**
      * @param $where Conditions
      */
-    protected function appendCollectionConditions($where)
+    protected function appendCollectionConditions($where, $q)
     {
         $c = 0;
         foreach ($this->quicksearchFields as $field) {
-            if ( $c++ < 1 ) {
+            if ($c++ < 1) {
                 $where = $where->like( $field , '%' . $q . '%' );
             } else {
                 $where = $where->or()->like( $field , '%' . $q . '%' );
