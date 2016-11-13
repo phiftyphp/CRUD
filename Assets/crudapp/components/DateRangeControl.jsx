@@ -108,7 +108,7 @@ export default React.createClass({
     options.push(<option key={'day'} value={'day'}>單日</option>);
     options.push(<option key={'custom'} value={'custom'}>自訂</option>);
     dateFrom.push(
-      <select id="date-range-type" name="date-range-type" className="form-control"
+      <select key="date-range-type" id="date-range-type" name="date-range-type" className="form-control"
           defaultValue={this.state.rangeType}
           onChange={this.handleRangeTypeChange}>
         {options}
@@ -118,10 +118,10 @@ export default React.createClass({
 
 
     if (this.state.rangeType == 'custom') {
-      dateFrom.push(<span key="custom-date">
+      dateFrom.push(<span key="custom-date-range">
               <label htmlFor="date-range-from">起日</label>
               <input ref="fromDateInput" id="date-range-from"
-                    name="date-range-from" 
+                    name="date-range-from"
                     className="form-control datepicker"
                     size={12}
                     defaultValue={this.state.from} onChange={this.handleStartDateChange}/>
@@ -135,7 +135,7 @@ export default React.createClass({
         </span>
       );
     } else if (this.state.rangeType == 'day') {
-      dateFrom.push(<span key="custom-date">
+      dateFrom.push(<span key="custom-date-single">
         <label htmlFor="date-range-from">日期</label>
         <input ref="fromDateInput" id="date-range-from"
               name="date-range-from" className="form-control datepicker"
