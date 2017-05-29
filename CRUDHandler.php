@@ -1,5 +1,7 @@
 <?php
+
 namespace CRUD;
+
 // use WebUI\Components\Pager;
 use WebUI\Components\Breadcrumbs;
 use Phifty\Web\RegionPager;
@@ -14,13 +16,11 @@ use CRUD\Action\UploadSessionFile;
 use CRUD\Action\UploadExcelFile;
 use CRUD\Importer\ExcelImporter;
 
-
 use Maghead\Runtime\Model;
 use Maghead\Runtime\Collection;
 use Maghead\Runtime\Repo;
 
 use Pux\Mux;
-use Pux\Expandable;
 use ActionKit\Action;
 use ReflectionClass;
 use Exception;
@@ -64,7 +64,7 @@ use FormKit\Widget\SelectInput;
  * Front-end path is mounted on /bs/{crudId or templateId}
  *
  */
-abstract class CRUDHandler extends Controller implements Expandable
+abstract class CRUDHandler extends Controller
 {
     use CRUDReactListEditor;
     use CRUDExporter;
@@ -432,6 +432,11 @@ abstract class CRUDHandler extends Controller implements Expandable
         $this->initNavBar();
     }
 
+    public function getModelSchema()
+    {
+        return $this->modelClass::getSchema();
+    }
+
     /**
      * Get model object.
      *
@@ -451,22 +456,22 @@ abstract class CRUDHandler extends Controller implements Expandable
     }
 
     /**
-     * Create the default collection
+     * Create the default collection from the repo
+     *
+     * TODO: handle repo.
      *
      * @return Maghead\Runtime\Collection
      */
     protected function createCollection()
     {
-        $model = $this->getModel();
-        return $model->asCollection();
+        $class = $this->modelClass::COLLECTION_CLASS;
+        return new $class;
     }
 
     public function createDefaultCollection()
     {
         return $this->createCollection();
     }
-
-
 
     protected function initNavBar()
     {
@@ -479,7 +484,7 @@ abstract class CRUDHandler extends Controller implements Expandable
 
     protected function initPermissions()
     {
-        if ($this->resourceId) {
+        if ($this->resourceId && $this->kernel->accessControl) {
 
             $currentUser = $this->kernel->currentUser;
 
@@ -1571,7 +1576,4 @@ abstract class CRUDHandler extends Controller implements Expandable
             'canEditInNewWindow'  => $this->canEditInNewWindow,
         ];
     }
-
-
-
 }

@@ -23,7 +23,9 @@
         "phpsgi/phpsgi": "@dev",
         "phpsgi/funk": "@dev",
         "maghead/maghead": "@dev",
-        "maghead/magsql": "@dev"
+        "maghead/magsql": "@dev",
+        "phifty/adminui": "4.0.x-dev",
+        "phifty/userbundle": "4.0.x-dev"
     },
     "autoload": { "psr-4": { "CRUD\\": "" } },
     "extra": {
