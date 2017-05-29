@@ -3,3 +3,6 @@ node_modules
 .sass-cache
 .asset-entries.json
 .css.map
+vendor
+frameworks
+bundles
