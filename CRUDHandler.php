@@ -308,7 +308,7 @@ abstract class CRUDHandler extends Controller implements Expandable
     protected $navStack = [
         ['label' => '主頁', 'href' => '/bs'],
     ];
-	
+
     /**
      * @var array An array that defines import field names.
      */
@@ -396,9 +396,6 @@ abstract class CRUDHandler extends Controller implements Expandable
         // XXX: currently we use FooBundle\FooBundle as the main bundle class.
         $bundleClass = "$ns\\$ns";
         if (class_exists($bundleClass)) {
-            $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance($this->kernel);
-        } else {
-            $bundleClass = "$ns\\Application";
             $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance($this->kernel);
         }
 
