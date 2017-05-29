@@ -23,6 +23,7 @@ use Exception;
 use Universal\Http\HttpRequest;
 
 use ActionKit\ActionTemplate\RecordActionTemplate;
+use Doctrine\Common\Inflector\Inflector;
 
 use PHPExcel_IOFactory;
 
@@ -375,7 +376,7 @@ abstract class CRUDHandler extends Controller implements Expandable
 
 
         if (! $this->crudId) {
-            $this->crudId = \Phifty\Inflector::getInstance()->underscore($this->modelName);;
+            $this->crudId = Inflector::tableize($this->modelName);
         }
         if (! $this->templateId) {
             $this->templateId = $this->crudId;
