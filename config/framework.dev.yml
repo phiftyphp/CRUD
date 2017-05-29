@@ -35,6 +35,4 @@ ServiceProviders:
     Paths:
       - bundles
 Bundles:
-  UserBundle:
-    UseAccount: true
-    MultiRole: true
+  CRUD:
