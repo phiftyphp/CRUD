@@ -10,12 +10,23 @@
         }
     ],
     "require": {
-        "composer/installers": "^1"
+        "composer/installers": "^1",
+        "phifty/phifty": "4.0.x-dev"
+    },
+    "require-dev": {
+        "corneltek/cliframework": "@dev",
+        "corneltek/actionkit": "@dev",
+        "corneltek/assetkit": "@dev",
+        "corneltek/codegen": "@dev",
+        "corneltek/kendo": "@dev",
+        "corneltek/pux": "@dev",
+        "phpsgi/phpsgi": "@dev",
+        "phpsgi/funk": "@dev",
+        "maghead/maghead": "@dev",
+        "maghead/magsql": "@dev"
     },
     "autoload": { "psr-4": { "CRUD\\": "" } },
     "extra": {
-        "branch-alias": {
-            "dev-master": "4.0.x-dev"
-        }
+        "branch-alias": { "dev-master": "4.0.x-dev" }
     }
 }
