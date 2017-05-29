@@ -952,15 +952,18 @@ abstract class CRUDHandler extends Controller
      *
      * @param Maghead\Runtime\Collection
      */
-    protected function orderCollection(Collection $collection)
+    public function orderCollection(Collection $collection)
     {
         $orderColumn = $this->request->param('_order_column');
         $orderBy     = $this->request->param('_order_by');
-        if ( $orderColumn && $orderBy ) {
+
+        // TODO: validate orderBy
+        if ($orderColumn && $orderBy) {
             $collection->orderBy( $orderColumn , $orderBy );
-        } elseif ( $this->defaultOrder ) {
+        } else if ( $this->defaultOrder ) {
             $collection->orderBy( $this->defaultOrder[0], $this->defaultOrder[1]);
         }
+        return $collection;
     }
 
 
