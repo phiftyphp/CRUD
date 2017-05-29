@@ -31,7 +31,7 @@ class CollectionChooser extends ExpandableController
     public $labelField;
     public $order = array(array('id'));
 
-    public static function expand()
+    public function expand(array $options = [], $dynamic = true)
     {
         $class = get_called_class();
         $routeset = new \Roller\RouteSet;

@@ -1,5 +1,6 @@
 <?php
 namespace CRUD\RESTful;
+
 use Roller\Plugin\RESTful\ResourceHandler as BaseResourceHandler;
 
 class RollerResourceHandler extends BaseResourceHandler

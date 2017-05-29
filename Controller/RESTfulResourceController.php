@@ -1,5 +1,7 @@
 <?php
+
 namespace CRUD\Controller;
+
 use Pux\Mux;
 use Pux\Controller\RESTfulController as BaseRESTfulController;
 use LogicException;
@@ -13,23 +15,12 @@ class RESTfulResourceController extends BaseRESTfulController
         return $this->createModel()->asCollection();
     }
 
-    public function createModel()
-    {
-        if (!$this->recordClass) {
-            throw new LogicException(get_class($this) . ":recordClass is not defined.");
-        }
-        return new $this->recordClass;
-    }
-
     public function loadRecord($id)
     {
-        $record = $this->createModel();
-        $ret = $record->find($id);
-        $this->checkRecordResult($ret);
-        return $record;
+        return $this->recordClass::load($id);
     }
 
-    public function checkRecordResult($result) 
+    public function checkRecordResult($result)
     {
         if ( ! $result->success ) {
             $this->codeForbidden();
@@ -93,9 +84,6 @@ class RESTfulResourceController extends BaseRESTfulController
     public function loadAction($id)
     {
         $record = $this->loadRecord($id);
-        // return $record->toArray();
-        return [200, [], json_encode([ 'action' => 'delete' ])];
+        return [200, ['Content-Type: application/json;'], json_encode($record->toArray(), JSON_PRETTY_PRINT) ];
     }
 }
-
-
