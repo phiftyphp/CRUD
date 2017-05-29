@@ -13,8 +13,12 @@ use CRUD\TabPanel;
 use CRUD\Action\UploadSessionFile;
 use CRUD\Action\UploadExcelFile;
 use CRUD\Importer\ExcelImporter;
-use LazyRecord\BaseModel;
-use LazyRecord\BaseCollection;
+
+
+use Maghead\Runtime\Model;
+use Maghead\Runtime\Collection;
+use Maghead\Runtime\Repo;
+
 use Pux\Mux;
 use Pux\Expandable;
 use ActionKit\Action;
@@ -449,7 +453,7 @@ abstract class CRUDHandler extends Controller implements Expandable
     /**
      * Create the default collection
      *
-     * @return LazyRecord\BaseCollection
+     * @return Maghead\Runtime\Collection
      */
     protected function createCollection()
     {
@@ -593,10 +597,10 @@ abstract class CRUDHandler extends Controller implements Expandable
 
     /**
      *
-     * @param BaseModel $record
+     * @param Maghead\Runtime\Model $record
      * @return URL return the url of create page
      */
-    public function getEditPageUrl(BaseModel $record)
+    public function getEditPageUrl(Model $record)
     {
         return $this->getRoutePrefix() . '/edit?' . http_build_query(['id' => $record->id]);
     }
@@ -604,10 +608,10 @@ abstract class CRUDHandler extends Controller implements Expandable
 
     /**
      *
-     * @param BaseModel $record
+     * @param Model $record
      * @return URL return the url of create page
      */
-    public function getViewPageUrl(BaseModel $record)
+    public function getViewPageUrl(Model $record)
     {
         return $this->getRoutePrefix() . '/view?' . http_build_query(['id' => $record->id]);
     }
@@ -624,24 +628,24 @@ abstract class CRUDHandler extends Controller implements Expandable
 
     /**
      *
-     * @param BaseModel $record
+     * @param Model $record
      * @param array $query
      *
      * @return URL return the url of edit region
      */
-    public function getEditRegionUrl(BaseModel $record, array $query = array())
+    public function getEditRegionUrl(Model $record, array $query = array())
     {
         return $this->getRoutePrefix() . '/crud/edit?' . http_build_query(array_merge([ 'id' => $record->id ], $query));
     }
 
     /**
      *
-     * @param BaseModel $record
+     * @param Model $record
      * @param array $query
      *
      * @return URL return the url of view region page
      */
-    public function getViewRegionUrl(BaseModel $record, array $query = array())
+    public function getViewRegionUrl(Model $record, array $query = array())
     {
         return $this->getRoutePrefix() . '/crud/view?' . http_build_query(array_merge([ 'id' => $record->id ], $query));
     }
@@ -872,7 +876,7 @@ abstract class CRUDHandler extends Controller implements Expandable
      *
      * @return string title string for edit view.
      */
-    public function getEditTitle(BaseModel $record = NULL)
+    public function getEditTitle(Model $record = NULL)
     {
         if (!$record) {
             $record = $this->getCurrentRecord();
@@ -896,7 +900,7 @@ abstract class CRUDHandler extends Controller implements Expandable
     /**
      * Return the collection for list region.
      *
-     * @return LazyRecord\BaseCollection
+     * @return Maghead\Runtime\Collection
      */
     public function getCollection()
     {
@@ -941,9 +945,9 @@ abstract class CRUDHandler extends Controller implements Expandable
      * If the _order_column and _order_by is defined from http request, then this should override the 
      * default collection ordering.
      *
-     * @param BaseCollection
+     * @param Maghead\Runtime\Collection
      */
-    protected function orderCollection(BaseCollection $collection)
+    protected function orderCollection(Collection $collection)
     {
         $orderColumn = $this->request->param('_order_column');
         $orderBy     = $this->request->param('_order_by');
@@ -959,10 +963,10 @@ abstract class CRUDHandler extends Controller implements Expandable
     /**
      * Create collection pager object from collection.
      *
-     * @param LazyRecord\BaseCollection collection object.
+     * @param Maghead\Runtime\Collection collection object.
      * @return BootstrapRegionPager
      */
-    protected function createCollectionPager(BaseCollection $collection)
+    protected function createCollectionPager(Collection $collection)
     {
         $page     = $this->getCurrentPage();
         $pageSize = $this->getCurrentPageSize();
@@ -1063,7 +1067,7 @@ abstract class CRUDHandler extends Controller implements Expandable
     /**
      * Return the current record
      *
-     * @return LazyRecord\BaseModel
+     * @return Maghead\Runtime\Model
      */
     public function getCurrentRecord()
     {
@@ -1078,7 +1082,7 @@ abstract class CRUDHandler extends Controller implements Expandable
      *
      * The record object might be new record object (without loaded data)
      *
-     * @return LazyRecord\BaseModel The record object.
+     * @return Maghead\Runtime\Model The record object.
      */
     public function loadRecord($id = NULL)
     {
@@ -1101,7 +1105,7 @@ abstract class CRUDHandler extends Controller implements Expandable
      *
      * @return ActionKit\RecordAction\BaseRecordAction
      */
-    public function getRecordAction(BaseModel $record)
+    public function getRecordAction(Model $record)
     {
         $action = $record->id
             ? $record->asUpdateAction()
@@ -1117,11 +1121,11 @@ abstract class CRUDHandler extends Controller implements Expandable
      * We only invoke action runenr to load the action class. we don't generate
      * the action class manually here.
      *
-     * @param BaseModel $record
+     * @param Maghead\Runtime\Model $record
      * @param string $prefix Action prefix
      * @return ActionKit\RecordAction\BaseRecordAction
      */
-    protected function createModelActionClass(BaseModel $record, $prefix, array $args = array(), $options = array())
+    protected function createModelActionClass(Model $record, $prefix, array $args = array(), $options = array())
     {
         $actionClass = $this->getModelActionClass($record, $prefix);
         // $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class,$type);
@@ -1130,7 +1134,7 @@ abstract class CRUDHandler extends Controller implements Expandable
         return new $actionClass($args , $options);
     }
 
-    protected function getModelActionClass(BaseModel $record, $prefix)
+    protected function getModelActionClass(Model $record, $prefix)
     {
         $recordClass = get_class($record);
         $refclass = new ReflectionClass($record);
