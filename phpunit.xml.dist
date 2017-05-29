@@ -8,11 +8,13 @@
   stopOnError="true"
   stopOnFailure="true"
   verbose="true">
+
   <testsuites>
-    <testsuite name="UserBundle">
+    <testsuite name="CRUD">
       <directory suffix="Test.php">.</directory>
-      <exclude>vendor/</exclude>
-      <exclude>frameworks/</exclude>
+      <exclude>bundles</exclude>
+      <exclude>frameworks</exclude>
+      <exclude>vendor</exclude>
     </testsuite>
   </testsuites>
 
@@ -20,6 +22,7 @@
     <whitelist>
       <directory suffix=".php">.</directory>
       <exclude>
+        <directory>bundles</directory>
         <directory>vendor</directory>
         <directory>frameworks</directory>
       </exclude>

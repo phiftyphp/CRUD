@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <phpunit bootstrap="bootstrap.php"
   backupGlobals="false"
   colors="true"
@@ -10,10 +11,11 @@
   verbose="true">
 
   <testsuites>
-    <testsuite name="UserBundle">
+    <testsuite name="CRUD">
       <directory suffix="Test.php">.</directory>
-      <exclude>vendor/</exclude>
-      <exclude>frameworks/</exclude>
+      <exclude>bundles</exclude>
+      <exclude>frameworks</exclude>
+      <exclude>vendor</exclude>
     </testsuite>
   </testsuites>
 
@@ -21,6 +23,7 @@
     <whitelist>
       <directory suffix=".php">.</directory>
       <exclude>
+        <directory>bundles</directory>
         <directory>vendor</directory>
         <directory>frameworks</directory>
       </exclude>
