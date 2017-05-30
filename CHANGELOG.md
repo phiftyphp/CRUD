@@ -5,6 +5,9 @@ VERSION 4.0.x-dev
 -----------------
 
 1. Removed renderPageWrapper method from CRUDHandler.
+2. Renamed `findTemplatePath` with `findTemplate`.
+3. Renamed `getDefaultData` with `getDefaultRecordArgs`.
+
 
 VERSION 3.0.x-dev
 -----------------

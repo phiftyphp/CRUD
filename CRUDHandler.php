@@ -1091,7 +1091,7 @@ abstract class CRUDHandler extends Controller
      *
      * @return array Form data.
      */
-    public function getDefaultData()
+    public function getDefaultRecordArgs()
     {
         return $this->predefined;
     }
@@ -1318,7 +1318,7 @@ abstract class CRUDHandler extends Controller
 
         // if the record is not loaded, we can use predefined values
         if ($isCreate) {
-            foreach ($this->getDefaultData() as $k => $v) {
+            foreach ($this->getDefaultRecordArgs() as $k => $v) {
                 $record->set($k, $v);
             }
         }
@@ -1373,7 +1373,7 @@ abstract class CRUDHandler extends Controller
         $record = $this->getCurrentRecord();
 
         // set predefined data.
-        foreach ($this->getDefaultData() as $k => $v) {
+        foreach ($this->getDefaultRecordArgs() as $k => $v) {
             $record->set($k,$v);
         }
 
