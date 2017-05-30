@@ -669,44 +669,6 @@ abstract class CRUDHandler extends Controller
 
 
 
-    // =================================================
-    // Region methods
-    // =================================================
-
-    public function createListRegion(array $args = array())
-    {
-        $region = Region::create($this->getListRegionPath(), $args);
-        $region->container->setAttributeValue('data-effect-class','animated flipInY');
-        return $region;
-    }
-
-    public function createListInnerRegion(array $args = array())
-    {
-        $region = Region::create($this->getListInnerRegionPath(), $args);
-        // $region->container->setAttributeValue('data-effect-class','animated flipInY');
-        return $region;
-    }
-
-    public function createIndexRegion(array $args = array())
-    {
-        return Region::create($this->getIndexRegionPath(), $args);
-    }
-
-
-    public function createEditRegion(array $args = array())
-    {
-        return Region::create($this->getEditRegionPath(), $args);
-    }
-
-    public function createViewRegion(array $args = array())
-    {
-        return Region::create($this->getViewRegionPath(), $args);
-    }
-
-
-
-
-
     /**
      * Add tab to editor.
      *
@@ -1137,17 +1099,16 @@ abstract class CRUDHandler extends Controller
 
 
     /**
-     * Create record action object from record
+     * Convert record object into Action object.
      *
      * @return ActionKit\RecordAction\BaseRecordAction
      */
-    public function getRecordAction(Model $record)
+    public function createRecordAction(Model $record)
     {
-        $action = $record->id
+        return $record->hasKey()
             ? $record->asUpdateAction()
             : $record->asCreateAction()
             ;
-        return $action;
     }
 
 
@@ -1216,12 +1177,9 @@ abstract class CRUDHandler extends Controller
         }
 
         $record = $this->getCurrentRecord() ?: $this->newRecord();
-        return $this->currentAction = $this->getRecordAction($record);
+        return $this->currentAction = $this->createRecordAction($record);
     }
 
-    /**
-     *
-     */
     public function getActionView()
     {
         if (isset($this->bundle)) {
@@ -1245,6 +1203,9 @@ abstract class CRUDHandler extends Controller
         ));
     }
 
+    /**
+     * Get the action view for modal.
+     */
     public function getModalActionView()
     {
         return $this->createActionView($this->getCurrentAction(),NULL,array(
@@ -1405,14 +1366,14 @@ abstract class CRUDHandler extends Controller
 
     public function indexRegionAction()
     {
-        $tiles = array();
+        $tiles = [];
         // the old way: this renders the content in the same request.
         // $tiles[] = $this->editRegionAction();
         // here we clone the request for the region.
-        $tiles[] = $listRegion = $this->createListRegion($_REQUEST);
+        $tiles[] = $region = Region::create($this->getListRegionPath(), $this->environment['parameters']);
         return $this->render( $this->findTemplate('index.html.twig'), [
             'tiles'      => $tiles,
-            'listRegion' => $listRegion,
+            'listRegion' => $region,
         ]);
     }
 
@@ -1431,12 +1392,12 @@ abstract class CRUDHandler extends Controller
         // $tiles[] = $this->editRegionAction();
 
         // here we clone the request for the region.
-        $tiles[] = $createRegion = Region::create( $this->getCreateRegionPath(), array_merge($_REQUEST, [ 
+        $tiles[] = $region = Region::create( $this->getCreateRegionPath(), array_merge($_REQUEST, [ 
             '_form_controls' => true,
         ]));
         return $this->render($this->findTemplate('page.html.twig') , [
             'tiles' => $tiles,
-            'createRegion' => $createRegion,
+            'createRegion' => $region,
         ]);
     }
 
@@ -1449,10 +1410,10 @@ abstract class CRUDHandler extends Controller
         $tiles = [];
         // Reuse the parameters from $_REQUEST
         // If we are going to render a full page for edit form, we shall also render the _form_controls
-        $tiles[] = Region::create($this->getEditRegionPath(), array_merge($_REQUEST, [
+        $tiles[] = Region::create($this->getEditRegionPath(), array_merge($this->environment['parameters'], [
             '_form_controls' => true,
         ]));
-        return $this->render($this->findTemplate('page.html.twig') , array( 'tiles' => $tiles ));
+        return $this->render($this->findTemplate('page.html.twig') , [ 'tiles' => $tiles ]);
     }
 
     /**
@@ -1463,7 +1424,7 @@ abstract class CRUDHandler extends Controller
         $tiles = [];
         // Reuse the parameters from $_REQUEST
         // If we are going to render a full page for edit form, we shall also render the _form_controls
-        $tiles[] = Region::create($this->getViewRegionPath(), array_merge($_REQUEST, [
+        $tiles[] = $region = Region::create($this->getViewRegionPath(), array_merge($this->environment['parameters'], [
             '_form_controls' => true,
         ]));
 
@@ -1476,11 +1437,11 @@ abstract class CRUDHandler extends Controller
     public function indexAction()
     {
         $tiles   = array();
-        $tiles[] = $indexRegion = $this->createIndexRegion();
+        $tiles[] = $region = Region::create($this->getIndexRegionPath(), []);
 
         return $this->render($this->findTemplate('page.html.twig'), [
             'tiles' => $tiles,
-            'indexRegion' => $indexRegion,
+            'indexRegion' => $region,
         ]);
     }
 }

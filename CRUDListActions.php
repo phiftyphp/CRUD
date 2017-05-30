@@ -1,5 +1,9 @@
 <?php
+
 namespace CRUD;
+
+use Phifty\Web\Region;
+
 
 trait CRUDListActions {
 
@@ -28,7 +32,8 @@ trait CRUDListActions {
         // init toolbar controls here, because we need to show the panel.
         $this->initToolbarControls();
 
-        $region = $this->createListInnerRegion($_REQUEST);
+        $region = Region::create($this->getListInnerRegionPath(), $this->environment['parameters']);
+
         $this->assign('listInnerRegion', $region);
 
         // please note that we will get all items in list region since we don't have constraint
