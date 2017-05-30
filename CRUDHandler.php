@@ -954,18 +954,22 @@ abstract class CRUDHandler extends Controller
      */
     public function orderCollection(Collection $collection)
     {
-        $orderColumn = $this->request->param('_order_column');
-        $orderBy     = $this->request->param('_order_by');
-
-        // TODO: validate orderBy
-        if ($orderColumn && $orderBy) {
-            $collection->orderBy( $orderColumn , $orderBy );
-        } else if ( $this->defaultOrder ) {
-            $collection->orderBy( $this->defaultOrder[0], $this->defaultOrder[1]);
-        }
+        list($orderColumn, $orderBy) = $this->getCurrentOrderBy();
+        $collection->orderBy($orderColumn , $orderBy);
         return $collection;
     }
 
+    protected function getCurrentOrderBy()
+    {
+        $orderColumn = $this->request->param('_order_column');
+        $orderBy     = $this->request->param('_order_by');
+
+        if ($orderColumn && in_array(['asc','desc'], strtolower($orderBy))) {
+            return [$orderColumn, $orderBy];
+        }
+
+        return $this->defaultOrder;
+    }
 
 
     /**
