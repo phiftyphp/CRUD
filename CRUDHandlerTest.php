@@ -17,6 +17,22 @@ use Pux\Mux;
 class CRUDHandlerTest extends TestCase
 {
 
+    public function testNewRecordShouldReturnTheRecordWithDefaultArgs()
+    {
+        $env = Environment::createFromGlobals();
+        $response = [];
+        $matchedRoute = [false, '/bs/user', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
+        $handler = new UserCRUDHandler($env, $response, $matchedRoute);
+        $handler->init();
+
+        $record = $handler->newRecord([
+            'email' => 'new_user@gmail.com',
+        ]);
+        $this->assertInstanceOf(User::class, $record);
+
+        $this->assertEquals('new_user@gmail.com', $record->email);
+    }
+
     public function testLoadRecordShouldReturnModelInstance()
     {
         $env = Environment::createFromGlobals();

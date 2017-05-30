@@ -1127,6 +1127,17 @@ abstract class CRUDHandler extends Controller
         return new $this->modelClass;
     }
 
+    public function newRecord($args = [])
+    {
+        $record = new $this->modelClass;
+        foreach ($args as $k => $v) {
+            // $record->set($k, $v);
+            $record->$k = $v;
+        }
+        return $record;
+    }
+
+
     /**
      * Create record action object from record
      *
@@ -1313,7 +1324,7 @@ abstract class CRUDHandler extends Controller
         // if the record is not loaded, we can use predefined values
         if ($isCreate) {
             foreach ($this->getDefaultRecordArgs() as $k => $v) {
-                $record->set($k, $v);
+                $record->$k = $v;
             }
         }
 
@@ -1322,7 +1333,7 @@ abstract class CRUDHandler extends Controller
         if ($this->applyRequestFields) {
             foreach ($this->applyRequestFields as $fieldName) {
                 if ($param = $request->param($fieldName)) {
-                    $record->set($fieldName, $param);
+                    $record->$fieldName = $param;
                 }
             }
         }
@@ -1368,7 +1379,7 @@ abstract class CRUDHandler extends Controller
 
         // set predefined data.
         foreach ($this->getDefaultRecordArgs() as $k => $v) {
-            $record->set($k,$v);
+            $record->$k = $v;
         }
 
         // Apply predefined parameters from the query
@@ -1376,7 +1387,7 @@ abstract class CRUDHandler extends Controller
         if ($this->applyRequestFields) {
             foreach ($this->applyRequestFields as $fieldName) {
                 if ($param = $request->param($fieldName)) {
-                    $record->set($fieldName, $param);
+                    $record->$fieldName = $param;
                 }
             }
         }
