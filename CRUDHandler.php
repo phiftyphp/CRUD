@@ -1022,13 +1022,24 @@ abstract class CRUDHandler extends Controller
         return parent::render($template , $args , $engineOptions);
     }
 
-    protected function _findTemplate(Twig_ExistsLoaderInterface $loader, $namespace, $filename, $templateId = null)
+    protected function findParentTemplatePath(Twig_ExistsLoaderInterface $loader, $namespace, $filename)
     {
-        if ($templateId) {
-            $p = '@' . $namespace . DIRECTORY_SEPARATOR . $templateId . DIRECTORY_SEPARATOR . $filename;
-        } else {
-            $p = '@' . $namespace . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $filename;
+        $p = '@' . $namespace . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $filename;
+        if ($loader->exists($p)) {
+            return $p;
         }
+
+        if ($loader->exists(preg_replace('/\.twig$/', '', $p))) {
+            return $p;
+        }
+
+        return false;
+
+    }
+
+    protected function findTemplatePath(Twig_ExistsLoaderInterface $loader, $namespace, $templateId, $filename)
+    {
+        $p = '@' . $namespace . DIRECTORY_SEPARATOR . $templateId . DIRECTORY_SEPARATOR . $filename;
 
         if ($loader->exists($p)) {
             return $p;
@@ -1051,10 +1062,9 @@ abstract class CRUDHandler extends Controller
         // Should we use default template instead of the template override?
         // The default template namespace (could be @CRUD, @AppCRUD or something else)
         if ($this->useDefaultTemplate) {
-            if ($templatePath = $this->_findTemplate($loader, $this->getDefaultTemplateNamespace(), $filename)) {
+            if ($templatePath = $this->findParentTemplatePath($loader, $this->getDefaultTemplateNamespace(), $filename)) {
                 return $templatePath;
             }
-
         }
 
         // Check the template file existence for the current bundle, if the
@@ -1062,35 +1072,18 @@ abstract class CRUDHandler extends Controller
         // default template to use the default one.
 
         // If we're app bundle
-        if ($templatePath = $this->_findTemplate($loader, $this->namespace, $filename, $this->getTemplateId())) {
+        if ($templatePath = $this->findTemplatePath($loader, $this->namespace, $this->getTemplateId(), $filename)) {
             return $templatePath;
         }
 
         // find the custom template path for CRUD base templates
-        if ($templatePath = $this->_findTemplate($loader, $this->getCustomTemplateNamespace(), $filename)) {
+        if ($templatePath = $this->findParentTemplatePath($loader, $this->getCustomTemplateNamespace(), $filename)) {
             return $templatePath;
         }
 
         // Fallback the default template namespace (CRUD by default)
-        return $this->_findTemplate($loader, $this->getDefaultTemplateNamespace(), $filename);
+        return $this->findParentTemplatePath($loader, $this->getDefaultTemplateNamespace(), $filename);
     }
-
-
-    /**
-     * Render base page wrapper.
-     *
-     * current base page content is an empty region page.
-     *
-     * @param array $args template arguments.
-     * @return string template content
-     */
-    protected function renderPageWrapper( $args = array() )
-    {
-        return $this->render($this->findTemplate('page.html.twig') , $args);
-    }
-
-
-
 
     /**
      * Override this if you need to set default data for the form of record 
