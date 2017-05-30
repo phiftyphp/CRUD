@@ -8,7 +8,7 @@ VERSION 4.0.x-dev
 2. Renamed `findTemplatePath` with `findTemplate`.
 3. Renamed `getDefaultData` with `getDefaultRecordArgs`.
 4. `loadRecord` is now `loadCurrentRecord` and only returns record if loaded.
-
+5. Remove all CRUD dialog related methods.
 
 VERSION 3.0.x-dev
 -----------------

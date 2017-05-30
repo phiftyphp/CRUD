@@ -45,7 +45,6 @@ use Twig_ExistsLoaderInterface;
  *       {templateId}/edit.html.twig
  *       {templateId}/list.html.twig
  *       {templateId}/page.html.twig
- *       {templateId}/dialog.html.twig (edit record in dialog)
  *
  *
  * Controller Actions (pages):
@@ -249,17 +248,17 @@ abstract class CRUDHandler extends Controller
     /**
      * @var array register CRUD Action automatically
      */
-    public $registerRecordAction = array(
-        array('prefix' => 'Create'),
-        array('prefix' => 'Update'),
-        array('prefix' => 'Delete'),
-        array('prefix' => 'BulkDelete')
-    );
+    public $registerRecordAction = [
+        ['prefix' => 'Create'],
+        ['prefix' => 'Update'],
+        ['prefix' => 'Delete'],
+        ['prefix' => 'BulkDelete'],
+    ];
 
     /**
      * @var ToolbarItemController[]
      */
-    protected $_toolbarItems = array();
+    protected $_toolbarItems = [];
 
     /**
      * @var Phifty\Model the record object.
@@ -353,8 +352,8 @@ abstract class CRUDHandler extends Controller
         $mux->add('/crud/list'       , [$class , 'listRegionAction'], $options);
         $mux->add('/crud/list_inner' , [$class , 'listInnerRegionAction'], $options);
         $mux->add('/crud/modal'      , [$class , 'modalEditRegionAction'], $options);
-        $mux->add('/crud/dialog'     , [$class , 'dialogEditRegionAction'], $options);
 
+        // CRUDUploadActions
         $mux->add('/import/upload'       , [$class , 'importUploadRegionAction'], $options);
         $mux->add('/import/column-map'   , [$class , 'importColumnMapRegionAction'], $options);
         $mux->add('/import/sample'   , [$class , 'importSampleDownloadAction'], $options);
@@ -578,12 +577,6 @@ abstract class CRUDHandler extends Controller
     }
 
 
-
-    // Route related methods
-    public function getDialogRegionPath()
-    {
-        return $this->getRoutePrefix() . '/crud/dialog';
-    }
 
     public function getCreateRegionPath()
     {
@@ -1309,12 +1302,6 @@ abstract class CRUDHandler extends Controller
     // ==================================================================
     // Actions for region display
     // ==================================================================
-
-    public function dialogEditRegionAction()
-    {
-        $this->editRegionActionPrepare();
-        return $this->render($this->findTemplate('dialog.html.twig'), []);
-    }
 
     public function modalEditRegionAction()
     {
