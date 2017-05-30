@@ -17,6 +17,19 @@ use Pux\Mux;
 class CRUDHandlerTest extends TestCase
 {
 
+    public function testLoadRecordShouldReturnModelInstance()
+    {
+        $env = Environment::createFromGlobals();
+        $response = [];
+        $matchedRoute = [false, '/bs/user', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
+        $handler = new UserCRUDHandler($env, $response, $matchedRoute);
+        $handler->init();
+
+        $record = $handler->loadRecord();
+        $this->assertInstanceOf(User::class, $record);
+    }
+
+
     public function testDefaultCollectionShouldReturnUserCollection()
     {
         $env = Environment::createFromGlobals();
@@ -76,6 +89,7 @@ class CRUDHandlerTest extends TestCase
         $users = $collection->items();
         $this->assertNotNull($users, 'the query executed successfully.');
     }
+
 
 
     public function crudPathDataProvider()

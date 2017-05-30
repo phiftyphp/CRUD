@@ -740,12 +740,12 @@ abstract class CRUDHandler extends Controller
 
     public function getRecordLabel()
     {
-        return $this->getModel()->getLabel();
+        return $this->getModelSchema()->getLabel();
     }
 
     public function getCreateButtonLabel() 
     {
-        return "建立新的" . $this->getModel()->getLabel();
+        return "建立新的" . $this->getModelSchema()->getLabel();
     }
 
 
@@ -915,7 +915,7 @@ abstract class CRUDHandler extends Controller
     public function isI18NEnabled()
     {
         return ($this->kernel->bundle('I18N')
-            && $langColumn = $this->getModel()->getColumn('lang')
+            && $langColumn = $this->getModelSchema()->getColumn('lang')
             && isset($this->bundle) && $this->bundle->config('with_lang') );
     }
 
@@ -1117,20 +1117,14 @@ abstract class CRUDHandler extends Controller
      *
      * @return Maghead\Runtime\Model The record object.
      */
-    public function loadRecord($id = NULL)
+    public function loadRecord($key = NULL)
     {
-        if ($this->currentRecord) {
-            return $this->currentRecord;
+        if ($key) {
+            $keyField = $this->modelClass::PRIMARY_KEY;
+            return $this->modelClass::find($this->request->param($keyField));
         }
 
-        $record = $this->getModel();
-        if (!$id) {
-            $id = intval($this->request->param('id'));
-        }
-        if ($id) {
-            $record->load(intval($id));
-        }
-        return $record;
+        return new $this->modelClass;
     }
 
     /**
