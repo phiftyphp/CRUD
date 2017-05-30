@@ -900,16 +900,15 @@ abstract class CRUDHandler extends Controller
      */
     public function getEditTitle(Model $record = NULL)
     {
+        $schema = $this->getModelSchema();
         if (!$record) {
-            $record = $this->getCurrentRecord();
+            $record = $this->getCurrentRecord() ?: $this->newRecord();
         }
-        if (!$record) {
-            return '';
-        }
-        return $record->id
-            ? __('編輯 %1: %2', $record->getLabel() , $record->dataLabel() )
-            : __('新建 %1' , $record->getLabel() )
-        ;
+
+        return $record->hasKey()
+            ? __('編輯 %1: %2', $schema->getLabel() , $record->dataLabel())
+            : __('新建 %1' , $schema->getLabel())
+            ;
     }
 
     public function isI18NEnabled()
@@ -1107,7 +1106,8 @@ abstract class CRUDHandler extends Controller
         if ($this->currentRecord) {
             return $this->currentRecord;
         }
-        return $this->currentRecord = $this->loadRecord();
+
+        return $this->currentRecord = $this->loadCurrentRecord();
     }
 
     /**
@@ -1117,18 +1117,21 @@ abstract class CRUDHandler extends Controller
      *
      * @return Maghead\Runtime\Model The record object.
      */
-    public function loadRecord($key = NULL)
+    public function loadCurrentRecord()
     {
+        $keyField = $this->modelClass::PRIMARY_KEY;
+        $key = $this->request->param($keyField);
         if ($key) {
-            $keyField = $this->modelClass::PRIMARY_KEY;
-            return $this->modelClass::find($this->request->param($keyField));
+            return $this->modelClass::find($key);
         }
 
-        return new $this->modelClass;
+        return false;
     }
 
-    public function newRecord($args = [])
+    public function newRecord($args = null)
     {
+        // if the record is not loaded, we can use predefined values
+        $args = $args ?: $this->getDefaultRecordArgs();
         $record = new $this->modelClass;
         foreach ($args as $k => $v) {
             // $record->set($k, $v);
@@ -1216,7 +1219,8 @@ abstract class CRUDHandler extends Controller
         if ($this->currentAction) {
             return $this->currentAction;
         }
-        $record = $this->getCurrentRecord();
+
+        $record = $this->getCurrentRecord() ?: $this->newRecord();
         return $this->currentAction = $this->getRecordAction($record);
     }
 
@@ -1319,13 +1323,8 @@ abstract class CRUDHandler extends Controller
     public function editRegionActionPrepare()
     {
         $record = $this->getCurrentRecord();
-        $isCreate = $record->id ? false : true;
-
-        // if the record is not loaded, we can use predefined values
-        if ($isCreate) {
-            foreach ($this->getDefaultRecordArgs() as $k => $v) {
-                $record->$k = $v;
-            }
+        if (!$record) {
+            $record = $this->newRecord();
         }
 
         // Apply predefined parameters from the query
@@ -1357,7 +1356,7 @@ abstract class CRUDHandler extends Controller
     public function viewRegionActionPrepare()
     {
         $record = $this->getCurrentRecord();
-        if (! $record->id) {
+        if (!$record) {
             throw new Exception('Record not found.');
         }
         $this->assignCRUDVars(array(
@@ -1375,12 +1374,7 @@ abstract class CRUDHandler extends Controller
 
     public function createRegionActionPrepare()
     {
-        $record = $this->getCurrentRecord();
-
-        // set predefined data.
-        foreach ($this->getDefaultRecordArgs() as $k => $v) {
-            $record->$k = $v;
-        }
+        $record = $this->newRecord();
 
         // Apply predefined parameters from the query
         $request = $this->getRequest();

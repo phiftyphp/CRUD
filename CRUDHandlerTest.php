@@ -14,9 +14,26 @@ use UserBundle\Model\UserSchemaProxy;
 use Funk\Environment;
 use Pux\Mux;
 
-class CRUDHandlerTest extends TestCase
-{
+use Maghead\Testing\ModelTestCase;
+use Maghead\Runtime\Config\FileConfigLoader;
 
+abstract class CRUDTestCase extends ModelTestCase
+{
+    public function models()
+    {
+        return [
+            new UserSchema,
+        ];
+    }
+
+    public function config()
+    {
+        return FileConfigLoader::load('config/database.yml');
+    }
+}
+
+class CRUDHandlerTest extends CRUDTestCase
+{
     public function testNewRecordShouldReturnTheRecordWithDefaultArgs()
     {
         $env = Environment::createFromGlobals();
@@ -29,11 +46,10 @@ class CRUDHandlerTest extends TestCase
             'email' => 'new_user@gmail.com',
         ]);
         $this->assertInstanceOf(User::class, $record);
-
         $this->assertEquals('new_user@gmail.com', $record->email);
     }
 
-    public function testLoadRecordShouldReturnModelInstance()
+    public function testLoadCurrentRecordShouldReturnModelInstance()
     {
         $env = Environment::createFromGlobals();
         $response = [];
@@ -41,10 +57,9 @@ class CRUDHandlerTest extends TestCase
         $handler = new UserCRUDHandler($env, $response, $matchedRoute);
         $handler->init();
 
-        $record = $handler->loadRecord();
-        $this->assertInstanceOf(User::class, $record);
+        $record = $handler->loadCurrentRecord();
+        $this->assertFalse($record);
     }
-
 
     public function testDefaultCollectionShouldReturnUserCollection()
     {
