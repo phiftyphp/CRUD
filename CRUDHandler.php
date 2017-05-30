@@ -364,6 +364,39 @@ abstract class CRUDHandler extends Controller
         return $mux;
     }
 
+
+    /**
+     * Auto fill the metadata of the current CRUD handler
+     * by using Reflection.
+     */
+    protected function autofill()
+    {
+        // Dynamic initialization
+        if (! $this->modelName) {
+            $modelRefl = new ReflectionClass($this->modelClass);
+            $this->modelName = $modelRefl->getShortName();
+        }
+
+        if (! $this->crudId) {
+            $this->crudId = Inflector::tableize($this->modelName);
+        }
+
+        if (! $this->templateId) {
+            $this->templateId = $this->crudId;
+        }
+
+        $this->reflect = new ReflectionClass($this);
+        $this->namespace = $ns = $this->reflect->getNamespaceName();
+
+        // Find the related bundle class via singleton instance.
+        // Currently we use FooBundle\FooBundle as the main bundle class.
+        // TODO: let CRUHandler could be registered via Bundle API.
+        $bundleClass = "$ns\\$ns";
+        if (class_exists($bundleClass, true)) {
+            $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance($this->kernel);
+        }
+    }
+
     /**
      * init() method will be called when the route is matched.
      */
@@ -372,19 +405,7 @@ abstract class CRUDHandler extends Controller
         $this->vars['CRUD']['Object'] = $this;
         $this->kernel = kernel();
 
-        // Dynamic initialization
-        if (! $this->modelName) {
-            $modelRefl = new ReflectionClass($this->modelClass);
-            $this->modelName = $modelRefl->getShortName();
-        }
-
-
-        if (! $this->crudId) {
-            $this->crudId = Inflector::tableize($this->modelName);
-        }
-        if (! $this->templateId) {
-            $this->templateId = $this->crudId;
-        }
+        $this->autofill();
 
         // Derive options from request
         if ($request = $this->getRequest()) {
@@ -394,14 +415,7 @@ abstract class CRUDHandler extends Controller
             }
         }
 
-        $this->reflect = new ReflectionClass($this);
-        $this->namespace = $ns = $this->reflect->getNamespaceName();
 
-        // XXX: currently we use FooBundle\FooBundle as the main bundle class.
-        $bundleClass = "$ns\\$ns";
-        if (class_exists($bundleClass)) {
-            $this->bundle = $this->vars['Bundle'] = $bundleClass::getInstance($this->kernel);
-        }
 
         $this->vars['Handler'] = $this;
         $this->vars['Controller'] = $this;
@@ -964,7 +978,7 @@ abstract class CRUDHandler extends Controller
         $orderColumn = $this->request->param('_order_column');
         $orderBy     = $this->request->param('_order_by');
 
-        if ($orderColumn && in_array(['asc','desc'], strtolower($orderBy))) {
+        if ($orderColumn && in_array(strtolower($orderBy), ['asc','desc'])) {
             return [$orderColumn, $orderBy];
         }
 
@@ -1466,6 +1480,7 @@ abstract class CRUDHandler extends Controller
 
         $columnHeaders = [];
         $previewRows = [];
+
         if (preg_match('/\.csv$/', $uploadedFile)) {
             $fp = fopen($uploadedFile, 'r');
             if ($_columnHeaders = fgetcsv($fp)) {
@@ -1493,10 +1508,11 @@ abstract class CRUDHandler extends Controller
             'options' => $columnOptions,
             'allow_empty' => [0, "-- 請選擇 --"],
         ]);
+
         return $this->render($this->findTemplatePath('import_column_map.html'), [
-            'columnSelect' => $columnSelect,
+            'columnSelect'  => $columnSelect,
             'columnHeaders' => $columnHeaders,
-            'previewRows' => $previewRows,
+            'previewRows'   => $previewRows,
         ]);
     }
 
@@ -1549,6 +1565,7 @@ abstract class CRUDHandler extends Controller
         $tiles[] = Region::create($this->getViewRegionPath(), array_merge($_REQUEST, [
             '_form_controls' => true,
         ]));
+
         return $this->render($this->findTemplatePath('page.html'), ['tiles' => $tiles ]);
     }
 
@@ -1559,6 +1576,7 @@ abstract class CRUDHandler extends Controller
     {
         $tiles   = array();
         $tiles[] = $indexRegion = $this->createIndexRegion();
+
         return $this->render($this->findTemplatePath('page.html'), [
             'tiles' => $tiles,
             'indexRegion' => $indexRegion,
