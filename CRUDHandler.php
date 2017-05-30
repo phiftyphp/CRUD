@@ -33,16 +33,19 @@ use PHPExcel_IOFactory;
 
 use FormKit\Widget\SelectInput;
 
+use Twig_LoaderInterface;
+use Twig_ExistsLoaderInterface;
+
 
 /**
  * Current CRUD template structure:
  *
  *    {AppName}/templates/
- *       {templateId}/index.html
- *       {templateId}/edit.html
- *       {templateId}/list.html
- *       {templateId}/page.html
- *       {templateId}/dialog.html  (edit record in dialog)
+ *       {templateId}/index.html.twig
+ *       {templateId}/edit.html.twig
+ *       {templateId}/list.html.twig
+ *       {templateId}/page.html.twig
+ *       {templateId}/dialog.html.twig (edit record in dialog)
  *
  *
  * Controller Actions (pages):
@@ -95,7 +98,7 @@ abstract class CRUDHandler extends Controller
      * @var string CRUD ID, which is the namespace of template path or can be used in URL.
      *
      *    /bs/{{ crud_id }}
-     *    Templates/{{crud_id}}/edit.html
+     *    Templates/{{crud_id}}/edit.html.twig
      *
      */
     public $crudId;
@@ -1019,16 +1022,39 @@ abstract class CRUDHandler extends Controller
         return parent::render($template , $args , $engineOptions);
     }
 
+    protected function _findTemplate(Twig_ExistsLoaderInterface $loader, $namespace, $filename, $templateId = null)
+    {
+        if ($templateId) {
+            $p = '@' . $namespace . DIRECTORY_SEPARATOR . $templateId . DIRECTORY_SEPARATOR . $filename;
+        } else {
+            $p = '@' . $namespace . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $filename;
+        }
+
+        if ($loader->exists($p)) {
+            return $p;
+        }
+
+        if ($loader->exists(preg_replace('/\.twig$/', '', $p))) {
+            return $p;
+        }
+
+        return false;
+    }
+
+
     // renderer helpers
     // =================================================
-    public function findTemplatePath($filename)
+    public function findTemplate($filename)
     {
         $loader = $this->kernel->twig->loader;
+
+        // Should we use default template instead of the template override?
+        // The default template namespace (could be @CRUD, @AppCRUD or something else)
         if ($this->useDefaultTemplate) {
-            $templatePath =  '@' . $this->getDefaultTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
-            if ($loader->exists($templatePath)) {
+            if ($templatePath = $this->_findTemplate($loader, $this->getDefaultTemplateNamespace(), $filename)) {
                 return $templatePath;
             }
+
         }
 
         // Check the template file existence for the current bundle, if the
@@ -1036,30 +1062,18 @@ abstract class CRUDHandler extends Controller
         // default template to use the default one.
 
         // If we're app bundle
-        $customTemplatePath = '@' . $this->namespace . DIRECTORY_SEPARATOR . $this->getTemplateId() . DIRECTORY_SEPARATOR . $filename;
-        if ($loader->exists($customTemplatePath . '.twig')) {
-            return $customTemplatePath . '.twig';
-        }
-        if ($loader->exists($customTemplatePath)) {
-            return $customTemplatePath;
+        if ($templatePath = $this->_findTemplate($loader, $this->namespace, $filename, $this->getTemplateId())) {
+            return $templatePath;
         }
 
         // find the custom template path for CRUD base templates
-        $customTemplatePath = '@' . $this->getCustomTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
-        // $customTemplatePath = '@' . $this->getCustomTemplateNamespace() . DIRECTORY_SEPARATOR . $this->getTemplateId() . DIRECTORY_SEPARATOR . $filename;
-        if ($loader->exists($customTemplatePath . '.twig')) {
-            return $customTemplatePath . '.twig';
-        }
-        if ($loader->exists($customTemplatePath)) {
-            return $customTemplatePath;
+        if ($templatePath = $this->_findTemplate($loader, $this->getCustomTemplateNamespace(), $filename)) {
+            return $templatePath;
         }
 
-        // Fallback template path
-        return '@' . $this->getDefaultTemplateNamespace() . DIRECTORY_SEPARATOR . $filename;
+        // Fallback the default template namespace (CRUD by default)
+        return $this->_findTemplate($loader, $this->getDefaultTemplateNamespace(), $filename);
     }
-
-
-
 
 
     /**
@@ -1072,7 +1086,7 @@ abstract class CRUDHandler extends Controller
      */
     protected function renderPageWrapper( $args = array() )
     {
-        return $this->render($this->findTemplatePath('page.html') , $args);
+        return $this->render($this->findTemplate('page.html.twig') , $args);
     }
 
 
@@ -1267,7 +1281,7 @@ abstract class CRUDHandler extends Controller
 
     public function quickCreateAction() 
     {
-        return $this->render( $this->findTemplatePath('quick_create.html') , array());
+        return $this->render($this->findTemplate('quick_create.html.twig') , array());
     }
 
 
@@ -1295,13 +1309,13 @@ abstract class CRUDHandler extends Controller
     public function dialogEditRegionAction()
     {
         $this->editRegionActionPrepare();
-        return $this->render($this->findTemplatePath('dialog.html'), []);
+        return $this->render($this->findTemplate('dialog.html.twig'), []);
     }
 
     public function modalEditRegionAction()
     {
         $this->editRegionActionPrepare();
-        return $this->render($this->findTemplatePath('modal.html'), []);
+        return $this->render($this->findTemplate('modal.html.twig'), []);
     }
 
     public function editRegionActionPrepare()
@@ -1339,7 +1353,7 @@ abstract class CRUDHandler extends Controller
     public function editRegionAction()
     {
         $this->editRegionActionPrepare();
-        return $this->render($this->findTemplatePath('edit.html') , []);
+        return $this->render($this->findTemplate('edit.html.twig') , []);
     }
 
     public function viewRegionActionPrepare()
@@ -1357,7 +1371,7 @@ abstract class CRUDHandler extends Controller
     public function viewRegionAction()
     {
         $this->viewRegionActionPrepare();
-        return $this->render($this->findTemplatePath('view.html'), []);
+        return $this->render($this->findTemplate('view.html.twig'), []);
     }
 
 
@@ -1394,7 +1408,7 @@ abstract class CRUDHandler extends Controller
             throw new Exception('Creating new record requires permission.');
         }
         $this->createRegionActionPrepare();
-        return $this->render($this->findTemplatePath('edit.html') , []);
+        return $this->render($this->findTemplate('edit.html.twig') , []);
     }
 
 
@@ -1404,7 +1418,7 @@ abstract class CRUDHandler extends Controller
             throw new Exception('Creating new record requires permission.');
         }
         $this->editRegionActionPrepare();
-        return $this->render( $this->findTemplatePath('item.html') , $args);
+        return $this->render( $this->findTemplate('item.html.twig') , $args);
     }
 
 
@@ -1415,7 +1429,7 @@ abstract class CRUDHandler extends Controller
         // $tiles[] = $this->editRegionAction();
         // here we clone the request for the region.
         $tiles[] = $listRegion = $this->createListRegion($_REQUEST);
-        return $this->render( $this->findTemplatePath('index.html'), [
+        return $this->render( $this->findTemplate('index.html.twig'), [
             'tiles'      => $tiles,
             'listRegion' => $listRegion,
         ]);
@@ -1433,7 +1447,7 @@ abstract class CRUDHandler extends Controller
             'close_btn' => false,
             '_form_controls' => false,
         ]);
-        return $this->render($this->findTemplatePath('import_upload.html'), [
+        return $this->render($this->findTemplate('import_upload.html.twig'), [
             'upload' => $upload,
             'uploadView' => $uploadView,
         ]);
@@ -1509,7 +1523,7 @@ abstract class CRUDHandler extends Controller
             'allow_empty' => [0, "-- 請選擇 --"],
         ]);
 
-        return $this->render($this->findTemplatePath('import_column_map.html'), [
+        return $this->render($this->findTemplate('import_column_map.html.twig'), [
             'columnSelect'  => $columnSelect,
             'columnHeaders' => $columnHeaders,
             'previewRows'   => $previewRows,
@@ -1533,7 +1547,7 @@ abstract class CRUDHandler extends Controller
         $tiles[] = $createRegion = Region::create( $this->getCreateRegionPath(), array_merge($_REQUEST, [ 
             '_form_controls' => true,
         ]));
-        return $this->render($this->findTemplatePath('page.html') , [
+        return $this->render($this->findTemplate('page.html.twig') , [
             'tiles' => $tiles,
             'createRegion' => $createRegion,
         ]);
@@ -1551,7 +1565,7 @@ abstract class CRUDHandler extends Controller
         $tiles[] = Region::create($this->getEditRegionPath(), array_merge($_REQUEST, [
             '_form_controls' => true,
         ]));
-        return $this->render($this->findTemplatePath('page.html') , array( 'tiles' => $tiles ));
+        return $this->render($this->findTemplate('page.html.twig') , array( 'tiles' => $tiles ));
     }
 
     /**
@@ -1566,7 +1580,7 @@ abstract class CRUDHandler extends Controller
             '_form_controls' => true,
         ]));
 
-        return $this->render($this->findTemplatePath('page.html'), ['tiles' => $tiles ]);
+        return $this->render($this->findTemplate('page.html.twig'), ['tiles' => $tiles ]);
     }
 
 
@@ -1577,7 +1591,7 @@ abstract class CRUDHandler extends Controller
         $tiles   = array();
         $tiles[] = $indexRegion = $this->createIndexRegion();
 
-        return $this->render($this->findTemplatePath('page.html'), [
+        return $this->render($this->findTemplate('page.html.twig'), [
             'tiles' => $tiles,
             'indexRegion' => $indexRegion,
         ]);

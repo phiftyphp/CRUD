@@ -27,6 +27,7 @@ trait CRUDListActions {
     {
         // init toolbar controls here, because we need to show the panel.
         $this->initToolbarControls();
+
         $region = $this->createListInnerRegion($_REQUEST);
         $this->assign('listInnerRegion', $region);
 
@@ -40,13 +41,14 @@ trait CRUDListActions {
 
         // If reactApp (CRUDListApp) is defined, render a template to initialize the React App
         if ($this->reactListApp) {
-            return $this->render($this->findTemplatePath('react/list.html'), [
+            return $this->render($this->findTemplate('react/list.html.twig'), [
                 'ReactElementId' => uniqid($this->reactListApp),
                 'ReactAppName'   => $this->reactListApp,
                 'ReactAppConfig' => $this->buildReactListAppConfig(),
             ]);
         }
-        return $this->render($this->findTemplatePath('list.html'), []);
+
+        return $this->render($this->findTemplate('list.html.twig'), []);
     }
 
     /**
@@ -62,7 +64,7 @@ trait CRUDListActions {
             'Pager'   => $this->createCollectionPager($collection),
             'Columns' => $this->getListColumns(),
         ));
-        return $this->render( $this->findTemplatePath('list_inner.html'));
+        return $this->render($this->findTemplate('list_inner.html.twig'));
     }
 
     public function getListRegionPath()

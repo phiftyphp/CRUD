@@ -77,4 +77,39 @@ class CRUDHandlerTest extends TestCase
         $this->assertNotNull($users, 'the query executed successfully.');
     }
 
+
+    public function crudPathDataProvider()
+    {
+        return [
+            ['/bs/user', 'indexAction', 'the index page.'],
+            ['/bs/user', 'indexRegionAction', 'the region action in the index page.'],
+            ['/bs/user/list', 'listRegionAction', 'list region action.'],
+            ['/bs/user/list_inner', 'listInnerRegionAction', 'list region action.'],
+        ];
+    }
+
+    /**
+     * @dataProvider crudPathDataProvider
+     */
+    public function testRouteExecute($pathInfo, $action)
+    {
+        $environment = Environment::createFromGlobals();
+        $environment['PATH_INFO'] = $pathInfo;
+        $route = [false, $pathInfo, [UserCRUDHandler::class, $action], [ 'mount_path' => '/bs/user' ]];
+        $response = [];
+        $response = \Phifty\Routing\RouteExecutor::execute($route, $environment, $response, $route);
+        $this->assertNotEmpty($response);
+    }
+
+
+    public function testListRegionAction()
+    {
+        $env = Environment::createFromGlobals();
+        $response = [];
+        $matchedRoute = [false, '/bs/user/list', [UserCRUDHandler::class, 'listRegionAction'], [ 'mount_path' => '/bs/user' ]];
+        $handler = new UserCRUDHandler($env, $response, $matchedRoute);
+        $handler->init();
+        $region = $handler->listRegionAction();
+        $this->assertNotEmpty($region);
+    }
 }
