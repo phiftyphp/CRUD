@@ -12,5 +12,8 @@ class CRUD extends Bundle
             'tchooser'
         );
     }
-}
 
+    public function boot()
+    {
+    }
+}
