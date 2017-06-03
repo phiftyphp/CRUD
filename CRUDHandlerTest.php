@@ -21,14 +21,7 @@ abstract class CRUDTestCase extends \Phifty\Testing\ModelTestCase
 {
     public function models()
     {
-        return [
-            new UserSchema,
-        ];
-    }
-
-    public function config()
-    {
-        return FileConfigLoader::load('config/database.yml');
+        return [new UserSchema];
     }
 }
 
