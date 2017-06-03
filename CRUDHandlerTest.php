@@ -10,22 +10,10 @@ use UserBundle\Model\UserCollection;
 use UserBundle\Model\User;
 use UserBundle\Model\UserSchema;
 use UserBundle\Model\UserSchemaProxy;
-
 use Funk\Environment;
 use Pux\Mux;
 
-use Maghead\Testing\ModelTestCase;
-use Maghead\Runtime\Config\FileConfigLoader;
-
-abstract class CRUDTestCase extends \Phifty\Testing\ModelTestCase
-{
-    public function models()
-    {
-        return [new UserSchema];
-    }
-}
-
-class CRUDHandlerTest extends CRUDTestCase
+class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
 {
     public function testNewRecordShouldReturnTheRecordWithDefaultArgs()
     {
