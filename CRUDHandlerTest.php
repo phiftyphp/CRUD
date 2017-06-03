@@ -17,7 +17,7 @@ use Pux\Mux;
 use Maghead\Testing\ModelTestCase;
 use Maghead\Runtime\Config\FileConfigLoader;
 
-abstract class CRUDTestCase extends ModelTestCase
+abstract class CRUDTestCase extends \Phifty\Testing\ModelTestCase
 {
     public function models()
     {
