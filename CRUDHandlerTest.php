@@ -17,10 +17,10 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
 {
     public function testNewRecordShouldReturnTheRecordWithDefaultArgs()
     {
-        $env = Environment::createFromGlobals();
+        $environment = $this->createEnvironment('GET', '/bs/user');
         $response = [];
         $matchedRoute = [false, '/bs/user', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($env, $response, $matchedRoute);
+        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
         $handler->init();
 
         $record = $handler->newRecord([
@@ -32,10 +32,10 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
 
     public function testLoadCurrentRecordShouldReturnModelInstance()
     {
-        $env = Environment::createFromGlobals();
+        $environment = $this->createEnvironment('GET', '/bs/user');
         $response = [];
         $matchedRoute = [false, '/bs/user', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($env, $response, $matchedRoute);
+        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
         $handler->init();
 
         $record = $handler->loadCurrentRecord();
@@ -44,10 +44,10 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
 
     public function testDefaultCollectionShouldReturnUserCollection()
     {
-        $env = Environment::createFromGlobals();
+        $environment = $this->createEnvironment('GET', '/bs/user');
         $response = [];
         $matchedRoute = [false, '/bs/user', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($env, $response, $matchedRoute);
+        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
         $handler->init();
 
         $collection = $handler->createDefaultCollection();
@@ -56,10 +56,10 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
 
     public function testGetModelSchemaShouldReturnUserSchemaProxy()
     {
-        $env = Environment::createFromGlobals();
+        $environment = $this->createEnvironment('GET', '/bs/user');
         $response = [];
         $matchedRoute = [false, '/bs/user', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($env, $response, $matchedRoute);
+        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
         $handler->init();
 
         $schema = $handler->getModelSchema();
@@ -68,10 +68,10 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
 
     public function testGetRoutePrefixShouldReturnTheMountPath()
     {
-        $env = Environment::createFromGlobals();
+        $environment = $this->createEnvironment('GET', '/bs/user');
         $response = [];
         $matchedRoute = [false, '/bs/user/create', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($env, $response, $matchedRoute);
+        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
         $handler->init();
 
         $prefix = $handler->getRoutePrefix();
@@ -80,17 +80,11 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
 
     public function testOrderCollectionByRequest()
     {
-        $env = Environment::createFromArray([
-            '_SERVER' => $_SERVER,
-            '_REQUEST' => [ '_order_column' => 'id', '_order_by' => 'ASC' ],
-            '_POST' => [],
-            '_GET' => [],
-            '_COOKIE' => [],
-            '_SESSION' => [],
-        ]);
+        $environment = $this->createEnvironment('GET', '/bs/user', [ '_order_column' => 'id', '_order_by' => 'ASC' ]);
+
         $response = [];
         $matchedRoute = [false, '/bs/user/create', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($env, $response, $matchedRoute);
+        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
         $handler->init();
 
         $collection = $handler->orderCollection(new UserCollection);
@@ -119,8 +113,7 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
      */
     public function testRouteExecute($pathInfo, $action)
     {
-        $environment = Environment::createFromGlobals();
-        $environment['PATH_INFO'] = $pathInfo;
+        $environment = $this->createEnvironment('GET', $pathInfo);
         $route = [false, $pathInfo, [UserCRUDHandler::class, $action], [ 'mount_path' => '/bs/user' ]];
         $response = [];
         $response = \Phifty\Routing\RouteExecutor::execute($route, $environment, $response, $route);
@@ -130,10 +123,10 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
 
     public function testListRegionAction()
     {
-        $env = Environment::createFromGlobals();
+        $environment = $this->createEnvironment('GET', '/bs/user/list');
         $response = [];
         $matchedRoute = [false, '/bs/user/list', [UserCRUDHandler::class, 'listRegionAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($env, $response, $matchedRoute);
+        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
         $handler->init();
         $region = $handler->listRegionAction();
         $this->assertNotEmpty($region);
