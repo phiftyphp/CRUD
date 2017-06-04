@@ -562,9 +562,6 @@ abstract class CRUDHandler extends Controller
     public function getRoutePrefix()
     {
         if (!isset($this->matchedRoute[3]['mount_path'])) {
-            echo '<pre>';
-            debug_print_backtrace();
-            echo '</pre>';
             throw new \Exception('mount_path is not set in matchedRoute');
         }
         return $this->matchedRoute[3]['mount_path'];
@@ -1002,6 +999,14 @@ abstract class CRUDHandler extends Controller
         return false;
     }
 
+    public function mustFindTemplate($filename)
+    {
+        $template = $this->findTemplate($filename);
+        if (!$template) {
+            throw new \LogicException("template $filename not found.");
+        }
+        return $template;
+    }
 
     // renderer helpers
     // =================================================
@@ -1261,7 +1266,7 @@ abstract class CRUDHandler extends Controller
     public function modalEditRegionAction()
     {
         $this->editRegionActionPrepare();
-        return $this->render($this->findTemplate('modal.html.twig'), []);
+        return $this->render($this->mustFindTemplate('modal.html.twig'), []);
     }
 
     public function editRegionActionPrepare()
@@ -1294,7 +1299,7 @@ abstract class CRUDHandler extends Controller
     public function editRegionAction()
     {
         $this->editRegionActionPrepare();
-        return $this->render($this->findTemplate('edit.html.twig') , []);
+        return $this->render($this->mustFindTemplate('edit.html.twig') , []);
     }
 
     public function viewRegionActionPrepare()
@@ -1312,7 +1317,7 @@ abstract class CRUDHandler extends Controller
     public function viewRegionAction()
     {
         $this->viewRegionActionPrepare();
-        return $this->render($this->findTemplate('view.html.twig'), []);
+        return $this->render($this->mustFindTemplate('view.html.twig'), []);
     }
 
 
@@ -1344,7 +1349,7 @@ abstract class CRUDHandler extends Controller
             throw new Exception('Creating new record requires permission.');
         }
         $this->createRegionActionPrepare();
-        return $this->render($this->findTemplate('edit.html.twig') , []);
+        return $this->render($this->mustFindTemplate('edit.html.twig') , []);
     }
 
 
@@ -1354,7 +1359,7 @@ abstract class CRUDHandler extends Controller
             throw new Exception('Creating new record requires permission.');
         }
         $this->editRegionActionPrepare();
-        return $this->render( $this->findTemplate('item.html.twig') , $args);
+        return $this->render( $this->mustFindTemplate('item.html.twig') , $args);
     }
 
 
@@ -1365,7 +1370,7 @@ abstract class CRUDHandler extends Controller
         // $tiles[] = $this->editRegionAction();
         // here we clone the request for the region.
         $tiles[] = $region = Region::create($this->getListRegionPath(), $this->environment['parameters']);
-        return $this->render( $this->findTemplate('index.html.twig'), [
+        return $this->render( $this->mustFindTemplate('index.html.twig'), [
             'tiles'      => $tiles,
             'listRegion' => $region,
         ]);
@@ -1389,7 +1394,7 @@ abstract class CRUDHandler extends Controller
         $tiles[] = $region = Region::create( $this->getCreateRegionPath(), array_merge($_REQUEST, [ 
             '_form_controls' => true,
         ]));
-        return $this->render($this->findTemplate('page.html.twig') , [
+        return $this->render($this->mustFindTemplate('page.html.twig') , [
             'tiles' => $tiles,
             'createRegion' => $region,
         ]);
@@ -1407,7 +1412,7 @@ abstract class CRUDHandler extends Controller
         $tiles[] = Region::create($this->getEditRegionPath(), array_merge($this->environment['parameters'], [
             '_form_controls' => true,
         ]));
-        return $this->render($this->findTemplate('page.html.twig') , [ 'tiles' => $tiles ]);
+        return $this->render($this->mustFindTemplate('page.html.twig') , [ 'tiles' => $tiles ]);
     }
 
     /**
@@ -1422,7 +1427,7 @@ abstract class CRUDHandler extends Controller
             '_form_controls' => true,
         ]));
 
-        return $this->render($this->findTemplate('page.html.twig'), ['tiles' => $tiles ]);
+        return $this->render($this->mustFindTemplate('page.html.twig'), ['tiles' => $tiles ]);
     }
 
 
@@ -1433,7 +1438,7 @@ abstract class CRUDHandler extends Controller
         $tiles   = array();
         $tiles[] = $region = Region::create($this->getIndexRegionPath(), []);
 
-        return $this->render($this->findTemplate('page.html.twig'), [
+        return $this->render($this->mustFindTemplate('page.html.twig'), [
             'tiles' => $tiles,
             'indexRegion' => $region,
         ]);
