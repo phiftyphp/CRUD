@@ -1,6 +1,6 @@
 <?php
 namespace CRUD;
-use Phifty\Controller;
+use Phifty\Routing\Controller;
 use Pux\Controller\ExpandableController;
 
 /**

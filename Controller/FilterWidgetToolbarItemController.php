@@ -1,6 +1,6 @@
 <?php
 namespace CRUD\Controller;
-use Phifty\Controller;
+use Phifty\Routing\Controller;
 use Exception;
 
 class FilterWidgetToolbarItemController extends ToolbarItemController

@@ -7,7 +7,7 @@ use WebUI\Components\Breadcrumbs;
 use Phifty\Web\RegionPager;
 use Phifty\Web\BootstrapRegionPager;
 use Phifty\Web\Region;
-use Phifty\Controller;
+use Phifty\Routing\Controller;
 use Closure;
 use CRUD\Controller\ToolbarItemController;
 use CRUD\Controller\FilterWidgetToolbarItemController;
