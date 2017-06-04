@@ -15,6 +15,7 @@ before_script:
 - "./frameworks/phifty/travis/before_script"
 - phpenv rehash
 - "./travis/before_script"
+- php vendor/bin/phifty asset --link
 script:
 - time php bootstrap.php
 - phpunit -c phpunit.xml.dist
