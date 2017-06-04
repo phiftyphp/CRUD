@@ -992,8 +992,10 @@ abstract class CRUDHandler extends Controller
             return $p;
         }
 
-        if ($loader->exists(preg_replace('/\.twig$/', '', $p))) {
-            return $p;
+        // for backward compatiblity
+        $p2 = preg_replace('/\.twig$/', '', $p);
+        if ($loader->exists($p2)) {
+            return $p2;
         }
 
         return false;

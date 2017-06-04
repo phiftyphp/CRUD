@@ -139,6 +139,7 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
         return [
             ['/bs/user','the index page.'],
             ['/bs/user','the region action in the index page.'],
+            ['/bs/user/crud/create', 'the create form action'],
             ['/bs/user/crud/list', 'list region action.'],
             ['/bs/user/crud/list_inner', 'list region action.'],
         ];
