@@ -22,6 +22,7 @@
         "corneltek/pux": "@dev",
         "phpsgi/phpsgi": "@dev",
         "phpsgi/funk": "@dev",
+        "corneltek/webui": "@dev",
         "universal/universal": "@dev",
         "maghead/maghead": "@dev",
         "maghead/magsql": "@dev",
