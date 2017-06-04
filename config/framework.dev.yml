@@ -35,6 +35,8 @@ ServiceProviders:
     Paths:
       - bundles
 Bundles:
+  CoreBundle:
+  CommonBundle:
   AdminUI:
   UserBundle:
   CRUD:
