@@ -401,14 +401,12 @@ abstract class CRUDHandler extends Controller
         }
     }
 
-    /**
-     * init() method will be called when the route is matched.
-     */
-    public function init()
-    {
-        $this->vars['CRUD']['Object'] = $this;
-        $this->kernel = kernel();
 
+    public function context(array & $environment, array $response)
+    {
+        parent::context($environment, $response);
+
+        $this->vars['CRUD']['Object'] = $this;
         $this->autofill();
 
         // Derive options from request
@@ -418,8 +416,6 @@ abstract class CRUDHandler extends Controller
                 $this->actionViewOptions['_form_controls'] = true;
             }
         }
-
-
 
         $this->vars['Handler'] = $this;
         $this->vars['Controller'] = $this;
@@ -437,17 +433,15 @@ abstract class CRUDHandler extends Controller
             });
         }
 
-
         $this->initPermissions();
+        $this->initNavBar();
 
         /*
-         * TODO:  Move this to before render CRUD page, keep init method simple
-
+        // FIX:  Move this to before render CRUD page, keep init method simple
         if ( $this->isI18NEnabled() ) {
             $this->primaryFields[] = 'lang';
         }
         */
-        $this->initNavBar();
     }
 
     public function getModelSchema()
