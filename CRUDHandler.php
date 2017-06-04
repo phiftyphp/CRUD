@@ -1080,7 +1080,7 @@ abstract class CRUDHandler extends Controller
         $keyField = $this->modelClass::PRIMARY_KEY;
         $key = $this->request->param($keyField);
         if ($key) {
-            return $this->modelClass::find($key);
+            return $this->modelClass::findByPrimaryKey($key);
         }
 
         return false;
