@@ -26,6 +26,7 @@
         "universal/universal": "@dev",
         "maghead/maghead": "@dev",
         "maghead/magsql": "@dev",
+        "phifty/commonbundle": "4.0.x-dev",
         "phifty/adminui": "4.0.x-dev",
         "phifty/userbundle": "4.0.x-dev"
     },
