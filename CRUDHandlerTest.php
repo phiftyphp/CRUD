@@ -12,20 +12,31 @@ use UserBundle\Model\UserSchema;
 use UserBundle\Model\UserSchemaProxy;
 use Funk\Environment;
 use Pux\Mux;
+use Pux\RouteRequest;
+use Pux\RouteExecutor;
 
 class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+        $app = new \Phifty\App($this->kernel);
+        $app->boot();
+    }
+
     public function testNewRecordShouldReturnTheRecordWithDefaultArgs()
     {
         $environment = $this->createEnvironment('GET', '/bs/user');
-        $response = [];
-        $matchedRoute = [false, '/bs/user', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
-        $handler->init();
 
-        $record = $handler->newRecord([
-            'email' => 'new_user@gmail.com',
-        ]);
+        $c = new UserCRUDHandler;
+        $mux = new Mux;
+        $mux->mount('/bs/user', $c);
+
+        $req = RouteRequest::createFromEnv($environment);
+        $route = $mux->dispatchRequest($req);
+        $response = RouteExecutor::execute($route, $environment, []);
+
+        $record = $c->newRecord([ 'email' => 'new_user@gmail.com' ]);
         $this->assertInstanceOf(User::class, $record);
         $this->assertEquals('new_user@gmail.com', $record->email);
     }
@@ -33,48 +44,67 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
     public function testLoadCurrentRecordShouldReturnModelInstance()
     {
         $environment = $this->createEnvironment('GET', '/bs/user');
-        $response = [];
-        $matchedRoute = [false, '/bs/user', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
-        $handler->init();
 
-        $record = $handler->loadCurrentRecord();
+        $c = new UserCRUDHandler;
+        $mux = new Mux;
+        $mux->mount('/bs/user', $c);
+
+        $req = RouteRequest::createFromEnv($environment);
+        $route = $mux->dispatchRequest($req);
+        $response = RouteExecutor::execute($route, $environment, []);
+
+
+        $record = $c->loadCurrentRecord();
         $this->assertFalse($record);
     }
 
     public function testDefaultCollectionShouldReturnUserCollection()
     {
         $environment = $this->createEnvironment('GET', '/bs/user');
-        $response = [];
-        $matchedRoute = [false, '/bs/user', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
-        $handler->init();
 
-        $collection = $handler->createDefaultCollection();
+        $c = new UserCRUDHandler;
+        $mux = new Mux;
+        $mux->mount('/bs/user', $c);
+
+        $req = RouteRequest::createFromEnv($environment);
+        $route = $mux->dispatchRequest($req);
+        $response = RouteExecutor::execute($route, $environment, []);
+
+
+        $collection = $c->createDefaultCollection();
         $this->assertInstanceOf(UserCollection::class, $collection);
     }
 
     public function testGetModelSchemaShouldReturnUserSchemaProxy()
     {
         $environment = $this->createEnvironment('GET', '/bs/user');
-        $response = [];
-        $matchedRoute = [false, '/bs/user', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
-        $handler->init();
 
-        $schema = $handler->getModelSchema();
+        $c = new UserCRUDHandler;
+        $mux = new Mux;
+        $mux->mount('/bs/user', $c);
+
+        $req = RouteRequest::createFromEnv($environment);
+        $route = $mux->dispatchRequest($req);
+        $response = RouteExecutor::execute($route, $environment, []);
+
+
+        $schema = $c->getModelSchema();
         $this->assertInstanceOf(UserSchemaProxy::class, $schema);
     }
 
     public function testGetRoutePrefixShouldReturnTheMountPath()
     {
         $environment = $this->createEnvironment('GET', '/bs/user');
-        $response = [];
-        $matchedRoute = [false, '/bs/user/create', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
-        $handler->init();
 
-        $prefix = $handler->getRoutePrefix();
+        $c = new UserCRUDHandler;
+        $mux = new Mux;
+        $mux->mount('/bs/user', $c);
+
+        $req = RouteRequest::createFromEnv($environment);
+        $route = $mux->dispatchRequest($req);
+        $response = RouteExecutor::execute($route, $environment, []);
+
+        $prefix = $c->getRoutePrefix();
         $this->assertEquals('/bs/user', $prefix);
     }
 
@@ -82,12 +112,18 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
     {
         $environment = $this->createEnvironment('GET', '/bs/user', [ '_order_column' => 'id', '_order_by' => 'ASC' ]);
 
-        $response = [];
-        $matchedRoute = [false, '/bs/user/create', [UserCRUDHandler::class, 'indexAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
-        $handler->init();
 
-        $collection = $handler->orderCollection(new UserCollection);
+        $c = new UserCRUDHandler;
+        $mux = new Mux;
+        $mux->mount('/bs/user', $c);
+
+        $req = RouteRequest::createFromEnv($environment);
+        $route = $mux->dispatchRequest($req);
+        $response = RouteExecutor::execute($route, $environment, []);
+
+
+
+        $collection = $c->orderCollection(new UserCollection);
         $this->assertInstanceOf(UserCollection::class, $collection);
 
         $sql = $collection->getCurrentQuery()->toSql(new \Magsql\Driver\MySQLDriver, new \Magsql\ArgumentArray);
@@ -101,34 +137,30 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
     public function crudPathDataProvider()
     {
         return [
-            ['/bs/user', 'indexAction', 'the index page.'],
-            ['/bs/user', 'indexRegionAction', 'the region action in the index page.'],
-            ['/bs/user/list', 'listRegionAction', 'list region action.'],
-            ['/bs/user/list_inner', 'listInnerRegionAction', 'list region action.'],
+            ['/bs/user','the index page.'],
+            ['/bs/user','the region action in the index page.'],
+            ['/bs/user/crud/list', 'list region action.'],
+            ['/bs/user/crud/list_inner', 'list region action.'],
         ];
     }
 
     /**
      * @dataProvider crudPathDataProvider
      */
-    public function testRouteExecute($pathInfo, $action)
+    public function testRouteExecute($pathInfo)
     {
         $environment = $this->createEnvironment('GET', $pathInfo);
-        $route = [false, $pathInfo, [UserCRUDHandler::class, $action], [ 'mount_path' => '/bs/user' ]];
-        $response = [];
-        $response = \Phifty\Routing\RouteExecutor::execute($route, $environment, $response, $route);
+
+        $c = new UserCRUDHandler;
+        $mux = new Mux;
+        $mux->mount('/bs/user', $c);
+
+        $req = RouteRequest::createFromEnv($environment);
+        $route = $mux->dispatchRequest($req);
+
+        $this->assertNotEmpty($route);
+
+        $response = RouteExecutor::execute($route, $environment, []);
         $this->assertNotEmpty($response);
-    }
-
-
-    public function testListRegionAction()
-    {
-        $environment = $this->createEnvironment('GET', '/bs/user/list');
-        $response = [];
-        $matchedRoute = [false, '/bs/user/list', [UserCRUDHandler::class, 'listRegionAction'], [ 'mount_path' => '/bs/user' ]];
-        $handler = new UserCRUDHandler($environment, $response, $matchedRoute);
-        $handler->init();
-        $region = $handler->listRegionAction();
-        $this->assertNotEmpty($region);
     }
 }

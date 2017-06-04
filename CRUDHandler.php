@@ -334,37 +334,37 @@ abstract class CRUDHandler extends Controller
         // we will register the CRUD actions.
         // we should move the ModelName extraction to static,
         // so that we won't waste too much resource on creating objects.
-        $class = get_class($this);
-        $mux->add(''             , [$class,'indexAction'], $options);
+        $mux->add('', [$this,'indexAction'], $options);
 
-        $mux->add('/summary' , [$class , 'summaryAction'], $options);
-        $mux->add('/search', [$class, 'searchAction'], $options);
+        $mux->add('/summary' , [$this , 'summaryAction'], $options);
+        $mux->add('/search', [$this, 'searchAction'], $options);
 
-        $mux->add('/export/csv'   , [$class , 'exportCsvAction']   , $options);
-        $mux->add('/export/excel' , [$class , 'exportExcelAction'] , $options);
+        $mux->add('/export/csv'   , [$this , 'exportCsvAction']   , $options);
+        $mux->add('/export/excel' , [$this , 'exportExcelAction'] , $options);
 
-        $mux->add('/crud/index'  , [$class,'indexRegionAction'], $options);
-        $mux->add('/crud/create' , [$class,'createRegionAction'], $options);
-        $mux->add('/crud/edit'   , [$class,'editRegionAction'], $options);
-        $mux->add('/crud/view'   , [$class,'viewRegionAction'], $options);
-        $mux->add('/crud/item'   , [$class,'itemRegionAction'], $options);
+        $mux->add('/crud/index'  , [$this,'indexRegionAction'], $options);
+        $mux->add('/crud/create' , [$this,'createRegionAction'], $options);
+        $mux->add('/crud/edit'   , [$this,'editRegionAction'], $options);
+        $mux->add('/crud/view'   , [$this,'viewRegionAction'], $options);
+        $mux->add('/crud/item'   , [$this,'itemRegionAction'], $options);
 
-        $mux->add('/crud/list'       , [$class , 'listRegionAction'], $options);
-        $mux->add('/crud/list_inner' , [$class , 'listInnerRegionAction'], $options);
-        $mux->add('/crud/modal'      , [$class , 'modalEditRegionAction'], $options);
+        $mux->add('/crud/list'       , [$this , 'listRegionAction'], $options);
+        $mux->add('/crud/list_inner' , [$this , 'listInnerRegionAction'], $options);
+        $mux->add('/crud/modal'      , [$this , 'modalEditRegionAction'], $options);
 
         // CRUDUploadActions
-        $mux->add('/import/upload'       , [$class , 'importUploadRegionAction'], $options);
-        $mux->add('/import/column-map'   , [$class , 'importColumnMapRegionAction'], $options);
-        $mux->add('/import/sample'   , [$class , 'importSampleDownloadAction'], $options);
+        $mux->add('/import/upload'       , [$this , 'importUploadRegionAction'], $options);
+        $mux->add('/import/column-map'   , [$this , 'importColumnMapRegionAction'], $options);
+        $mux->add('/import/sample'   , [$this , 'importSampleDownloadAction'], $options);
 
-        $mux->add('/view'            , [$class , 'viewAction'], $options);
-        $mux->add('/edit'            , [$class , 'editAction'], $options);
-        $mux->add('/create'          , [$class , 'createAction'], $options);
+        $mux->add('/view'            , [$this , 'viewAction'], $options);
+        $mux->add('/edit'            , [$this , 'editAction'], $options);
+        $mux->add('/create'          , [$this , 'createAction'], $options);
 
         if ($this->primaryFields) {
-            $mux->add( '/crud/quick_create', [$class,'quickCreateAction'], $options);
+            $mux->add( '/crud/quick_create', [$this,'quickCreateAction'], $options);
         }
+
         return $mux;
     }
 
