@@ -54,6 +54,8 @@
 	window.CRUDHasManyEditor = __webpack_require__(26);
 	window.CRUDRelModal = __webpack_require__(37);
 
+	window.TableViewBuilder = __webpack_require__(38);
+
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
@@ -4547,6 +4549,217 @@
 	  return defer;
 	};
 	exports["default"] = CRUDRelModal;
+	module.exports = exports["default"];
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _viewbuilderBaseViewBuilder = __webpack_require__(32);
+
+	var _viewbuilderBaseViewBuilder2 = _interopRequireDefault(_viewbuilderBaseViewBuilder);
+
+	var _utilsUri = __webpack_require__(33);
+
+	var _utilsUri2 = _interopRequireDefault(_utilsUri);
+
+	var _utilsCss = __webpack_require__(34);
+
+	var _utilsCss2 = _interopRequireDefault(_utilsCss);
+
+	var _classnames = __webpack_require__(35);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
+	var TableViewBuilder = (function (_BaseViewBuilder) {
+	  _inherits(TableViewBuilder, _BaseViewBuilder);
+
+	  function TableViewBuilder() {
+	    _classCallCheck(this, TableViewBuilder);
+
+	    _get(Object.getPrototypeOf(TableViewBuilder.prototype), "constructor", this).apply(this, arguments);
+	  }
+
+	  _createClass(TableViewBuilder, [{
+	    key: "renderAddView",
+
+	    /**
+	     * @param {CRUDHasManyEditor} target
+	     */
+	    value: function renderAddView(target) {
+	      var itemDesc = this.itemDesc;
+	      var boxStyle = {
+	        'height': '50px',
+	        'lineHeight': '50px',
+	        'textAlign': 'center'
+	      };
+	      var classes = (0, _classnames2["default"])({
+	        "crud-record-item": true,
+	        "add": true,
+	        "is": true,
+	        "text-cover": true,
+	        "float": itemDesc.display === 'float',
+	        "block": itemDesc.display === "block",
+	        "inline-block": itemDesc.display === "inline-block"
+	      });
+	      return React.createElement(
+	        "div",
+	        { className: classes, key: "add", onClick: target.handleAddItem },
+	        React.createElement(
+	          "div",
+	          { style: boxStyle },
+	          React.createElement(
+	            "i",
+	            { className: "fa fa-plus" },
+	            " "
+	          )
+	        )
+	      );
+	    }
+	  }, {
+	    key: "renderHeader",
+	    value: function renderHeader(target) {
+	      var headers = [];
+	      return React.createElement(
+	        "thead",
+	        null,
+	        React.createElement(
+	          "tr",
+	          null,
+	          this.itemDesc.columns.map(function (el, i) {
+	            return React.createElement(
+	              "th",
+	              { key: i },
+	              el.label
+	            );
+	          }),
+	          React.createElement(
+	            "th",
+	            { key: "controls" },
+	            "-"
+	          )
+	        )
+	      );
+	    }
+	  }, {
+	    key: "renderRecords",
+	    value: function renderRecords(target, records) {
+	      return React.createElement(
+	        "tbody",
+	        null,
+	        _get(Object.getPrototypeOf(TableViewBuilder.prototype), "renderRecords", this).call(this, target, records)
+	      );
+	    }
+	  }, {
+	    key: "renderFooter",
+	    value: function renderFooter(target) {
+	      var addView = this.itemDesc.add !== false ? this.renderAddView(target) : null;
+	      if (!addView) {
+	        return null;
+	      }
+	      return React.createElement(
+	        "tfoot",
+	        null,
+	        React.createElement(
+	          "tr",
+	          null,
+	          React.createElement(
+	            "td",
+	            { colSpan: this.itemDesc.columns.length + 1 },
+	            addView
+	          )
+	        )
+	      );
+	    }
+
+	    /**
+	     * @param {CRUDHasManyEditor} record
+	     * @param {object} record
+	     * @param {key} string
+	     */
+	  }, {
+	    key: "renderRecord",
+	    value: function renderRecord(target, record, key) {
+
+	      var formFields;
+	      if (target.props.references && target.props.schema) {
+	        formFields = this._renderItemSignatureInputs(target, record);
+	      }
+
+	      return React.createElement(
+	        "tr",
+	        { key: key },
+	        this.itemDesc.columns.map(function (col, i) {
+	          var keys = col.key.split(/\./);
+	          var k = undefined;
+	          var v = record;
+	          while ((k = keys.shift()) && v) {
+	            v = v[k];
+	          }
+
+	          if (col.formatter && col.formatter instanceof Function) {
+	            v = col.formatter(v);
+	          }
+
+	          // Render form fields
+	          return React.createElement(
+	            "td",
+	            { key: i },
+	            React.createElement(
+	              "span",
+	              { style: col.style },
+	              v
+	            )
+	          );
+	        }),
+	        React.createElement(
+	          "td",
+	          { key: "controls" },
+	          this.renderItemControls(target, record, this.itemDesc.controls || []),
+	          formFields
+	        )
+	      );
+	    }
+
+	    /**
+	     * This method could be overridded to render a wrapper around the records.
+	     *
+	     * @param {CRUDHasManyEditor} target
+	     * @param {Array<object>} records
+	     */
+	  }, {
+	    key: "render",
+	    value: function render(target, records) {
+	      return React.createElement(
+	        "table",
+	        { className: "table table-strip" },
+	        this.renderHeader(target),
+	        this.renderRecords(target, records),
+	        this.renderFooter(target)
+	      );
+	    }
+	  }]);
+
+	  return TableViewBuilder;
+	})(_viewbuilderBaseViewBuilder2["default"]);
+
+	exports["default"] = TableViewBuilder;
 	module.exports = exports["default"];
 
 /***/ }
