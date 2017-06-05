@@ -69,6 +69,11 @@ trait CRUDListActions {
             'Pager'   => $this->createCollectionPager($collection),
             'Columns' => $this->getListColumns(),
         ));
+
+        if ($this->reactListApp) {
+            return $this->render($this->findTemplate('react/list_inner.html.twig'));
+        }
+
         return $this->render($this->findTemplate('list_inner.html.twig'));
     }
 
