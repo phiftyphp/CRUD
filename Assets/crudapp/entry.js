@@ -5,5 +5,4 @@ window.CRUDCreateButton  = require("./components/CRUDCreateButton");
 window.CRUDListEditor    = require("./components/CRUDListEditor");
 window.CRUDHasManyEditor = require("./components/CRUDHasManyEditor");
 window.CRUDRelModal      = require("./CRUDRelModal");
-
 window.TableViewBuilder = require("./viewbuilder/TableViewBuilder");

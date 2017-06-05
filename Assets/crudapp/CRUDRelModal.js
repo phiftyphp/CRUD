@@ -1,5 +1,11 @@
 /*
- Here is the existing CRUDModal code
+CRUDModal doesn't support different z-index
+It was used to open the side modal.
+
+This is different from the CRUDModal, we don't use scroll, since the modal is
+smaller.
+
+Usage:
 
     CRUDModal.open({
       "title": $btn.data("modalTitle") || "編輯" + this.props.modelLabel,
@@ -17,32 +23,28 @@
       }
     });
 
-  Defined in bundles/crud/Assets/crud/crud_modal.coffee
-
-  Note: right now, the CRUDModal doesn't support different z-index
-  It was used to open the side modal.
-
-  This is different from the CRUDModal, we don't use scroll, since the modal is
-  smaller.
+Originally implemented in bundles/crud/Assets/crud/crud_modal.coffee
 */
+const CRUDRelModal = {};
 
-var CRUDRelModal = {};
 CRUDRelModal.open = function(title, url, args, config) {
 
   var defer = jQuery.Deferred();
   var predefinedArgs = { "_submit_btn": false, "_close_btn": false };
-  var controls = [];
-  controls.push({
-     "label": "儲存", "primary": true, "onClick": function(e, ui) { return ui.body.find("form").submit(); } 
+  var defaultControls = [];
+
+  defaultControls.push({
+     "label": "儲存", "primary": true, "onClick": function(e, ui) { return ui.body.find("form").submit(); }
   });
-  var ui = ModalManager.createBlock($.extend({
+
+  const ui = ModalManager.createBlock($.extend({
     "title": title,
     "size": "large",
+    "controls": defaultControls,
     "ajax": {
       "url":  url,
       "args": $.extend(predefinedArgs, args)
     },
-    "controls": controls
   }, config||{}));
 
   // Initialize the action from the form inside the modal
@@ -68,7 +70,7 @@ CRUDRelModal.open = function(title, url, args, config) {
     }));
   });
 
-  var $m = ui.container.find('.modal')
+  const $m = ui.container.find('.modal')
   $m.modal('show'); // TODO: support modal config here
   $m.on('shown.bs.modal', (event) => {
 

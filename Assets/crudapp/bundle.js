@@ -53,7 +53,6 @@
 	window.CRUDListEditor = __webpack_require__(6);
 	window.CRUDHasManyEditor = __webpack_require__(26);
 	window.CRUDRelModal = __webpack_require__(37);
-
 	window.TableViewBuilder = __webpack_require__(38);
 
 /***/ },
@@ -483,45 +482,61 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	/*
+	<CRUDCreateButton 
+	    label="Create"
+	    size="large"
+	    side=false
+	    baseUrl=/bs/user
+	>
+	</CRUDCreateButton>
+
+
+
+	<CRUDCreateButton 
+	    modelLabel="Create"
+	    size="large"
+	    side=false
+	    baseUrl=/bs/user
+	>
+	</CRUDCreateButton>
+
+
+	*/
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "CRUDCreateButton",
 
 	  propTypes: {
 	    /**
-	     * the label of the button
+	     * label of the button
 	     */
 	    "label": _react2["default"].PropTypes.string,
-
-	    /**
-	     * The crud Id, which could be: "org", "users", "stores" ... etc
-	     */
-	    "crudId": _react2["default"].PropTypes.string.isRequired,
 
 	    /*
 	     * the baseUrl of a CRUD handler, usually "/bs"
 	     */
 	    "baseUrl": _react2["default"].PropTypes.string,
-	    "basepath": _react2["default"].PropTypes.string, // previous property
-
-	    "namespace": _react2["default"].PropTypes.string.isRequired,
-
-	    "model": _react2["default"].PropTypes.string.isRequired,
-	    "modelLabel": _react2["default"].PropTypes.string.isRequired,
-
-	    "onInit": _react2["default"].PropTypes.func,
-	    "onSuccess": _react2["default"].PropTypes.func,
-
-	    // csrf token is needed for sending actions
-	    "csrfToken": _react2["default"].PropTypes.string,
 
 	    // modal related options
 	    // ==============================
-
-	    // the modal size: it could be "large", "small"
+	    /**
+	     * the modal size: it could be "large", "small"
+	     */
 	    "size": _react2["default"].PropTypes.string,
 
-	    // show the modal as a side modal?
-	    "side": _react2["default"].PropTypes.bool
+	    /**
+	     * show the modal as a side modal?
+	     */
+	    "side": _react2["default"].PropTypes.bool,
+
+	    /**
+	     * the title of the modal
+	     */
+	    "title": _react2["default"].PropTypes.string,
+
+	    "onInit": _react2["default"].PropTypes.func,
+
+	    "onSuccess": _react2["default"].PropTypes.func
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -538,22 +553,21 @@
 
 	  handleCreateAction: function handleCreateAction(e) {
 	    e.stopPropagation();
-
-	    var that = this;
 	    CRUDModal.open({
-	      "title": "建立新的" + this.props.modelLabel,
+	      "title": this.props.title || 'Untitled',
 	      "size": this.props.size || "large",
 	      "side": this.props.side || true,
 	      "closeOnSuccess": true,
-	      "url": (this.props.basepath || this.props.baseUrl) + "/crud/create",
+	      "url": (this.props.baseUrl || this.props.basepath) + "/crud/create",
 	      "init": this.props.onInit, /* function(e, ui) { */
 	      "success": this.props.onSuccess });
 	  },
+
 	  /* function(ui, resp) { */
 	  render: function render() {
 	    return _react2["default"].createElement(
 	      "div",
-	      { key: this.props.key, className: "btn-group" },
+	      { key: this.key, className: "btn-group" },
 	      _react2["default"].createElement(
 	        "button",
 	        { className: "btn btn-success", onClick: this.handleCreateAction },
@@ -775,7 +789,6 @@
 
 	  handleCreateAction: function handleCreateAction(e) {
 	    e.stopPropagation();
-
 	    var that = this;
 	    CRUDModal.open({
 	      "title": "建立新的" + this.props.modelLabel,
@@ -786,10 +799,7 @@
 	      "init": function init(e, ui) {
 	        // the modal content init callback
 	      },
-	      "success": function success(ui, resp) {
-	        // this will be triggered when the form is submitted successfully
-	        that.refs.region.updateRegion();
-	      }
+	      "success": function success(ui, resp) {}
 	    });
 	  },
 
@@ -1055,16 +1065,20 @@
 	   * @param {object} controlConfig
 	   */
 	  renderCreateControl: function renderCreateControl(controlConfig) {
-	    return _react2['default'].createElement(
-	      'div',
-	      { key: "create", className: 'btn-group' },
-	      _react2['default'].createElement(
-	        'button',
-	        { className: 'btn btn-success',
-	          onClick: this.handleCreateAction },
-	        controlConfig.label || '建立'
-	      )
-	    );
+	    var _this = this;
+
+	    return _react2['default'].createElement(_CRUDCreateButton2['default'], {
+	      key: "create",
+	      label: "建立新的" + this.props.modelLabel,
+	      title: "建立新的" + this.props.modelLabel,
+	      baseUrl: this.props.baseUrl,
+	      size: "large",
+	      side: true,
+	      onSuccess: function (ui, resp) {
+	        // this will be triggered when the form is submitted successfully
+	        _this.refs.region.updateRegion();
+	      }
+	    });
 	  },
 
 	  /**
@@ -1131,7 +1145,7 @@
 	   * @param {Array<object>} target
 	   */
 	  renderControls: function renderControls(controls) {
-	    var _this = this;
+	    var _this2 = this;
 
 	    var childViews = [];
 
@@ -1139,13 +1153,13 @@
 	      var a = controlConfig.action || controlConfig.feature;
 	      switch (a) {
 	        case "create":
-	          childViews.push(_this.renderCreateControl(controlConfig));
+	          childViews.push(_this2.renderCreateControl(controlConfig));
 	          break;
 	        case "export":
-	          childViews.push(_this.renderExportControl(controlConfig));
+	          childViews.push(_this2.renderExportControl(controlConfig));
 	          break;
 	        case "import":
-	          childViews.push(_this.renderImportControl(controlConfig));
+	          childViews.push(_this2.renderImportControl(controlConfig));
 	          break;
 	      }
 	    });
@@ -4464,7 +4478,13 @@
 /***/ function(module, exports) {
 
 	/*
-	 Here is the existing CRUDModal code
+	CRUDModal doesn't support different z-index
+	It was used to open the side modal.
+
+	This is different from the CRUDModal, we don't use scroll, since the modal is
+	smaller.
+
+	Usage:
 
 	    CRUDModal.open({
 	      "title": $btn.data("modalTitle") || "編輯" + this.props.modelLabel,
@@ -4482,39 +4502,35 @@
 	      }
 	    });
 
-	  Defined in bundles/crud/Assets/crud/crud_modal.coffee
-
-	  Note: right now, the CRUDModal doesn't support different z-index
-	  It was used to open the side modal.
-
-	  This is different from the CRUDModal, we don't use scroll, since the modal is
-	  smaller.
+	Originally implemented in bundles/crud/Assets/crud/crud_modal.coffee
 	*/
-
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	var CRUDRelModal = {};
+
 	CRUDRelModal.open = function (title, url, args, config) {
 
 	  var defer = jQuery.Deferred();
 	  var predefinedArgs = { "_submit_btn": false, "_close_btn": false };
-	  var controls = [];
-	  controls.push({
+	  var defaultControls = [];
+
+	  defaultControls.push({
 	    "label": "儲存", "primary": true, "onClick": function onClick(e, ui) {
 	      return ui.body.find("form").submit();
 	    }
 	  });
+
 	  var ui = ModalManager.createBlock($.extend({
 	    "title": title,
 	    "size": "large",
+	    "controls": defaultControls,
 	    "ajax": {
 	      "url": url,
 	      "args": $.extend(predefinedArgs, args)
-	    },
-	    "controls": controls
+	    }
 	  }, config || {}));
 
 	  // Initialize the action from the form inside the modal

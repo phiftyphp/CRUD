@@ -77,7 +77,6 @@ export default {
 
   handleCreateAction: function(e) {
     e.stopPropagation();
-
     var that = this;
     CRUDModal.open({
       "title": "建立新的" + this.props.modelLabel,
@@ -89,8 +88,6 @@ export default {
         // the modal content init callback
       },
       "success": function(ui, resp) {
-        // this will be triggered when the form is submitted successfully
-        that.refs.region.updateRegion();
       }
     });
   },
@@ -364,12 +361,18 @@ export default {
    * @param {object} controlConfig
    */
   renderCreateControl: function(controlConfig) {
-    return <div key={"create"} className="btn-group">
-        <button className="btn btn-success"
-        onClick={this.handleCreateAction}>
-          {controlConfig.label||'建立'}
-        </button>
-      </div>;
+    return <CRUDCreateButton
+      key={"create"}
+      label={"建立新的" + this.props.modelLabel}
+      title={"建立新的" + this.props.modelLabel}
+      baseUrl={this.props.baseUrl}
+      size={"large"}
+      side={true}
+      onSuccess={(ui,resp) => {
+        // this will be triggered when the form is submitted successfully
+        this.refs.region.updateRegion();
+      }}
+    />;
   },
 
   /**
