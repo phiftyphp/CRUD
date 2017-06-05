@@ -12,6 +12,8 @@ import CRUDListSummaryStore from '../stores/CRUDListSummaryStore';
 import CRUDListFilterStore from '../stores/CRUDListFilterStore';
 import CRUDListSelectionStore from '../stores/CRUDListSelectionStore';
 
+import CRUDCreateButton from './CRUDCreateButton';
+
 import BulkManager from './BulkManager';
 
 import {Dispatcher} from "flux";
@@ -20,8 +22,8 @@ import React from "react";
 export default {
 
   propTypes: {
-    /*
-     * the crud Id, which could be: "org", "users", "stores" ... etc
+    /**
+     * The crud Id, which could be: "org", "users", "stores" ... etc
      */
     "crudId": React.PropTypes.string.isRequired,
 
@@ -40,6 +42,7 @@ export default {
 
     "disableSelection": React.PropTypes.bool
   },
+
 
   getDefaultProps: function() {
     return { "filters": { } };
