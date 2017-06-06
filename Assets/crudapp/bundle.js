@@ -55,6 +55,39 @@
 	window.CRUDRelModal = __webpack_require__(37);
 	window.TableViewBuilder = __webpack_require__(38);
 
+	$(function () {
+	    console.log('from crudapp');
+
+	    var buttons = document.querySelectorAll('.crudapp-create-button');
+
+	    var _iteratorNormalCompletion = true;
+	    var _didIteratorError = false;
+	    var _iteratorError = undefined;
+
+	    try {
+	        for (var _iterator = buttons[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var el = _step.value;
+
+	            console.log(el, el.dataset);
+	            var btn = React.createElement(CRUDCreateButton, el.dataset);
+	            ReactDOM.render(btn, el);
+	        }
+	    } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	    } finally {
+	        try {
+	            if (!_iteratorNormalCompletion && _iterator["return"]) {
+	                _iterator["return"]();
+	            }
+	        } finally {
+	            if (_didIteratorError) {
+	                throw _iteratorError;
+	            }
+	        }
+	    }
+	});
+
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
@@ -473,7 +506,7 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -481,6 +514,10 @@
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _CRUDRelModal = __webpack_require__(37);
+
+	var _CRUDRelModal2 = _interopRequireDefault(_CRUDRelModal);
 
 	/*
 	<CRUDCreateButton 
@@ -504,77 +541,78 @@
 
 	*/
 	exports["default"] = _react2["default"].createClass({
-	  displayName: "CRUDCreateButton",
+	    displayName: "CRUDCreateButton",
 
-	  propTypes: {
-	    /**
-	     * label of the button
-	     */
-	    "label": _react2["default"].PropTypes.string,
+	    propTypes: {
+	        /**
+	         * label of the button
+	         */
+	        "label": _react2["default"].PropTypes.string,
 
-	    /*
-	     * the baseUrl of a CRUD handler, usually "/bs"
-	     */
-	    "baseUrl": _react2["default"].PropTypes.string,
+	        /*
+	         * the baseUrl of a CRUD handler, usually "/bs"
+	         */
+	        "baseUrl": _react2["default"].PropTypes.string,
 
-	    // modal related options
-	    // ==============================
-	    /**
-	     * the modal size: it could be "large", "small"
-	     */
-	    "size": _react2["default"].PropTypes.string,
+	        // modal related options
+	        // ==============================
+	        /**
+	         * the modal size: it could be "large", "small"
+	         */
+	        "size": _react2["default"].PropTypes.string,
 
-	    /**
-	     * show the modal as a side modal?
-	     */
-	    "side": _react2["default"].PropTypes.bool,
+	        /**
+	         * show the modal as a side modal?
+	         */
+	        "side": _react2["default"].PropTypes.bool,
 
-	    /**
-	     * the title of the modal
-	     */
-	    "title": _react2["default"].PropTypes.string,
+	        /**
+	         * the title of the modal
+	         */
+	        "title": _react2["default"].PropTypes.string,
 
-	    "onInit": _react2["default"].PropTypes.func,
+	        "onInit": _react2["default"].PropTypes.func,
 
-	    "onSuccess": _react2["default"].PropTypes.func
-	  },
+	        "onSuccess": _react2["default"].PropTypes.func
+	    },
 
-	  getDefaultProps: function getDefaultProps() {
-	    return {};
-	  },
+	    getDefaultProps: function getDefaultProps() {
+	        return {};
+	    },
 
-	  getInitialState: function getInitialState() {
-	    return {};
-	  },
+	    getInitialState: function getInitialState() {
+	        return {};
+	    },
 
-	  componentDidMount: function componentDidMount() {},
+	    componentDidMount: function componentDidMount() {},
 
-	  componentWillUnmount: function componentWillUnmount() {},
+	    componentWillUnmount: function componentWillUnmount() {},
 
-	  handleCreateAction: function handleCreateAction(e) {
-	    e.stopPropagation();
-	    CRUDModal.open({
-	      "title": this.props.title || 'Untitled',
-	      "size": this.props.size || "large",
-	      "side": this.props.side || true,
-	      "closeOnSuccess": true,
-	      "url": (this.props.baseUrl || this.props.basepath) + "/crud/create",
-	      "init": this.props.onInit, /* function(e, ui) { */
-	      "success": this.props.onSuccess });
-	  },
+	    handleCreateAction: function handleCreateAction(e) {
+	        e.stopPropagation();
 
-	  /* function(ui, resp) { */
-	  render: function render() {
-	    return _react2["default"].createElement(
-	      "div",
-	      { key: this.key, className: "btn-group" },
-	      _react2["default"].createElement(
-	        "button",
-	        { className: "btn btn-success", onClick: this.handleCreateAction },
-	        this.props.label || '建立'
-	      )
-	    );
-	  }
+	        console.log(this.props);
+
+	        _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/create", {
+	            "size": this.props.size || "large",
+	            "side": this.props.side || true,
+	            "closeOnSuccess": true,
+	            "init": this.props.onInit, /* function(e, ui) { */
+	            "success": this.props.onSuccess });
+	    },
+
+	    /* function(ui, resp) { */
+	    render: function render() {
+	        return _react2["default"].createElement(
+	            "div",
+	            { key: this.key, className: "btn-group" },
+	            _react2["default"].createElement(
+	                "button",
+	                { className: "btn btn-success", onClick: this.handleCreateAction },
+	                this.props.label || '建立'
+	            )
+	        );
+	    }
 	});
 	module.exports = exports["default"];
 

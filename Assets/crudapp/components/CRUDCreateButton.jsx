@@ -1,6 +1,8 @@
 import React from "react";
 
 
+import CRUDRelModal from "../CRUDRelModal";
+
 /*
 <CRUDCreateButton 
     label="Create"
@@ -73,15 +75,19 @@ export default React.createClass({
 
   handleCreateAction: function(e) {
     e.stopPropagation();
-    CRUDModal.open({
-        "title": this.props.title || 'Untitled',
-        "size": this.props.size || "large",
-        "side": this.props.side || true,
-        "closeOnSuccess": true,
-        "url": (this.props.baseUrl || this.props.basepath) + "/crud/create",
-        "init": this.props.onInit, /* function(e, ui) { */
-        "success": this.props.onSuccess, /* function(ui, resp) { */
-    });
+
+    console.log(this.props);
+
+    CRUDRelModal.open(
+        this.props.title || this.props.label || 'Untitled',
+        this.props.baseUrl + "/crud/create",
+        {
+            "size": this.props.size || "large",
+            "side": this.props.side || true,
+            "closeOnSuccess": true,
+            "init": this.props.onInit, /* function(e, ui) { */
+            "success": this.props.onSuccess, /* function(ui, resp) { */
+        });
   },
 
   render: function() {
