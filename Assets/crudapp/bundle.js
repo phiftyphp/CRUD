@@ -47,6 +47,8 @@
 	// vim:sw=2:ts=2:sts=2:
 	"use strict";
 
+	var _init = __webpack_require__(39);
+
 	window.SetPasswordControl = __webpack_require__(1);
 	window.DateRangeControl = __webpack_require__(3);
 	window.SingleDayControl = __webpack_require__(4);
@@ -56,150 +58,9 @@
 	window.CRUDRelModal = __webpack_require__(37);
 	window.TableViewBuilder = __webpack_require__(38);
 
-	function initMaterialDesign($region) {
-	  // for block styled checkbox, material doesn't work for inline checkbox
-	  if (typeof $.material !== "undefined") {
-	    $.material.checkbox($region.find('.checkbox > label > input[type=checkbox]'));
-	  }
-	}
-
-	function initOembed($region) {
-	  if (typeof jQuery.oembed === 'undefined') {
-	    return;
-	  }
-	  $region.find('.oembed').oembed(null, { maxHeight: 160, maxWidth: 300 });
-	}
-
-	function initFormKit($region) {
-	  if (typeof FormKit === "undefined") {
-	    return;
-	  }
-	  FormKit.initialize($region);
-	}
-
-	function initCRUDCreateButton($region) {
-	  var elements = $region.find('.crud-create-button');
-	  elements.each(function (i, el) {
-	    console.debug('crud-create-button', i, el, el.dataset);
-	    var btn = React.createElement(CRUDCreateButton, el.dataset);
-	    ReactDOM.render(btn, el);
-	  });
-	}
-
-	function initCRUDPasswordControl($region) {
-	  var elements = $region.find('.crud-password-control');
-	  elements.each(function (i, el) {
-	    console.debug('crud-password-control', i, el, el.dataset);
-	    var control = React.createElement(SetPasswordControl, {
-	      "required": elem.dataset["required"],
-	      "type": elem.dataset["type"]
-	    });
-	    ReactDOM.render(control, el);
-	  });
-	}
-
-	function initDatePicker($region) {
-	  if (typeof jQuery.fn.datepicker === "undefined") {
-	    return;
-	  }
-	  $region.find('.date-picker').datepicker({ dateFormat: 'yy-mm-dd' });
-	}
-
-	function initTabs($region) {
-
-	  // bootstrap tabs
-	  if (typeof jQuery.fn.tab !== "undefined") {
-	    $region.find('.nav-tabs li:first-child a[data-toggle="tab"]').tab('show');
-	  }
-
-	  // jQuery tabs plugin
-	  if (typeof jQuery.fn.tabs !== "undefined") {
-	    $region.find('.tabs').tabs();
-	  }
-	}
-
-	function initCollapsible($region) {
-	  if (typeof jQuery.fn.collapse === "undefined") {
-	    return;
-	  }
-	  $region.find(".collapsible").collapse();
-	}
-
-	function initAccordion($region) {
-	  if (typeof jQuery.fn.accordion === "undefined") {
-	    return;
-	  }
-
-	  // initialize accordion
-	  $region.find('.accordion').accordion({
-	    active: false,
-	    collapsible: true,
-	    autoHeight: false
-	  });
-	}
-
-	function initBundleI18NPlugin($region) {
-	  if (typeof I18N !== "undefined") {
-	    // Initialize language section switch
-	    // Add lang-switch class name to lang select dropdown to initialize lang
-	    // switch feature
-	    $region.find('select[name=lang]').addClass('lang-switch');
-	    I18N.initLangSwitch($region);
-	  } else {
-	    console.warn('I18N plugin is not loaded.');
-	  }
-	}
-
-	function initFieldHint($region) {
-	  $region.find(".v-field .hint").each(function (i, e) {
-	    var $hint = $(this);
-	    $hint.hide().css({ position: "absolute", zIndex: 100 });
-	    $hint.parent().css({ position: "relative" });
-	    $hint.prev().hover(function () {
-	      $hint.fadeIn();
-	    }, function () {
-	      $hint.fadeOut();
-	    });
-	  });
-	}
-
-	function initColorBox($region) {
-	  $region.find('.colorbox-inline').colorbox({
-	    inline: true,
-	    width: "50%",
-	    fixed: true,
-	    opacity: '0.5'
-	  });
-
-	  $region.find('.btn-close-colorbox').on('click', function (e) {
-	    e.preventDefault();
-	    $.fn.colorbox.close();
-	  });
-	}
-
-	window.initCRUDVendorComponents = function ($region) {
-	  // init extra vendor components
-	  initFormKit($region);
-	  initOembed($region);
-	  initMaterialDesign($region);
-	  initDatePicker($region);
-	  initCollapsible($region);
-	  initColorBox($region);
-
-	  if (typeof use_tinymce !== "undefined") {
-	    use_tinymce('adv1', { popup: true });
-	  }
-	};
-
-	window.initCRUDComponents = function ($region) {
-	  // init core components
-	  initCRUDPasswordControl($region);
-	  initCRUDCreateButton($region);
-
-	  // init bundle plugins
-	  initBundleI18NPlugin($region);
-	  initFieldHint($region);
-	};
+	window.initCRUDComponents = _init.initCRUDComponents;
+	window.initCRUDVendorComponents = _init.initCRUDVendorComponents;
+	window.initCRUDModalAction = _init.initCRUDModalAction;
 
 	// Unmount app manually when region is going to fetch new contents.
 	$(Region).bind('region.unmount', function (e, $region) {
@@ -209,13 +70,13 @@
 	});
 
 	$(Region).bind('region.load', function (e, $region) {
-	  initCRUDComponents($region);
-	  initCRUDVendorComponents($region);
+	  (0, _init.initCRUDComponents)($region);
+	  (0, _init.initCRUDVendorComponents)($region);
 	});
 
 	$(function () {
 	  console.debug('crudapp ready');
-	  initCRUDComponents($(document.body));
+	  (0, _init.initCRUDComponents)($(document.body));
 	  // initCRUDVendorComponents();
 	});
 
@@ -4943,6 +4804,206 @@
 
 	exports["default"] = TableViewBuilder;
 	module.exports = exports["default"];
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports.initCRUDVendorComponents = initCRUDVendorComponents;
+	exports.initCRUDComponents = initCRUDComponents;
+	exports.initCRUDModalAction = initCRUDModalAction;
+
+	function initMaterialDesign($region) {
+	  // for block styled checkbox, material doesn't work for inline checkbox
+	  if (typeof $.material !== "undefined") {
+	    $.material.checkbox($region.find('.checkbox > label > input[type=checkbox]'));
+	  }
+	}
+
+	function initOembed($region) {
+	  if (typeof jQuery.oembed === 'undefined') {
+	    return;
+	  }
+	  $region.find('.oembed').oembed(null, { maxHeight: 160, maxWidth: 300 });
+	}
+
+	function initFormKit($region) {
+	  if (typeof FormKit === "undefined") {
+	    return;
+	  }
+	  FormKit.initialize($region);
+	}
+
+	function initCRUDCreateButton($region) {
+	  var elements = $region.find('.crud-create-button');
+	  elements.each(function (i, el) {
+	    console.debug('crud-create-button', i, el, el.dataset);
+	    var btn = React.createElement(CRUDCreateButton, el.dataset);
+	    ReactDOM.render(btn, el);
+	  });
+	}
+
+	function initCRUDPasswordControl($region) {
+	  var elements = $region.find('.crud-password-control');
+	  elements.each(function (i, el) {
+	    console.debug('crud-password-control', i, el, el.dataset);
+	    var control = React.createElement(SetPasswordControl, {
+	      "required": elem.dataset["required"],
+	      "type": elem.dataset["type"]
+	    });
+	    ReactDOM.render(control, el);
+	  });
+	}
+
+	function initDatePicker($region) {
+	  if (typeof jQuery.fn.datepicker === "undefined") {
+	    return;
+	  }
+	  $region.find('.date-picker').datepicker({ dateFormat: 'yy-mm-dd' });
+	}
+
+	function initTabs($region) {
+
+	  // bootstrap tabs
+	  if (typeof jQuery.fn.tab !== "undefined") {
+	    $region.find('.nav-tabs li:first-child a[data-toggle="tab"]').tab('show');
+	  }
+
+	  // jQuery tabs plugin
+	  if (typeof jQuery.fn.tabs !== "undefined") {
+	    $region.find('.tabs').tabs();
+	  }
+	}
+
+	function initCollapsible($region) {
+	  if (typeof jQuery.fn.collapse === "undefined") {
+	    return;
+	  }
+	  $region.find(".collapsible").collapse();
+	}
+
+	function initAccordion($region) {
+	  if (typeof jQuery.fn.accordion === "undefined") {
+	    return;
+	  }
+
+	  // initialize accordion
+	  $region.find('.accordion').accordion({
+	    active: false,
+	    collapsible: true,
+	    autoHeight: false
+	  });
+	}
+
+	function initBundleI18NPlugin($region) {
+	  if (typeof I18N !== "undefined") {
+	    // Initialize language section switch
+	    // Add lang-switch class name to lang select dropdown to initialize lang
+	    // switch feature
+	    $region.find('select[name=lang]').addClass('lang-switch');
+	    I18N.initLangSwitch($region);
+	  } else {
+	    console.warn('I18N plugin is not loaded.');
+	  }
+	}
+
+	function initFieldHint($region) {
+	  $region.find(".v-field .hint").each(function (i, e) {
+	    var $hint = $(this);
+	    $hint.hide().css({ position: "absolute", zIndex: 100 });
+	    $hint.parent().css({ position: "relative" });
+	    $hint.prev().hover(function () {
+	      $hint.fadeIn();
+	    }, function () {
+	      $hint.fadeOut();
+	    });
+	  });
+	}
+
+	function initColorBox($region) {
+	  $region.find('.colorbox-inline').colorbox({
+	    inline: true,
+	    width: "50%",
+	    fixed: true,
+	    opacity: '0.5'
+	  });
+
+	  $region.find('.btn-close-colorbox').on('click', function (e) {
+	    e.preventDefault();
+	    $.fn.colorbox.close();
+	  });
+	}
+
+	function initCRUDVendorComponents($region) {
+	  // init extra vendor components
+	  initFormKit($region);
+	  initOembed($region);
+	  initMaterialDesign($region);
+	  initDatePicker($region);
+	  initCollapsible($region);
+	  initColorBox($region);
+
+	  if (typeof use_tinymce !== "undefined") {
+	    use_tinymce('adv1', { popup: true });
+	  }
+	}
+
+	;
+
+	function initCRUDComponents($region) {
+
+	  // init core components
+	  initCRUDPasswordControl($region);
+	  initCRUDCreateButton($region);
+
+	  // init bundle plugins
+	  initBundleI18NPlugin($region);
+	  initFieldHint($region);
+	}
+
+	;
+
+	function initCRUDModalAction(currentFormId) {
+	  var formEl = document.getElementById(currentFormId);
+
+	  console.debug('setting up form validation for ', formEl);
+
+	  var highlighter = new ActionBootstrapHighlight(formEl);
+	  var $form = $(formEl);
+	  var $msgbox = $form.prev('.action-result-container').first();
+	  var a = Action.form(formEl, {
+	    'clear': false,
+	    'onSubmit': function onSubmit() {
+	      highlighter.cleanup();
+	    },
+	    'onSuccess': function onSuccess(resp) {
+	      jQuery.scrollTo(formEl, 600, { offset: -200 });
+	      // TODO: redirect?
+	    },
+	    'onError': function onError(resp) {
+	      highlighter.fromValidations(resp.validations);
+	      if (typeof jQuery.scrollTo != "undefined") {
+	        var input = highlighter.getFirstInvalidField();
+	        if (input) {
+	          jQuery.scrollTo(input, 600, { offset: -200 });
+	        } else {
+	          jQuery.scrollTo($msgbox.get(0), 600, { offset: -200 });
+	        }
+	      }
+	    }
+	  });
+	  a.plug(ActionMsgbox, {
+	    'disableScroll': true,
+	    'container': $msgbox
+	  });
+	}
+
+	;
 
 /***/ }
 /******/ ]);
