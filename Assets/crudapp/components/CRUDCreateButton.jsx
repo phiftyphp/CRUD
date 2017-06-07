@@ -37,6 +37,13 @@ export default React.createClass({
      */
     "baseUrl": React.PropTypes.string,
 
+    "region": React.PropTypes.any,
+
+    /**
+     * The parent record key is used for creating a new record belongs to the parent.
+     */
+    "parentRecordKey": React.PropTypes.any,
+
 
     // modal related options
     // ==============================
@@ -44,6 +51,7 @@ export default React.createClass({
      * the modal size: it could be "large", "small"
      */
     "size": React.PropTypes.string,
+
 
     /**
      * show the modal as a side modal?
@@ -73,23 +81,39 @@ export default React.createClass({
   componentWillUnmount: function() { },
 
 
-  handleCreateAction: function(e) {
+  handleClick: function(e) {
     e.stopPropagation();
+
+    const args = {};
+
+    if (this.props.parentRecordKey) {
+        args['parent-key'] = this.props.parentRecordKey;
+    }
+
     CRUDRelModal.open(
         this.props.title || this.props.label || 'Untitled',
-        this.props.baseUrl + "/crud/create", {},
+        this.props.baseUrl + "/crud/create", args,
         {
             "size": this.props.size || "large",
             "side": this.props.side || false,
             "closeOnSuccess": true,
             "init": this.props.onInit, /* function(e, ui) { */
-            "success": this.props.onSuccess, /* function(ui, resp) { */
+            "success": (ui, resp) => {
+                console.log("success", ui, resp);
+                if (this.props.onSuccess) {
+                    this.props.onSuccess(ui, resp);
+                }
+                if (this.props.region) {
+                    console.debug("updating region", this.props.region);
+                    $(this.props.region).asRegion().refresh();
+                }
+             }
         });
   },
 
   render: function() {
       return <div key={this.key} className="btn-group">
-        <button className="btn btn-success" onClick={this.handleCreateAction}>
+        <button className="btn btn-success" onClick={this.handleClick}>
             {this.props.label || '建立'}
         </button>
       </div>;

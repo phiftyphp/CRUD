@@ -27,6 +27,10 @@ export default React.createClass({
      */
     "baseUrl": React.PropTypes.string,
 
+    /**
+     * the region DOM element used for updating.
+     */
+    "region": React.PropTypes.any,
 
     // modal related options
     // ==============================
@@ -67,7 +71,8 @@ export default React.createClass({
 
   componentWillUnmount: function() { },
 
-  handleEditAction: function(e) {
+  handleClick: function(e) {
+
     e.stopPropagation();
 
     const args = {};
@@ -82,13 +87,23 @@ export default React.createClass({
             "side": this.props.side || false,
             "closeOnSuccess": true,
             "init": this.props.onInit, /* function(e, ui) { */
-            "success": this.props.onSuccess, /* function(ui, resp) { */
+            "success": (ui, resp) => {
+                console.log("success", ui, resp);
+
+                if (this.props.onSuccess) {
+                    this.props.onSuccess(ui, resp);
+                }
+                if (this.props.region) {
+                    console.debug("updating region", this.props.region);
+                    $(this.props.region).asRegion().refresh();
+                }
+             }
         });
   },
 
   render: function() {
       return <div key={this.key} className="btn-group">
-        <button className="btn btn-success" onClick={this.handleEditAction}>
+        <button className="btn btn-success" onClick={this.handleClick}>
             {this.props.label || '編輯'}
         </button>
       </div>;

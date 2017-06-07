@@ -61,6 +61,10 @@ CRUDRelModal.open = function(title, url, args, config) {
           ui.container.find('.modal').modal('hide')
         }), 1000);
         defer.resolve(resp);
+
+        if (config.success) {
+            config.success.call(this, ui, resp);
+        }
       }
     });
     a.plug(new ActionBootstrapHighlight);

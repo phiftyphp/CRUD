@@ -85,7 +85,16 @@ abstract class CRUDHandler extends Controller
      * This is used in request url like:
      *    /bs/product/crud/edit?key=3
      */
-    protected $keyParam = 'key';
+    public $keyParam = 'key';
+
+    /**
+     * @var parentKeyParam is used for creating new record that belongs to a parent record.
+     */
+    public $parentKeyParam = 'parent-key';
+
+    public $parentKeyRecordClass;
+
+    public $parentKeyField;
 
     protected $kernel;
 
@@ -1060,6 +1069,22 @@ abstract class CRUDHandler extends Controller
      */
     public function getDefaultRecordArgs()
     {
+        // load parent key if it's in the request parameters
+        if ($key = $this->request->param($this->parentKeyParam)) {
+
+            if ($this->parentKeyRecordClass) {
+                $record = $this->parentKeyRecordClass::findByPrimaryKey($key);
+                if (!$record) {
+                    throw new \Exception("parent record not found.");
+                }
+                if (!$this->parentKeyField) {
+                    throw new \Exception("parentKeyField is not defined.");
+                }
+
+                $this->predefined[$this->parentKeyField] = $key;
+            }
+        }
+
         return $this->predefined;
     }
 

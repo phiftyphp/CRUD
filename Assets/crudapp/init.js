@@ -1,4 +1,17 @@
 // vim:sw=2:ts=2:sts=2:
+
+
+
+
+function convertDOMStringMapToObject(map)
+{
+  const obj = {};
+  for (var key in map) {
+    obj[key] = map[key];
+  }
+  return obj;
+}
+
 function initMaterialDesign($region) {
   // for block styled checkbox, material doesn't work for inline checkbox
   if (typeof $.material !== "undefined") {
@@ -27,7 +40,11 @@ function initCRUDEditButton($region)
     const elements = $region.find('.crud-edit-button');
     elements.each((i, el) => {
       console.debug('crud-edit-button', i, el, el.dataset);
-      const btn = React.createElement(CRUDEditButton, el.dataset);
+
+      const obj = convertDOMStringMapToObject(el.dataset);
+      obj.region = $region;
+
+      const btn = React.createElement(CRUDEditButton, obj);
       ReactDOM.render(btn, el);
     });
 }
@@ -37,7 +54,11 @@ function initCRUDCreateButton($region)
     const elements = $region.find('.crud-create-button');
     elements.each((i, el) => {
       console.debug('crud-create-button', i, el, el.dataset);
-      const btn = React.createElement(CRUDCreateButton, el.dataset);
+
+      const obj = convertDOMStringMapToObject(el.dataset);
+      obj.region = $region;
+
+      const btn = React.createElement(CRUDCreateButton, obj);
       ReactDOM.render(btn, el);
     });
 }

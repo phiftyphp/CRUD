@@ -564,6 +564,13 @@
 	         */
 	        "baseUrl": _react2["default"].PropTypes.string,
 
+	        "region": _react2["default"].PropTypes.any,
+
+	        /**
+	         * The parent record key is used for creating a new record belongs to the parent.
+	         */
+	        "parentRecordKey": _react2["default"].PropTypes.any,
+
 	        // modal related options
 	        // ==============================
 	        /**
@@ -598,24 +605,42 @@
 
 	    componentWillUnmount: function componentWillUnmount() {},
 
-	    handleCreateAction: function handleCreateAction(e) {
+	    handleClick: function handleClick(e) {
+	        var _this = this;
+
 	        e.stopPropagation();
-	        _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/create", {}, {
+
+	        var args = {};
+
+	        if (this.props.parentRecordKey) {
+	            args['parent-key'] = this.props.parentRecordKey;
+	        }
+
+	        _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/create", args, {
 	            "size": this.props.size || "large",
 	            "side": this.props.side || false,
 	            "closeOnSuccess": true,
 	            "init": this.props.onInit, /* function(e, ui) { */
-	            "success": this.props.onSuccess });
+	            "success": function success(ui, resp) {
+	                console.log("success", ui, resp);
+	                if (_this.props.onSuccess) {
+	                    _this.props.onSuccess(ui, resp);
+	                }
+	                if (_this.props.region) {
+	                    console.debug("updating region", _this.props.region);
+	                    $(_this.props.region).asRegion().refresh();
+	                }
+	            }
+	        });
 	    },
 
-	    /* function(ui, resp) { */
 	    render: function render() {
 	        return _react2["default"].createElement(
 	            "div",
 	            { key: this.key, className: "btn-group" },
 	            _react2["default"].createElement(
 	                "button",
-	                { className: "btn btn-success", onClick: this.handleCreateAction },
+	                { className: "btn btn-success", onClick: this.handleClick },
 	                this.props.label || '建立'
 	            )
 	        );
@@ -4592,6 +4617,10 @@
 	          ui.container.find('.modal').modal('hide');
 	        }, 1000);
 	        defer.resolve(resp);
+
+	        if (config.success) {
+	          config.success.call(this, ui, resp);
+	        }
 	      }
 	    });
 	    a.plug(new ActionBootstrapHighlight());
@@ -4828,6 +4857,7 @@
 /***/ function(module, exports) {
 
 	// vim:sw=2:ts=2:sts=2:
+
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -4836,6 +4866,14 @@
 	exports.initCRUDVendorComponents = initCRUDVendorComponents;
 	exports.initCRUDComponents = initCRUDComponents;
 	exports.initCRUDModalAction = initCRUDModalAction;
+	function convertDOMStringMapToObject(map) {
+	  var obj = {};
+	  for (var key in map) {
+	    obj[key] = map[key];
+	  }
+	  return obj;
+	}
+
 	function initMaterialDesign($region) {
 	  // for block styled checkbox, material doesn't work for inline checkbox
 	  if (typeof $.material !== "undefined") {
@@ -4862,7 +4900,11 @@
 	  var elements = $region.find('.crud-edit-button');
 	  elements.each(function (i, el) {
 	    console.debug('crud-edit-button', i, el, el.dataset);
-	    var btn = React.createElement(CRUDEditButton, el.dataset);
+
+	    var obj = convertDOMStringMapToObject(el.dataset);
+	    obj.region = $region;
+
+	    var btn = React.createElement(CRUDEditButton, obj);
 	    ReactDOM.render(btn, el);
 	  });
 	}
@@ -4871,7 +4913,11 @@
 	  var elements = $region.find('.crud-create-button');
 	  elements.each(function (i, el) {
 	    console.debug('crud-create-button', i, el, el.dataset);
-	    var btn = React.createElement(CRUDCreateButton, el.dataset);
+
+	    var obj = convertDOMStringMapToObject(el.dataset);
+	    obj.region = $region;
+
+	    var btn = React.createElement(CRUDCreateButton, obj);
 	    ReactDOM.render(btn, el);
 	  });
 	}
@@ -5088,6 +5134,11 @@
 	     */
 	    "baseUrl": _react2["default"].PropTypes.string,
 
+	    /**
+	     * the region DOM element used for updating.
+	     */
+	    "region": _react2["default"].PropTypes.any,
+
 	    // modal related options
 	    // ==============================
 	    /**
@@ -5127,7 +5178,9 @@
 
 	  componentWillUnmount: function componentWillUnmount() {},
 
-	  handleEditAction: function handleEditAction(e) {
+	  handleClick: function handleClick(e) {
+	    var _this = this;
+
 	    e.stopPropagation();
 
 	    var args = {};
@@ -5139,17 +5192,27 @@
 	      "side": this.props.side || false,
 	      "closeOnSuccess": true,
 	      "init": this.props.onInit, /* function(e, ui) { */
-	      "success": this.props.onSuccess });
+	      "success": function success(ui, resp) {
+	        console.log("success", ui, resp);
+
+	        if (_this.props.onSuccess) {
+	          _this.props.onSuccess(ui, resp);
+	        }
+	        if (_this.props.region) {
+	          console.debug("updating region", _this.props.region);
+	          $(_this.props.region).asRegion().refresh();
+	        }
+	      }
+	    });
 	  },
 
-	  /* function(ui, resp) { */
 	  render: function render() {
 	    return _react2["default"].createElement(
 	      "div",
 	      { key: this.key, className: "btn-group" },
 	      _react2["default"].createElement(
 	        "button",
-	        { className: "btn btn-success", onClick: this.handleEditAction },
+	        { className: "btn btn-success", onClick: this.handleClick },
 	        this.props.label || '編輯'
 	      )
 	    );
