@@ -1,0 +1,10 @@
+---
+collections:
+  - css:
+    - css/modal.css
+    watch: 'sass -c -w sass:css'
+  - javascript:
+    - js/modal_factory.js
+    - js/modal.js
+    watch: 'coffee -c -w js/*.coffee'
+

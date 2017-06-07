@@ -1,0 +1,16 @@
+---
+collections:
+- stylesheet:
+  - stylesheets/fivekit.css
+- javascript:
+  - javascripts/file_reader.js
+  - javascripts/mimebuilder.js
+  - javascripts/xhr.js
+  - javascripts/upload_progress_item.js
+  - javascripts/file_uploader.js
+  - javascripts/batch_file_uploader.js
+  - javascripts/dropbox.js
+  - javascripts/dropbox_uploader.js
+  - javascripts/dropbox_act_connection.js
+  - javascripts/previewer.js
+  watch: coffee -w --output javascripts -c coffeescripts

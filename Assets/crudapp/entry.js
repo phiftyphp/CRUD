@@ -26,8 +26,23 @@ $(Region).bind('region.load', function(e, $region) {
   initCRUDVendorComponents($region);
 });
 
+// backward compatibility for older React
+if (typeof ReactDOM === "undefined") {
+  ReactDOM = { render: React.render.bind(React) };
+}
+
 $(function() {
+  if (typeof FormKit === 'undefined') {
+    console.warn('FormKit is not loaded.');
+  } else {
+    FormKit.install();
+  }
+
   console.debug('crudapp ready');
   initCRUDComponents($(document.body));
   // initCRUDVendorComponents();
+
+  $(document).bind('drop dragover', function (e) {
+      e.preventDefault();
+  });
 });

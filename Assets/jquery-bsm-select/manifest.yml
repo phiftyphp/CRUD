@@ -1,0 +1,6 @@
+---
+collections:
+  - js:
+    - js/jquery.bsmselect.js
+  - css:
+    - css/jquery.bsmselect.css

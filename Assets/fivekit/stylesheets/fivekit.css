@@ -1,0 +1,68 @@
+/*
+vim:filetype=css:sw=2:ts=2:sts=2:
+*/
+.dropbox {
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    background: #fff;
+    padding: 50px;
+    margin: 20px;
+}
+
+.dropbox.dropbox-drag-over {
+  border: 1px solid #8b3;
+  background: #cf6;
+}
+
+.image-dropzone.dropbox-drag-over {
+  background: #cf6;
+}
+
+.dropbox-hint {
+    margin: 10px 20px;
+    font-weight: bold;
+    font-size: 2em;
+    text-shadow: 1px 1px #ccc;
+}
+
+.dropbox-queue { margin: 20px; }
+
+.dropbox-queue .fkit-progress { 
+    margin-bottom: 5px;
+    margin-left: 10px;
+}
+
+.fkit-progress {
+  border: 1px solid #ccc;
+  background: #fff;
+  padding: 3px 5px;
+  color: #555;
+  border-radius: 3px;
+  float: left;
+}
+
+.fkit-progress > progress {
+    width: 20em;
+}
+
+
+.fkit-progress > .percentage {
+    display: inline-block;
+    margin-left: 5px;
+    font-weight: bold;
+    text-shadow: 1px 1px #fff;
+}
+
+.fkit-progress > .filedesc {
+  display: block;
+}
+
+.fkit-progress > .filedesc > .filename {
+  display: inline-block;
+  margin-right: 5px;
+}
+.fkit-progress > .filedesc > .filesize {
+  display: inline-block;
+  margin-right: 5px;
+}
+

@@ -1,4 +1,4 @@
-
+// vim:sw=2:ts=2:sts=2:
 function initMaterialDesign($region) {
   // for block styled checkbox, material doesn't work for inline checkbox
   if (typeof $.material !== "undefined") {
@@ -75,6 +75,7 @@ function initCollapsible($region) {
 
 function initAccordion($region) {
   if (typeof jQuery.fn.accordion === "undefined") {
+    console.warn("jQuery.accordion is not loaded");
     return;
   }
 
@@ -87,15 +88,16 @@ function initAccordion($region) {
 }
 
 function initBundleI18NPlugin($region) {
-  if (typeof I18N !== "undefined") {
-    // Initialize language section switch
-    // Add lang-switch class name to lang select dropdown to initialize lang
-    // switch feature
-    $region.find('select[name=lang]').addClass('lang-switch');
-    I18N.initLangSwitch($region)
-  } else {
+  if (typeof I18N === "undefined") {
     console.warn('I18N plugin is not loaded.');
+    return;
   }
+
+  // Initialize language section switch
+  // Add lang-switch class name to lang select dropdown to initialize lang
+  // switch feature
+  $region.find('select[name=lang]').addClass('lang-switch');
+  I18N.initLangSwitch($region)
 }
 
 function initFieldHint($region) {
@@ -109,6 +111,11 @@ function initFieldHint($region) {
 }
 
 function initColorBox($region) {
+  if (typeof jQuery.fn.colorbox === "undefined") {
+    console.warn('jquery.colorbox is not loaded.');
+    return;
+  }
+
   $region.find('.colorbox-inline').colorbox({
       inline: true,
       width: "50%",

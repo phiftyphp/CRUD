@@ -74,10 +74,25 @@
 	  (0, _init.initCRUDVendorComponents)($region);
 	});
 
+	// backward compatibility for older React
+	if (typeof ReactDOM === "undefined") {
+	  ReactDOM = { render: React.render.bind(React) };
+	}
+
 	$(function () {
+	  if (typeof FormKit === 'undefined') {
+	    console.warn('FormKit is not loaded.');
+	  } else {
+	    FormKit.install();
+	  }
+
 	  console.debug('crudapp ready');
 	  (0, _init.initCRUDComponents)($(document.body));
 	  // initCRUDVendorComponents();
+
+	  $(document).bind('drop dragover', function (e) {
+	    e.preventDefault();
+	  });
 	});
 
 /***/ },
@@ -4809,6 +4824,7 @@
 /* 39 */
 /***/ function(module, exports) {
 
+	// vim:sw=2:ts=2:sts=2:
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -4817,7 +4833,6 @@
 	exports.initCRUDVendorComponents = initCRUDVendorComponents;
 	exports.initCRUDComponents = initCRUDComponents;
 	exports.initCRUDModalAction = initCRUDModalAction;
-
 	function initMaterialDesign($region) {
 	  // for block styled checkbox, material doesn't work for inline checkbox
 	  if (typeof $.material !== "undefined") {
@@ -4892,6 +4907,7 @@
 
 	function initAccordion($region) {
 	  if (typeof jQuery.fn.accordion === "undefined") {
+	    console.warn("jQuery.accordion is not loaded");
 	    return;
 	  }
 
@@ -4904,15 +4920,16 @@
 	}
 
 	function initBundleI18NPlugin($region) {
-	  if (typeof I18N !== "undefined") {
-	    // Initialize language section switch
-	    // Add lang-switch class name to lang select dropdown to initialize lang
-	    // switch feature
-	    $region.find('select[name=lang]').addClass('lang-switch');
-	    I18N.initLangSwitch($region);
-	  } else {
+	  if (typeof I18N === "undefined") {
 	    console.warn('I18N plugin is not loaded.');
+	    return;
 	  }
+
+	  // Initialize language section switch
+	  // Add lang-switch class name to lang select dropdown to initialize lang
+	  // switch feature
+	  $region.find('select[name=lang]').addClass('lang-switch');
+	  I18N.initLangSwitch($region);
 	}
 
 	function initFieldHint($region) {
@@ -4929,6 +4946,11 @@
 	}
 
 	function initColorBox($region) {
+	  if (typeof jQuery.fn.colorbox === "undefined") {
+	    console.warn('jquery.colorbox is not loaded.');
+	    return;
+	  }
+
 	  $region.find('.colorbox-inline').colorbox({
 	    inline: true,
 	    width: "50%",
