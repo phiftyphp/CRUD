@@ -64,12 +64,16 @@
 	}
 
 	function initOembed($region) {
-	  if (typeof jQuery.oembed !== 'undefined') {
-	    $region.find('.oembed').oembed(null, { maxHeight: 160, maxWidth: 300 });
+	  if (typeof jQuery.oembed === 'undefined') {
+	    return;
 	  }
+	  $region.find('.oembed').oembed(null, { maxHeight: 160, maxWidth: 300 });
 	}
 
 	function initFormKit($region) {
+	  if (typeof FormKit === "undefined") {
+	    return;
+	  }
 	  FormKit.initialize($region);
 	}
 
@@ -95,12 +99,18 @@
 	}
 
 	function initDatePicker($region) {
+	  if (typeof jQuery.fn.datepicker === "undefined") {
+	    return;
+	  }
 	  $region.find('.date-picker').datepicker({ dateFormat: 'yy-mm-dd' });
 	}
 
 	function initTabs($region) {
+
 	  // bootstrap tabs
-	  $region.find('.nav-tabs li:first-child a[data-toggle="tab"]').tab('show');
+	  if (typeof jQuery.fn.tab !== "undefined") {
+	    $region.find('.nav-tabs li:first-child a[data-toggle="tab"]').tab('show');
+	  }
 
 	  // jQuery tabs plugin
 	  if (typeof jQuery.fn.tabs !== "undefined") {
@@ -109,10 +119,17 @@
 	}
 
 	function initCollapsible($region) {
+	  if (typeof jQuery.fn.collapse === "undefined") {
+	    return;
+	  }
 	  $region.find(".collapsible").collapse();
 	}
 
 	function initAccordion($region) {
+	  if (typeof jQuery.fn.accordion === "undefined") {
+	    return;
+	  }
+
 	  // initialize accordion
 	  $region.find('.accordion').accordion({
 	    active: false,
@@ -162,13 +179,16 @@
 
 	window.initCRUDVendorComponents = function ($region) {
 	  // init extra vendor components
+	  initFormKit($region);
 	  initOembed($region);
 	  initMaterialDesign($region);
-	  initFormKit($region);
 	  initDatePicker($region);
 	  initCollapsible($region);
 	  initColorBox($region);
-	  use_tinymce('adv1', { popup: true });
+
+	  if (typeof use_tinymce !== "undefined") {
+	    use_tinymce('adv1', { popup: true });
+	  }
 	};
 
 	window.initCRUDComponents = function ($region) {
