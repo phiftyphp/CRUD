@@ -88,13 +88,10 @@ export default React.createClass({
             "closeOnSuccess": true,
             "init": this.props.onInit, /* function(e, ui) { */
             "success": (ui, resp) => {
-                console.log("success", ui, resp);
-
                 if (this.props.onSuccess) {
                     this.props.onSuccess(ui, resp);
                 }
                 if (this.props.region) {
-                    console.debug("updating region", this.props.region);
                     $(this.props.region).asRegion().refresh();
                 }
              }

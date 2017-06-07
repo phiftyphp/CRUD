@@ -622,12 +622,10 @@
 	            "closeOnSuccess": true,
 	            "init": this.props.onInit, /* function(e, ui) { */
 	            "success": function success(ui, resp) {
-	                console.log("success", ui, resp);
 	                if (_this.props.onSuccess) {
 	                    _this.props.onSuccess(ui, resp);
 	                }
 	                if (_this.props.region) {
-	                    console.debug("updating region", _this.props.region);
 	                    $(_this.props.region).asRegion().refresh();
 	                }
 	            }
@@ -5193,13 +5191,10 @@
 	      "closeOnSuccess": true,
 	      "init": this.props.onInit, /* function(e, ui) { */
 	      "success": function success(ui, resp) {
-	        console.log("success", ui, resp);
-
 	        if (_this.props.onSuccess) {
 	          _this.props.onSuccess(ui, resp);
 	        }
 	        if (_this.props.region) {
-	          console.debug("updating region", _this.props.region);
 	          $(_this.props.region).asRegion().refresh();
 	        }
 	      }
