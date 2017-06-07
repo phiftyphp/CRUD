@@ -6,11 +6,11 @@ class CRUD extends Bundle
 {
     public function assets()
     {
-        return array(
+        return [
             'crud',
             'crudapp',
             'tchooser'
-        );
+        ];
     }
 
     public function boot()
