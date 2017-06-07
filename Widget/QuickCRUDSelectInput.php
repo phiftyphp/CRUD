@@ -19,7 +19,7 @@ class QuickCRUDSelectInput extends SelectInput
         $deleteAction = $record->getRecordActionClass('Delete');
 
         $env = kernel()->twig->env;
-        $html .= $env->render('@CRUD/widgets/quick_crud_widget.html',array( 
+        $html .= $env->render('@CRUD/widgets/quick_crud_widget.html.twig',array(
             // 'createAction' => str_replace('\\','::',$createAction),
             'deleteAction' => str_replace('\\','::',$deleteAction),
             'selectInputId' => $id,
@@ -30,8 +30,4 @@ class QuickCRUDSelectInput extends SelectInput
         ));
         return $html;
     }
-
 }
-
-
-
