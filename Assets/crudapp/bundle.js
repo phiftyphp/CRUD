@@ -62,6 +62,12 @@
 	window.initCRUDVendorComponents = _init.initCRUDVendorComponents;
 	window.initCRUDModalAction = _init.initCRUDModalAction;
 
+	// backward compatibility for older React
+	// might be able to be removed.
+	if (typeof ReactDOM === "undefined") {
+	  ReactDOM = { render: React.render.bind(React) };
+	}
+
 	// Unmount app manually when region is going to fetch new contents.
 	$(Region).bind('region.unmount', function (e, $region) {
 	  $region.find('.react-app').each(function () {
@@ -73,11 +79,6 @@
 	  (0, _init.initCRUDComponents)($region);
 	  (0, _init.initCRUDVendorComponents)($region);
 	});
-
-	// backward compatibility for older React
-	if (typeof ReactDOM === "undefined") {
-	  ReactDOM = { render: React.render.bind(React) };
-	}
 
 	$(function () {
 	  if (typeof FormKit === 'undefined') {
