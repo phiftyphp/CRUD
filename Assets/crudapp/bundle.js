@@ -53,6 +53,7 @@
 	window.DateRangeControl = __webpack_require__(3);
 	window.SingleDayControl = __webpack_require__(4);
 	window.CRUDCreateButton = __webpack_require__(5);
+	window.CRUDEditButton = __webpack_require__(40);
 	window.CRUDListEditor = __webpack_require__(6);
 	window.CRUDHasManyEditor = __webpack_require__(26);
 	window.CRUDRelModal = __webpack_require__(37);
@@ -76,6 +77,7 @@
 	});
 
 	$(Region).bind('region.load', function (e, $region) {
+	  console.debug('region.load');
 	  (0, _init.initCRUDComponents)($region);
 	  (0, _init.initCRUDVendorComponents)($region);
 	});
@@ -598,9 +600,9 @@
 
 	    handleCreateAction: function handleCreateAction(e) {
 	        e.stopPropagation();
-	        _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/create", {
+	        _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/create", {}, {
 	            "size": this.props.size || "large",
-	            "side": this.props.side || true,
+	            "side": this.props.side || false,
 	            "closeOnSuccess": true,
 	            "init": this.props.onInit, /* function(e, ui) { */
 	            "success": this.props.onSuccess });
@@ -4856,6 +4858,15 @@
 	  FormKit.initialize($region);
 	}
 
+	function initCRUDEditButton($region) {
+	  var elements = $region.find('.crud-edit-button');
+	  elements.each(function (i, el) {
+	    console.debug('crud-edit-button', i, el, el.dataset);
+	    var btn = React.createElement(CRUDEditButton, el.dataset);
+	    ReactDOM.render(btn, el);
+	  });
+	}
+
 	function initCRUDCreateButton($region) {
 	  var elements = $region.find('.crud-create-button');
 	  elements.each(function (i, el) {
@@ -4986,6 +4997,7 @@
 	  // init core components
 	  initCRUDPasswordControl($region);
 	  initCRUDCreateButton($region);
+	  initCRUDEditButton($region);
 
 	  // init bundle plugins
 	  initBundleI18NPlugin($region);
@@ -5030,6 +5042,122 @@
 	}
 
 	;
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _CRUDRelModal = __webpack_require__(37);
+
+	var _CRUDRelModal2 = _interopRequireDefault(_CRUDRelModal);
+
+	/*
+	<CRUDEditButton 
+	    label="Edit"
+	    size="large"
+	    side=false
+	    recordKey={3}
+	    baseUrl=/bs/user
+	>
+	</CRUDEditButton>
+
+	*/
+	exports["default"] = _react2["default"].createClass({
+	  displayName: "CRUDEditButton",
+
+	  propTypes: {
+	    /**
+	     * label of the button
+	     */
+	    "label": _react2["default"].PropTypes.string,
+
+	    /*
+	     * the baseUrl of a CRUD handler, usually "/bs"
+	     */
+	    "baseUrl": _react2["default"].PropTypes.string,
+
+	    // modal related options
+	    // ==============================
+	    /**
+	     * the modal size: it could be "large", "small"
+	     */
+	    "size": _react2["default"].PropTypes.string,
+
+	    /**
+	     * show the modal as a side modal?
+	     */
+	    "side": _react2["default"].PropTypes.bool,
+
+	    /**
+	     * the title of the modal
+	     */
+	    "title": _react2["default"].PropTypes.string,
+
+	    /**
+	     * The primary key of the record. the reason we didn't use "key" is because react already uses "key" as the component key.
+	     */
+	    "recordKey": _react2["default"].PropTypes.any.isRequired,
+
+	    "recordKeyName": _react2["default"].PropTypes.string.isRequired,
+
+	    "onInit": _react2["default"].PropTypes.func,
+
+	    "onSuccess": _react2["default"].PropTypes.func
+	  },
+
+	  getDefaultProps: function getDefaultProps() {
+	    return {};
+	  },
+
+	  getInitialState: function getInitialState() {
+	    return {};
+	  },
+
+	  componentDidMount: function componentDidMount() {},
+
+	  componentWillUnmount: function componentWillUnmount() {},
+
+	  handleEditAction: function handleEditAction(e) {
+	    e.stopPropagation();
+
+	    var args = {};
+
+	    args[this.props.recordKeyName] = this.props.recordKey;
+
+	    _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/edit", args, {
+	      "size": this.props.size || "large",
+	      "side": this.props.side || false,
+	      "closeOnSuccess": true,
+	      "init": this.props.onInit, /* function(e, ui) { */
+	      "success": this.props.onSuccess });
+	  },
+
+	  /* function(ui, resp) { */
+	  render: function render() {
+	    return _react2["default"].createElement(
+	      "div",
+	      { key: this.key, className: "btn-group" },
+	      _react2["default"].createElement(
+	        "button",
+	        { className: "btn btn-success", onClick: this.handleEditAction },
+	        this.props.label || '編輯'
+	      )
+	    );
+	  }
+	});
+	module.exports = exports["default"];
 
 /***/ }
 /******/ ]);

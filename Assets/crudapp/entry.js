@@ -3,6 +3,7 @@ window.SetPasswordControl = require("./components/SetPasswordControl");
 window.DateRangeControl  = require("./components/DateRangeControl");
 window.SingleDayControl  = require("./components/SingleDayControl");
 window.CRUDCreateButton  = require("./components/CRUDCreateButton");
+window.CRUDEditButton  = require("./components/CRUDEditButton");
 window.CRUDListEditor    = require("./components/CRUDListEditor");
 window.CRUDHasManyEditor = require("./components/CRUDHasManyEditor");
 window.CRUDRelModal      = require("./CRUDRelModal");
@@ -28,6 +29,7 @@ $(Region).bind('region.unmount', function(e, $region) {
 });
 
 $(Region).bind('region.load', function(e, $region) {
+  console.debug('region.load');
   initCRUDComponents($region);
   initCRUDVendorComponents($region);
 });

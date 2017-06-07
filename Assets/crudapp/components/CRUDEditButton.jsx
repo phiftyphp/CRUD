@@ -4,24 +4,14 @@ import React from "react";
 import CRUDRelModal from "../CRUDRelModal";
 
 /*
-<CRUDCreateButton 
-    label="Create"
+<CRUDEditButton 
+    label="Edit"
     size="large"
     side=false
+    recordKey={3}
     baseUrl=/bs/user
 >
-</CRUDCreateButton>
-
-
-
-<CRUDCreateButton 
-    modelLabel="Create"
-    size="large"
-    side=false
-    baseUrl=/bs/user
->
-</CRUDCreateButton>
-
+</CRUDEditButton>
 
 */
 export default React.createClass({
@@ -55,6 +45,13 @@ export default React.createClass({
      */
     "title": React.PropTypes.string,
 
+    /**
+     * The primary key of the record. the reason we didn't use "key" is because react already uses "key" as the component key.
+     */
+    "recordKey": React.PropTypes.any.isRequired,
+
+    "recordKeyName": React.PropTypes.string.isRequired,
+
     "onInit": React.PropTypes.func,
 
     "onSuccess": React.PropTypes.func,
@@ -72,12 +69,16 @@ export default React.createClass({
 
   componentWillUnmount: function() { },
 
-
-  handleCreateAction: function(e) {
+  handleEditAction: function(e) {
     e.stopPropagation();
+
+    const args = {};
+
+    args[this.props.recordKeyName] = this.props.recordKey;
+
     CRUDRelModal.open(
         this.props.title || this.props.label || 'Untitled',
-        this.props.baseUrl + "/crud/create", {},
+        this.props.baseUrl + "/crud/edit", args,
         {
             "size": this.props.size || "large",
             "side": this.props.side || false,
@@ -89,8 +90,8 @@ export default React.createClass({
 
   render: function() {
       return <div key={this.key} className="btn-group">
-        <button className="btn btn-success" onClick={this.handleCreateAction}>
-            {this.props.label || '建立'}
+        <button className="btn btn-success" onClick={this.handleEditAction}>
+            {this.props.label || '編輯'}
         </button>
       </div>;
   }

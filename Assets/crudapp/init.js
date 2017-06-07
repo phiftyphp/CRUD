@@ -22,6 +22,16 @@ function initFormKit($region) {
 }
 
 
+function initCRUDEditButton($region)
+{
+    const elements = $region.find('.crud-edit-button');
+    elements.each((i, el) => {
+      console.debug('crud-edit-button', i, el, el.dataset);
+      const btn = React.createElement(CRUDEditButton, el.dataset);
+      ReactDOM.render(btn, el);
+    });
+}
+
 function initCRUDCreateButton($region)
 {
     const elements = $region.find('.crud-create-button');
@@ -148,6 +158,7 @@ export function initCRUDComponents($region) {
   // init core components
   initCRUDPasswordControl($region);
   initCRUDCreateButton($region);
+  initCRUDEditButton($region);
 
   // init bundle plugins
   initBundleI18NPlugin($region);
