@@ -1,0 +1,7 @@
+---
+collections:
+- javascript:
+  - javascripts
+- javascript:
+  - javascripts/jquery.easytabs.js
+...

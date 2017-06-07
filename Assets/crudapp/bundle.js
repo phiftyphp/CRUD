@@ -4834,6 +4834,7 @@
 
 	function initFormKit($region) {
 	  if (typeof FormKit === "undefined") {
+	    console.warn("FormKit is not loaded, please load 'formkit' asset.");
 	    return;
 	  }
 	  FormKit.initialize($region);
@@ -4862,6 +4863,7 @@
 
 	function initDatePicker($region) {
 	  if (typeof jQuery.fn.datepicker === "undefined") {
+	    console.warn("jQuery.datepicker is not loaded");
 	    return;
 	  }
 	  $region.find('.date-picker').datepicker({ dateFormat: 'yy-mm-dd' });
@@ -4882,6 +4884,7 @@
 
 	function initCollapsible($region) {
 	  if (typeof jQuery.fn.collapse === "undefined") {
+	    console.warn("jQuery.collapse is not loaded");
 	    return;
 	  }
 	  $region.find(".collapsible").collapse();

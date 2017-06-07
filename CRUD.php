@@ -7,6 +7,8 @@ class CRUD extends Bundle
     public function assets()
     {
         return [
+            'jquery-collapse',
+            'jquery-easytabs',
             'crud',
             'crudapp',
             'tchooser'
