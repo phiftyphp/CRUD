@@ -79,6 +79,9 @@ abstract class CRUDHandler extends Controller
 
     /**
      * @var keyParam is used for getting the key from HTTP request.
+     *
+     * This is used in request url like:
+     *    /bs/product/crud/edit?key=3
      */
     protected $keyParam = 'key';
 
@@ -1083,6 +1086,7 @@ abstract class CRUDHandler extends Controller
     public function loadCurrentRecord()
     {
         $key = $this->request->param($this->keyParam);
+
         if ($key) {
             return $this->modelClass::findByPrimaryKey($key);
         }
