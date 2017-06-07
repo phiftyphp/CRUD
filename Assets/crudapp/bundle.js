@@ -4886,6 +4886,23 @@
 	  $region.find('.oembed').oembed(null, { maxHeight: 160, maxWidth: 300 });
 	}
 
+	function initHolderJs($region) {
+	  if (typeof Holder !== "undefined") {
+	    Holder.run({
+	      domain: 'crud.list'
+	    });
+	  }
+	}
+
+	function initFacebox($region) {
+	  if (typeof jQuery.fn.facebox !== "undefined") {
+	    $region.find('a[rel*=facebox]').facebox({
+	      closeImage: '/assets/facebox/src/closelabel.png',
+	      loadingImage: '/assets/facebox/src/loading.gif'
+	    });
+	  }
+	}
+
 	function initFormKit($region) {
 	  if (typeof FormKit === "undefined") {
 	    console.warn("FormKit is not loaded, please load 'formkit' asset.");
@@ -5024,6 +5041,8 @@
 	  // init extra vendor components
 	  initFormKit($region);
 	  initOembed($region);
+	  initFacebox($region);
+	  initHolderJs($region);
 	  initMaterialDesign($region);
 	  initDatePicker($region);
 	  initCollapsible($region);
