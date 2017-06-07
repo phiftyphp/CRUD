@@ -1290,6 +1290,11 @@ abstract class CRUDHandler extends Controller
 
         // create action after the record data is set
         $action = $this->getCurrentAction();
+
+        $this->assign('RecordAction', $action);
+        $this->assign('Record', $record);
+
+        // XXX: deprecated
         $this->assignCRUDVars([
             'Action' => $action,
             'Record' => $record,
@@ -1310,6 +1315,11 @@ abstract class CRUDHandler extends Controller
         if (!$record) {
             throw new Exception('Record not found.');
         }
+
+        $this->assign('RecordAction', $action);
+        $this->assign('Record', $record);
+
+        // deprecated
         $this->assignCRUDVars(array(
             'Action' => $this->getCurrentAction(),
             'Record' => $record,
@@ -1339,6 +1349,11 @@ abstract class CRUDHandler extends Controller
 
         // create action after the record data is set
         $action = $this->getCurrentAction();
+
+        $this->assign('RecordAction', $action);
+        $this->assign('Record', $record);
+
+        // XXX: deprecated
         $this->assignCRUDVars([
             'Action' => $action,
             'Record' => $record,

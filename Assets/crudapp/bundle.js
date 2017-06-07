@@ -44,6 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// vim:sw=2:ts=2:sts=2:
 	"use strict";
 
 	window.SetPasswordControl = __webpack_require__(1);
@@ -55,37 +56,147 @@
 	window.CRUDRelModal = __webpack_require__(37);
 	window.TableViewBuilder = __webpack_require__(38);
 
+	function initMaterialDesign($region) {
+	  // for block styled checkbox, material doesn't work for inline checkbox
+	  if (typeof $.material !== "undefined") {
+	    $.material.checkbox($region.find('.checkbox > label > input[type=checkbox]'));
+	  }
+	}
+
+	function initOembed($region) {
+	  if (typeof jQuery.oembed !== 'undefined') {
+	    $region.find('.oembed').oembed(null, { maxHeight: 160, maxWidth: 300 });
+	  }
+	}
+
+	function initFormKit($region) {
+	  FormKit.initialize($region);
+	}
+
+	function initCRUDCreateButton($region) {
+	  var elements = $region.find('.crud-create-button');
+	  elements.each(function (i, el) {
+	    console.debug('crud-create-button', i, el, el.dataset);
+	    var btn = React.createElement(CRUDCreateButton, el.dataset);
+	    ReactDOM.render(btn, el);
+	  });
+	}
+
+	function initCRUDPasswordControl($region) {
+	  var elements = $region.find('.crud-password-control');
+	  elements.each(function (i, el) {
+	    console.debug('crud-password-control', i, el, el.dataset);
+	    var control = React.createElement(SetPasswordControl, {
+	      "required": elem.dataset["required"],
+	      "type": elem.dataset["type"]
+	    });
+	    ReactDOM.render(control, el);
+	  });
+	}
+
+	function initDatePicker($region) {
+	  $region.find('.date-picker').datepicker({ dateFormat: 'yy-mm-dd' });
+	}
+
+	function initTabs($region) {
+	  // bootstrap tabs
+	  $region.find('.nav-tabs li:first-child a[data-toggle="tab"]').tab('show');
+
+	  // jQuery tabs plugin
+	  if (typeof jQuery.fn.tabs !== "undefined") {
+	    $region.find('.tabs').tabs();
+	  }
+	}
+
+	function initCollapsible($region) {
+	  $region.find(".collapsible").collapse();
+	}
+
+	function initAccordion($region) {
+	  // initialize accordion
+	  $region.find('.accordion').accordion({
+	    active: false,
+	    collapsible: true,
+	    autoHeight: false
+	  });
+	}
+
+	function initBundleI18NPlugin($region) {
+	  if (typeof I18N !== "undefined") {
+	    // Initialize language section switch
+	    // Add lang-switch class name to lang select dropdown to initialize lang
+	    // switch feature
+	    $region.find('select[name=lang]').addClass('lang-switch');
+	    I18N.initLangSwitch($region);
+	  } else {
+	    console.warn('I18N plugin is not loaded.');
+	  }
+	}
+
+	function initFieldHint($region) {
+	  $region.find(".v-field .hint").each(function (i, e) {
+	    var $hint = $(this);
+	    $hint.hide().css({ position: "absolute", zIndex: 100 });
+	    $hint.parent().css({ position: "relative" });
+	    $hint.prev().hover(function () {
+	      $hint.fadeIn();
+	    }, function () {
+	      $hint.fadeOut();
+	    });
+	  });
+	}
+
+	function initColorBox($region) {
+	  $region.find('.colorbox-inline').colorbox({
+	    inline: true,
+	    width: "50%",
+	    fixed: true,
+	    opacity: '0.5'
+	  });
+
+	  $region.find('.btn-close-colorbox').on('click', function (e) {
+	    e.preventDefault();
+	    $.fn.colorbox.close();
+	  });
+	}
+
+	window.initCRUDVendorComponents = function ($region) {
+	  // init extra vendor components
+	  initOembed($region);
+	  initMaterialDesign($region);
+	  initFormKit($region);
+	  initDatePicker($region);
+	  initCollapsible($region);
+	  initColorBox($region);
+	  use_tinymce('adv1', { popup: true });
+	};
+
+	window.initCRUDComponents = function ($region) {
+	  // init core components
+	  initCRUDPasswordControl($region);
+	  initCRUDCreateButton($region);
+
+	  // init bundle plugins
+	  initBundleI18NPlugin($region);
+	  initFieldHint($region);
+	};
+
+	// Unmount app manually when region is going to fetch new contents.
+	$(Region).bind('region.unmount', function (e, $region) {
+	  $region.find('.react-app').each(function () {
+	    var unmount = React.unmountComponentAtNode(this);
+	  });
+	});
+
+	$(Region).bind('region.load', function (e, $region) {
+	  initCRUDComponents($region);
+	  initCRUDVendorComponents($region);
+	});
+
 	$(function () {
-	    console.log('from crudapp');
-
-	    var buttons = document.querySelectorAll('.crudapp-create-button');
-
-	    var _iteratorNormalCompletion = true;
-	    var _didIteratorError = false;
-	    var _iteratorError = undefined;
-
-	    try {
-	        for (var _iterator = buttons[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	            var el = _step.value;
-
-	            console.log(el, el.dataset);
-	            var btn = React.createElement(CRUDCreateButton, el.dataset);
-	            ReactDOM.render(btn, el);
-	        }
-	    } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	    } finally {
-	        try {
-	            if (!_iteratorNormalCompletion && _iterator["return"]) {
-	                _iterator["return"]();
-	            }
-	        } finally {
-	            if (_didIteratorError) {
-	                throw _iteratorError;
-	            }
-	        }
-	    }
+	  console.debug('crudapp ready');
+	  initCRUDComponents($(document.body));
+	  // initCRUDVendorComponents();
 	});
 
 /***/ },
@@ -590,9 +701,6 @@
 
 	    handleCreateAction: function handleCreateAction(e) {
 	        e.stopPropagation();
-
-	        console.log(this.props);
-
 	        _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/create", {
 	            "size": this.props.size || "large",
 	            "side": this.props.side || true,

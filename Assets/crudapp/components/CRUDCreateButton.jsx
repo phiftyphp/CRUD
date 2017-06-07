@@ -75,9 +75,6 @@ export default React.createClass({
 
   handleCreateAction: function(e) {
     e.stopPropagation();
-
-    console.log(this.props);
-
     CRUDRelModal.open(
         this.props.title || this.props.label || 'Untitled',
         this.props.baseUrl + "/crud/create",

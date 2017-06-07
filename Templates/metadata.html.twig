@@ -1,10 +1,11 @@
-<div class="row">
-    <div class="col-md-5">
-        {{CRUD.Action.renderField('created_by')|raw}}
-        {{CRUD.Action.renderField('updated_by')|raw}}
-    </div>
-    <div class="col-md-5">
-        {{CRUD.Action.renderField('created_on')|raw}}
-        {{CRUD.Action.renderField('updated_on')|raw}}
-    </div>
-</div>
+<fieldset>
+  <div>
+  {{CRUD.Action.renderField('created_on')|raw}}
+  {{CRUD.Action.renderField('created_by')|raw}}
+  </div>
+
+  <div>
+  {{CRUD.Action.renderField('updated_on')|raw}}
+  {{CRUD.Action.renderField('updated_by')|raw}}
+  </div>
+</fieldset>
