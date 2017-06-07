@@ -37,6 +37,8 @@ use Twig_LoaderInterface;
 use Twig_ExistsLoaderInterface;
 
 
+use AdminUI\Action\View\StackView;
+
 /**
  * Current CRUD template structure:
  *
@@ -237,7 +239,7 @@ abstract class CRUDHandler extends Controller
     /**
      * Default action view class for editing.
      */
-    public $actionViewClass = 'AdminUI\\Action\\View\\StackView';
+    public $actionViewClass = StackView::class;
 
     /**
      * Default action view options,
@@ -1240,13 +1242,14 @@ abstract class CRUDHandler extends Controller
             $viewOptions = $this->actionViewOptions;
         }
         // {{ CRUD.Action.asView('AdminUI\\Action\\View\\StackView',{ ajax: true, close_button: true }).render|raw}}
-        return $action->asView($viewClass,$viewOptions);
+        return $action->asView($viewClass, $viewOptions);
     }
 
 
-
-
-    public function quickCreateAction() 
+    /**
+     * not used right now.
+     */
+    public function quickCreateAction()
     {
         return $this->render($this->findTemplate('quick_create.html.twig') , array());
     }
@@ -1265,7 +1268,6 @@ abstract class CRUDHandler extends Controller
             'numberOfTotalItems' => $collection->queryCount(),
         ]);
     }
-
 
 
 
