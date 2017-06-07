@@ -297,7 +297,7 @@ export default {
       console.error("data-delete-action undefined");
       return;
     }
-    var id = $btn.data("record-id");
+    var id = $btn.data("record-key");
     runAction($btn.data("delete-action"), { "id": id }, { "confirm": "確認刪除? ", "removeTr": $btn });
   },
 

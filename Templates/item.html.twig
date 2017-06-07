@@ -4,7 +4,7 @@
 {% set resultContainerId = "result-container-" ~ frag_serial %}
 
 {% set item = CRUD.Record %}
-<div class="item clearfix item-{{item.id}}" id="item-{{ frag_serial }}" data-record-id="{{item.id}}">
+<div class="item clearfix item-{{item.id}}" id="item-{{ frag_serial }}" data-record-key="{{item.id}}">
     {# render related record hidden input #}
     {#
         @config.relation + "[#{@data[@config.primaryKey]}][#{ @config.primaryKey }]",
@@ -40,7 +40,7 @@
         {% if CRUD.Object.canUpdate %}
         <input type="button" 
             value="{% trans "編輯" %}"
-            data-record-id="{{ item.id }}"
+            data-record-key="{{ item.id }}"
             class="record-edit-btn btn"/>
         {% endif %}
 
@@ -48,7 +48,7 @@
         <input type="button" 
             value="{% trans "刪除" %}"
             class="record-delete-btn btn"
-            data-record-id="{{ item.id }}"/>
+            data-record-key="{{ item.id }}"/>
         {% endif %}
     </div>
 </div>
@@ -57,7 +57,7 @@ $(function() {
     var $item = $('#item-{{frag_serial}}');
     $item.find('.record-edit-btn').click(function(e) {
         e.stopPropagation();
-        var id = $(this).data('record-id');
+        var id = $(this).data('record-key');
         var dialog = new CRUDDialog('/bs/{{ CRUD.Object.crudId }}/crud/dialog',{ id: id },{
             // if create success
             onSuccess: function(resp) {
@@ -67,7 +67,7 @@ $(function() {
     });
     $item.find('.record-delete-btn').click(function(e) {
         e.stopPropagation();
-        var id = $(this).data('record-id');
+        var id = $(this).data('record-key');
         runAction( '{{ CRUD.Object.namespace }}::Action::Delete{{ CRUD.Object.modelName }}', 
             { id: id } , { confirm: '確認刪除? ', remove: $item } 
         );

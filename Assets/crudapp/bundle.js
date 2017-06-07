@@ -1050,7 +1050,7 @@
 	      console.error("data-delete-action undefined");
 	      return;
 	    }
-	    var id = $btn.data("record-id");
+	    var id = $btn.data("record-key");
 	    runAction($btn.data("delete-action"), { "id": id }, { "confirm": "確認刪除? ", "removeTr": $btn });
 	  },
 
@@ -5110,8 +5110,6 @@
 	     */
 	    "recordKey": _react2["default"].PropTypes.any.isRequired,
 
-	    "recordKeyName": _react2["default"].PropTypes.string.isRequired,
-
 	    "onInit": _react2["default"].PropTypes.func,
 
 	    "onSuccess": _react2["default"].PropTypes.func
@@ -5134,7 +5132,7 @@
 
 	    var args = {};
 
-	    args[this.props.recordKeyName] = this.props.recordKey;
+	    args.key = this.props.recordKey;
 
 	    _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/edit", args, {
 	      "size": this.props.size || "large",

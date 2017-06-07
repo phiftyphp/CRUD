@@ -50,8 +50,6 @@ export default React.createClass({
      */
     "recordKey": React.PropTypes.any.isRequired,
 
-    "recordKeyName": React.PropTypes.string.isRequired,
-
     "onInit": React.PropTypes.func,
 
     "onSuccess": React.PropTypes.func,
@@ -74,7 +72,7 @@ export default React.createClass({
 
     const args = {};
 
-    args[this.props.recordKeyName] = this.props.recordKey;
+    args.key = this.props.recordKey;
 
     CRUDRelModal.open(
         this.props.title || this.props.label || 'Untitled',

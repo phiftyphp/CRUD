@@ -116,7 +116,7 @@ New BulkCRUD:
         if (!$(this).data("delete-action")) {
           console.error("data-delete-action undefined");
         }
-        id = $(this).data("record-id");
+        id = $(this).data("record-key");
         csrf = $(this).data("csrf-token");
         return runAction($(this).data("delete-action"), {
           id: id,

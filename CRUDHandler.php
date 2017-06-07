@@ -77,6 +77,11 @@ abstract class CRUDHandler extends Controller
 
     use CRUDPermissions;
 
+    /**
+     * @var keyParam is used for getting the key from HTTP request.
+     */
+    protected $keyParam = 'key';
+
     protected $kernel;
 
     /**
@@ -1077,8 +1082,7 @@ abstract class CRUDHandler extends Controller
      */
     public function loadCurrentRecord()
     {
-        $keyField = $this->modelClass::PRIMARY_KEY;
-        $key = $this->request->param($keyField);
+        $key = $this->request->param($this->keyParam);
         if ($key) {
             return $this->modelClass::findByPrimaryKey($key);
         }

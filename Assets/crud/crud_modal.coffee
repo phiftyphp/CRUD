@@ -147,7 +147,7 @@ modalConfig will be used when you need to define modal options.
 
 ###
 CRUDModal.openFromBtn = ($btn, modalConfig) ->
-  id    = $btn.data("record-id")
+  id    = $btn.data("record-key")
   title = $btn.data("modal-title")
   size = $btn.data("modal-size")
   side = $btn.data("modal-side")

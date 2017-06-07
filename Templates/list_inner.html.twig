@@ -104,7 +104,7 @@ $(function() {
                     {% endfor %}
 
                     {# record operation column #}
-                    <td class="controls" data-record-id="{{item.id}}">
+                    <td class="controls" data-record-key="{{item.id}}">
 
                         {% block item_controls %}
 
@@ -115,7 +115,7 @@ $(function() {
                         {% if CRUD.Object.canUpdate %}
                             <input type="button" 
                                 value="{% trans "編輯" %}"
-                                data-record-id="{{ item.id }}"
+                                data-record-key="{{ item.id }}"
                                 data-record-label="{{ item.dataLabel() }}"
                                 class="record-edit-btn btn"/>
                         {% endif %}
@@ -124,7 +124,7 @@ $(function() {
                             <input type="button" 
                                 value="{% trans "刪除" %}"
                                 class="record-delete-btn btn"
-                                data-record-id="{{item.id}}"
+                                data-record-key="{{item.id}}"
                                 data-delete-action="{{ CRUD.Object.namespace }}::Action::Delete{{ CRUD.Object.modelName }}"
                                 />
                         {% endif %}
@@ -133,7 +133,7 @@ $(function() {
                             <input type="button" 
                                 class="btn"
                                 value="{% trans "Edit in new window" %}"
-                                onclick=" window.open('{{ CRUD.Object.getEditRegionPath() }}?id={{ item.id }}&in_window=1','Edit {{item.id}}','width=700,height=600'); return false;"/>
+                                onclick=" window.open('{{ CRUD.Object.getEditRegionPath() }}?key={{ item.id }}&in_window=1','Edit {{item.id}}','width=700,height=600'); return false;"/>
                         {% endif %}
                         </div>
                         {% endblock %}
