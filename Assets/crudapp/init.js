@@ -56,12 +56,23 @@ function initFormKit($region) {
 }
 
 
+function initCRUDDeleteButton($region)
+{
+    const elements = $region.find('.crud-delete-button');
+    elements.each((i, el) => {
+      const obj = convertDOMStringMapToObject(el.dataset);
+      obj.region = $region;
+
+      const btn = React.createElement(CRUDDeleteButton, obj);
+      ReactDOM.render(btn, el);
+    });
+}
+
+
 function initCRUDEditButton($region)
 {
     const elements = $region.find('.crud-edit-button');
     elements.each((i, el) => {
-      console.debug('crud-edit-button', i, el, el.dataset);
-
       const obj = convertDOMStringMapToObject(el.dataset);
       obj.region = $region;
 
@@ -203,6 +214,7 @@ export function initCRUDComponents($region) {
   initCRUDPasswordControl($region);
   initCRUDCreateButton($region);
   initCRUDEditButton($region);
+  initCRUDDeleteButton($region);
 
   // init bundle plugins
   initBundleI18NPlugin($region);

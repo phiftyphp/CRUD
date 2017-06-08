@@ -1,0 +1,27 @@
+{% set frag_serial = uniqid("Region") %}
+{% set deleteRegionId = uniqid("crud-delete-") %}
+{% set resultContainerId = uniqid("result-container-") %}
+
+{% block section_body %}
+
+<form id="{{currentFormId}}" class="form-horizontal ajax-action" method="post">
+    {{RecordAction.renderSignatureWidget|raw}}
+    {{RecordAction.renderCSRFTokenWidget|raw}}
+
+    {% if Record.hasKey %}
+      {{RecordAction.renderKeyWidget|raw}}
+    {% endif %}
+
+    <div class="form-group">
+        <label class="control-label col-lg-3">將刪除</label>
+        <div class="col-lg-7">
+            <input class="form-control" type="text" readonly="readonly" value="{{Record.dataLabel()}}"/>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}
+
+{% block init_js %}
+{% endblock %}

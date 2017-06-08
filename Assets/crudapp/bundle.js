@@ -47,17 +47,18 @@
 	// vim:sw=2:ts=2:sts=2:
 	"use strict";
 
-	var _init = __webpack_require__(39);
+	var _init = __webpack_require__(1);
 
-	window.SetPasswordControl = __webpack_require__(1);
-	window.DateRangeControl = __webpack_require__(3);
-	window.SingleDayControl = __webpack_require__(4);
-	window.CRUDCreateButton = __webpack_require__(5);
-	window.CRUDEditButton = __webpack_require__(40);
-	window.CRUDListEditor = __webpack_require__(6);
-	window.CRUDHasManyEditor = __webpack_require__(26);
-	window.CRUDRelModal = __webpack_require__(37);
-	window.TableViewBuilder = __webpack_require__(38);
+	window.SetPasswordControl = __webpack_require__(2);
+	window.DateRangeControl = __webpack_require__(4);
+	window.SingleDayControl = __webpack_require__(5);
+	window.CRUDCreateButton = __webpack_require__(6);
+	window.CRUDEditButton = __webpack_require__(8);
+	window.CRUDDeleteButton = __webpack_require__(41);
+	window.CRUDListEditor = __webpack_require__(9);
+	window.CRUDHasManyEditor = __webpack_require__(29);
+	window.CRUDRelModal = __webpack_require__(7);
+	window.TableViewBuilder = __webpack_require__(40);
 
 	window.initCRUDComponents = _init.initCRUDComponents;
 	window.initCRUDVendorComponents = _init.initCRUDVendorComponents;
@@ -100,6 +101,272 @@
 
 /***/ },
 /* 1 */
+/***/ function(module, exports) {
+
+	// vim:sw=2:ts=2:sts=2:
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports.initCRUDVendorComponents = initCRUDVendorComponents;
+	exports.initCRUDComponents = initCRUDComponents;
+	exports.initCRUDModalAction = initCRUDModalAction;
+	function convertDOMStringMapToObject(map) {
+	  var obj = {};
+	  for (var key in map) {
+	    obj[key] = map[key];
+	  }
+	  return obj;
+	}
+
+	function initMaterialDesign($region) {
+	  // for block styled checkbox, material doesn't work for inline checkbox
+	  if (typeof $.material !== "undefined") {
+	    $.material.checkbox($region.find('.checkbox > label > input[type=checkbox]'));
+	  }
+	}
+
+	function initOembed($region) {
+	  if (typeof jQuery.oembed === 'undefined') {
+	    return;
+	  }
+	  $region.find('.oembed').oembed(null, { maxHeight: 160, maxWidth: 300 });
+	}
+
+	function initHolderJs($region) {
+	  if (typeof Holder !== "undefined") {
+	    Holder.run({
+	      domain: 'crud.list'
+	    });
+	  }
+	}
+
+	function initFacebox($region) {
+	  if (typeof jQuery.fn.facebox !== "undefined") {
+	    $region.find('a[rel*=facebox]').facebox({
+	      closeImage: '/assets/facebox/src/closelabel.png',
+	      loadingImage: '/assets/facebox/src/loading.gif'
+	    });
+	  }
+	}
+
+	function initFormKit($region) {
+	  if (typeof FormKit === "undefined") {
+	    console.warn("FormKit is not loaded, please load 'formkit' asset.");
+	    return;
+	  }
+	  FormKit.initialize($region);
+	}
+
+	function initCRUDDeleteButton($region) {
+	  var elements = $region.find('.crud-delete-button');
+	  elements.each(function (i, el) {
+	    var obj = convertDOMStringMapToObject(el.dataset);
+	    obj.region = $region;
+
+	    var btn = React.createElement(CRUDDeleteButton, obj);
+	    ReactDOM.render(btn, el);
+	  });
+	}
+
+	function initCRUDEditButton($region) {
+	  var elements = $region.find('.crud-edit-button');
+	  elements.each(function (i, el) {
+	    var obj = convertDOMStringMapToObject(el.dataset);
+	    obj.region = $region;
+
+	    var btn = React.createElement(CRUDEditButton, obj);
+	    ReactDOM.render(btn, el);
+	  });
+	}
+
+	function initCRUDCreateButton($region) {
+	  var elements = $region.find('.crud-create-button');
+	  elements.each(function (i, el) {
+	    console.debug('crud-create-button', i, el, el.dataset);
+
+	    var obj = convertDOMStringMapToObject(el.dataset);
+	    obj.region = $region;
+
+	    var btn = React.createElement(CRUDCreateButton, obj);
+	    ReactDOM.render(btn, el);
+	  });
+	}
+
+	function initCRUDPasswordControl($region) {
+	  var elements = $region.find('.crud-password-control');
+	  elements.each(function (i, el) {
+	    console.debug('crud-password-control', i, el, el.dataset);
+	    var control = React.createElement(SetPasswordControl, {
+	      "required": elem.dataset["required"],
+	      "type": elem.dataset["type"]
+	    });
+	    ReactDOM.render(control, el);
+	  });
+	}
+
+	function initDatePicker($region) {
+	  if (typeof jQuery.fn.datepicker === "undefined") {
+	    console.warn("jQuery.datepicker is not loaded");
+	    return;
+	  }
+	  $region.find('.date-picker').datepicker({ dateFormat: 'yy-mm-dd' });
+	}
+
+	function initTabs($region) {
+
+	  // bootstrap tabs
+	  if (typeof jQuery.fn.tab !== "undefined") {
+	    $region.find('.nav-tabs li:first-child a[data-toggle="tab"]').tab('show');
+	  }
+
+	  // jQuery tabs plugin
+	  if (typeof jQuery.fn.tabs !== "undefined") {
+	    $region.find('.tabs').tabs();
+	  }
+	}
+
+	function initCollapsible($region) {
+	  if (typeof jQuery.fn.collapse === "undefined") {
+	    console.warn("jQuery.collapse is not loaded");
+	    return;
+	  }
+	  $region.find(".collapsible").collapse();
+	}
+
+	function initAccordion($region) {
+	  if (typeof jQuery.fn.accordion === "undefined") {
+	    console.warn("jQuery.accordion is not loaded");
+	    return;
+	  }
+
+	  // initialize accordion
+	  $region.find('.accordion').accordion({
+	    active: false,
+	    collapsible: true,
+	    autoHeight: false
+	  });
+	}
+
+	function initBundleI18NPlugin($region) {
+	  if (typeof I18N === "undefined") {
+	    console.warn('I18N plugin is not loaded.');
+	    return;
+	  }
+
+	  // Initialize language section switch
+	  // Add lang-switch class name to lang select dropdown to initialize lang
+	  // switch feature
+	  $region.find('select[name=lang]').addClass('lang-switch');
+	  I18N.initLangSwitch($region);
+	}
+
+	function initFieldHint($region) {
+	  $region.find(".v-field .hint").each(function (i, e) {
+	    var $hint = $(this);
+	    $hint.hide().css({ position: "absolute", zIndex: 100 });
+	    $hint.parent().css({ position: "relative" });
+	    $hint.prev().hover(function () {
+	      $hint.fadeIn();
+	    }, function () {
+	      $hint.fadeOut();
+	    });
+	  });
+	}
+
+	function initColorBox($region) {
+	  if (typeof jQuery.fn.colorbox === "undefined") {
+	    console.warn('jquery.colorbox is not loaded.');
+	    return;
+	  }
+
+	  $region.find('.colorbox-inline').colorbox({
+	    inline: true,
+	    width: "50%",
+	    fixed: true,
+	    opacity: '0.5'
+	  });
+
+	  $region.find('.btn-close-colorbox').on('click', function (e) {
+	    e.preventDefault();
+	    $.fn.colorbox.close();
+	  });
+	}
+
+	function initCRUDVendorComponents($region) {
+	  // init extra vendor components
+	  initFormKit($region);
+	  initOembed($region);
+	  initFacebox($region);
+	  initHolderJs($region);
+	  initMaterialDesign($region);
+	  initDatePicker($region);
+	  initCollapsible($region);
+	  initColorBox($region);
+
+	  if (typeof use_tinymce !== "undefined") {
+	    use_tinymce('adv1', { popup: true });
+	  }
+	}
+
+	;
+
+	function initCRUDComponents($region) {
+
+	  // init core components
+	  initCRUDPasswordControl($region);
+	  initCRUDCreateButton($region);
+	  initCRUDEditButton($region);
+	  initCRUDDeleteButton($region);
+
+	  // init bundle plugins
+	  initBundleI18NPlugin($region);
+	  initFieldHint($region);
+	}
+
+	;
+
+	function initCRUDModalAction(currentFormId) {
+	  var formEl = document.getElementById(currentFormId);
+
+	  console.debug('setting up form validation for ', formEl);
+
+	  var highlighter = new ActionBootstrapHighlight(formEl);
+	  var $form = $(formEl);
+	  var $msgbox = $form.prev('.action-result-container').first();
+	  var a = Action.form(formEl, {
+	    'clear': false,
+	    'onSubmit': function onSubmit() {
+	      highlighter.cleanup();
+	    },
+	    'onSuccess': function onSuccess(resp) {
+	      jQuery.scrollTo(formEl, 600, { offset: -200 });
+	      // TODO: redirect?
+	    },
+	    'onError': function onError(resp) {
+	      highlighter.fromValidations(resp.validations);
+	      if (typeof jQuery.scrollTo != "undefined") {
+	        var input = highlighter.getFirstInvalidField();
+	        if (input) {
+	          jQuery.scrollTo(input, 600, { offset: -200 });
+	        } else {
+	          jQuery.scrollTo($msgbox.get(0), 600, { offset: -200 });
+	        }
+	      }
+	    }
+	  });
+	  a.plug(ActionMsgbox, {
+	    'disableScroll': true,
+	    'container': $msgbox
+	  });
+	}
+
+	;
+
+/***/ },
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -110,7 +377,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	var React = __webpack_require__(2);
+	var React = __webpack_require__(3);
 	exports["default"] = React.createClass({
 	    displayName: "SetPasswordControl",
 
@@ -232,13 +499,13 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports) {
 
 	module.exports = React;
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -249,7 +516,7 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var React = __webpack_require__(2);
+	var React = __webpack_require__(3);
 	exports['default'] = React.createClass({
 	  displayName: 'DateRangeControl',
 
@@ -440,7 +707,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -451,7 +718,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var React = __webpack_require__(2);
+	var React = __webpack_require__(3);
 	exports["default"] = React.createClass({
 	  displayName: "SingleDayControl",
 
@@ -510,7 +777,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -521,11 +788,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _react = __webpack_require__(2);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _CRUDRelModal = __webpack_require__(37);
+	var _CRUDRelModal = __webpack_require__(7);
 
 	var _CRUDRelModal2 = _interopRequireDefault(_CRUDRelModal);
 
@@ -647,7 +914,233 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 6 */
+/* 7 */
+/***/ function(module, exports) {
+
+	/*
+	CRUDModal doesn't support different z-index
+	It was used to open the side modal.
+
+	This is different from the CRUDModal, we don't use scroll, since the modal is
+	smaller.
+
+	Usage:
+
+	    CRUDModal.open({
+	      "title": $btn.data("modalTitle") || "編輯" + this.props.modelLabel,
+	      "size": "large",
+	      "side": true,
+	      "closeOnSuccess": true,
+	      "url": this.props.baseUrl + "/crud/edit",
+	      "id": parseInt($btn.data("recordId")),
+	      "init": function(e, ui) {
+	        // the modal content init callback
+	      },
+	      "success": function(ui, resp) {
+	        // this will be triggered when the form is submitted successfully
+	        that.refs.region.updateRegion();
+	      }
+	    });
+
+	Originally implemented in bundles/crud/Assets/crud/crud_modal.coffee
+	*/
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var CRUDRelModal = {};
+
+	CRUDRelModal.open = function (title, url, args, config) {
+
+	  var defer = jQuery.Deferred();
+	  var predefinedArgs = { "_submit_btn": false, "_close_btn": false };
+	  var defaultControls = [];
+
+	  defaultControls.push({
+	    "label": "儲存", "primary": true, "onClick": function onClick(e, ui) {
+	      return ui.body.find("form").submit();
+	    }
+	  });
+
+	  var ui = ModalManager.createBlock($.extend({
+	    "title": title,
+	    "size": "large",
+	    "controls": defaultControls,
+	    "ajax": {
+	      "url": url,
+	      "args": $.extend(predefinedArgs, args)
+	    }
+	  }, config || {}));
+
+	  // Initialize the action from the form inside the modal
+	  ui.dialog.on("dialog.ajax.done", function (e, ui) {
+	    var $form = ui.body.find("form");
+	    var form = ui.body.find("form").get(0);
+	    var $msgbox = $form.prev('.action-result-container').first();
+	    var a = Action.form(form, {
+	      "clear": false,
+	      "onSuccess": function onSuccess(resp) {
+	        setTimeout(function () {
+	          // XXX: this weird, we have to find the .modal itself to close it
+	          // instead of using "ui.dialog"
+	          ui.container.find('.modal').modal('hide');
+	        }, 1000);
+	        defer.resolve(resp);
+
+	        if (config.success) {
+	          config.success.call(this, ui, resp);
+	        }
+	      }
+	    });
+	    a.plug(new ActionBootstrapHighlight());
+	    a.plug(new ActionMsgbox({
+	      'disableScroll': true,
+	      'container': $msgbox
+	    }));
+	  });
+
+	  var $m = ui.container.find('.modal');
+	  $m.modal('show'); // TODO: support modal config here
+	  $m.on('shown.bs.modal', function (event) {});
+	  $m.on('hide.bs.modal', function (event) {
+	    ui.container.remove();
+	  });
+	  return defer;
+	};
+	exports["default"] = CRUDRelModal;
+	module.exports = exports["default"];
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _CRUDRelModal = __webpack_require__(7);
+
+	var _CRUDRelModal2 = _interopRequireDefault(_CRUDRelModal);
+
+	/*
+	<CRUDEditButton 
+	    label="Edit"
+	    size="large"
+	    side=false
+	    recordKey={3}
+	    baseUrl=/bs/user
+	>
+	</CRUDEditButton>
+
+	*/
+	exports["default"] = _react2["default"].createClass({
+	  displayName: "CRUDEditButton",
+
+	  propTypes: {
+	    /**
+	     * label of the button
+	     */
+	    "label": _react2["default"].PropTypes.string,
+
+	    /*
+	     * the baseUrl of a CRUD handler, usually "/bs"
+	     */
+	    "baseUrl": _react2["default"].PropTypes.string,
+
+	    /**
+	     * the region DOM element used for updating.
+	     */
+	    "region": _react2["default"].PropTypes.any,
+
+	    // modal related options
+	    // ==============================
+	    /**
+	     * the modal size: it could be "large", "small"
+	     */
+	    "size": _react2["default"].PropTypes.string,
+
+	    /**
+	     * show the modal as a side modal?
+	     */
+	    "side": _react2["default"].PropTypes.bool,
+
+	    /**
+	     * the title of the modal
+	     */
+	    "title": _react2["default"].PropTypes.string,
+
+	    /**
+	     * The primary key of the record. the reason we didn't use "key" is because react already uses "key" as the component key.
+	     */
+	    "recordKey": _react2["default"].PropTypes.any.isRequired,
+
+	    "onInit": _react2["default"].PropTypes.func,
+
+	    "onSuccess": _react2["default"].PropTypes.func
+	  },
+
+	  getDefaultProps: function getDefaultProps() {
+	    return {};
+	  },
+
+	  getInitialState: function getInitialState() {
+	    return {};
+	  },
+
+	  componentDidMount: function componentDidMount() {},
+
+	  componentWillUnmount: function componentWillUnmount() {},
+
+	  handleClick: function handleClick(e) {
+	    var _this = this;
+
+	    e.stopPropagation();
+
+	    var args = {};
+
+	    args.key = this.props.recordKey;
+
+	    _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/edit", args, {
+	      "size": this.props.size || "large",
+	      "side": this.props.side || false,
+	      "closeOnSuccess": true,
+	      "init": this.props.onInit, /* function(e, ui) { */
+	      "success": function success(ui, resp) {
+	        if (_this.props.onSuccess) {
+	          _this.props.onSuccess(ui, resp);
+	        }
+	        if (_this.props.region) {
+	          $(_this.props.region).asRegion().refresh();
+	        }
+	      }
+	    });
+	  },
+
+	  render: function render() {
+	    return _react2["default"].createElement(
+	      "div",
+	      { key: this.key, className: "btn-group" },
+	      _react2["default"].createElement(
+	        "button",
+	        { className: "btn btn-success", onClick: this.handleClick },
+	        this.props.label || '編輯'
+	      )
+	    );
+	  }
+	});
+	module.exports = exports["default"];
+
+/***/ },
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -658,15 +1151,15 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _CRUDListKeywordFilterControl = __webpack_require__(7);
+	var _CRUDListKeywordFilterControl = __webpack_require__(10);
 
 	var _CRUDListKeywordFilterControl2 = _interopRequireDefault(_CRUDListKeywordFilterControl);
 
-	var _CRUDListApp = __webpack_require__(8);
+	var _CRUDListApp = __webpack_require__(11);
 
 	var _CRUDListApp2 = _interopRequireDefault(_CRUDListApp);
 
-	var _react = __webpack_require__(2);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
@@ -701,7 +1194,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 7 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -710,7 +1203,7 @@
 	  value: true
 	});
 
-	var React = __webpack_require__(2);
+	var React = __webpack_require__(3);
 
 	exports["default"] = React.createClass({
 	  displayName: "CRUDListKeywordFilterControl",
@@ -737,7 +1230,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 8 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -748,55 +1241,55 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _CRUDListKeywordFilterControl = __webpack_require__(7);
+	var _CRUDListKeywordFilterControl = __webpack_require__(10);
 
 	var _CRUDListKeywordFilterControl2 = _interopRequireDefault(_CRUDListKeywordFilterControl);
 
-	var _CRUDListSelectionSection = __webpack_require__(9);
+	var _CRUDListSelectionSection = __webpack_require__(12);
 
 	var _CRUDListSelectionSection2 = _interopRequireDefault(_CRUDListSelectionSection);
 
-	var _CRUDListRegion = __webpack_require__(10);
+	var _CRUDListRegion = __webpack_require__(13);
 
 	var _CRUDListRegion2 = _interopRequireDefault(_CRUDListRegion);
 
-	var _actionsCRUDListActionCreators = __webpack_require__(16);
+	var _actionsCRUDListActionCreators = __webpack_require__(19);
 
 	var _actionsCRUDListActionCreators2 = _interopRequireDefault(_actionsCRUDListActionCreators);
 
-	var _CRUDListPageSizeControl = __webpack_require__(17);
+	var _CRUDListPageSizeControl = __webpack_require__(20);
 
 	var _CRUDListPageSizeControl2 = _interopRequireDefault(_CRUDListPageSizeControl);
 
-	var _CRUDListPaginationControl = __webpack_require__(18);
+	var _CRUDListPaginationControl = __webpack_require__(21);
 
 	var _CRUDListPaginationControl2 = _interopRequireDefault(_CRUDListPaginationControl);
 
 	// used store
 
-	var _storesCRUDListSummaryStore = __webpack_require__(19);
+	var _storesCRUDListSummaryStore = __webpack_require__(22);
 
 	var _storesCRUDListSummaryStore2 = _interopRequireDefault(_storesCRUDListSummaryStore);
 
-	var _storesCRUDListFilterStore = __webpack_require__(11);
+	var _storesCRUDListFilterStore = __webpack_require__(14);
 
 	var _storesCRUDListFilterStore2 = _interopRequireDefault(_storesCRUDListFilterStore);
 
-	var _storesCRUDListSelectionStore = __webpack_require__(20);
+	var _storesCRUDListSelectionStore = __webpack_require__(23);
 
 	var _storesCRUDListSelectionStore2 = _interopRequireDefault(_storesCRUDListSelectionStore);
 
-	var _CRUDCreateButton = __webpack_require__(5);
+	var _CRUDCreateButton = __webpack_require__(6);
 
 	var _CRUDCreateButton2 = _interopRequireDefault(_CRUDCreateButton);
 
-	var _BulkManager = __webpack_require__(21);
+	var _BulkManager = __webpack_require__(24);
 
 	var _BulkManager2 = _interopRequireDefault(_BulkManager);
 
-	var _flux = __webpack_require__(22);
+	var _flux = __webpack_require__(25);
 
-	var _react = __webpack_require__(2);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
@@ -1294,7 +1787,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1302,7 +1795,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var React = __webpack_require__(2);
+	var React = __webpack_require__(3);
 	exports["default"] = React.createClass({
 	  displayName: "CRUDListSelectionSection",
 
@@ -1366,7 +1859,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1377,11 +1870,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _storesCRUDListFilterStore = __webpack_require__(11);
+	var _storesCRUDListFilterStore = __webpack_require__(14);
 
 	var _storesCRUDListFilterStore2 = _interopRequireDefault(_storesCRUDListFilterStore);
 
-	var React = __webpack_require__(2);
+	var React = __webpack_require__(3);
 	exports["default"] = React.createClass({
 	  displayName: "CRUDListRegion",
 
@@ -1457,7 +1950,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1474,9 +1967,9 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var constants = __webpack_require__(12);
-	var EventEmitter = __webpack_require__(14).EventEmitter;
-	var assign = __webpack_require__(15);
+	var constants = __webpack_require__(15);
+	var EventEmitter = __webpack_require__(17).EventEmitter;
+	var assign = __webpack_require__(18);
 	var ActionTypes = constants.ActionTypes;
 
 	var CHANGE_EVENT = 'change';
@@ -1564,12 +2057,12 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var keyMirror = __webpack_require__(13);
+	var keyMirror = __webpack_require__(16);
 
 	// Define action constants
 	module.exports = {
@@ -1584,7 +2077,7 @@
 	};
 
 /***/ },
-/* 13 */
+/* 16 */
 /***/ function(module, exports) {
 
 	/**
@@ -1643,7 +2136,7 @@
 
 
 /***/ },
-/* 14 */
+/* 17 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -1947,7 +2440,7 @@
 
 
 /***/ },
-/* 15 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/* eslint-disable no-unused-vars */
@@ -1992,7 +2485,7 @@
 
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2005,7 +2498,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var ActionTypes = __webpack_require__(12).ActionTypes;
+	var ActionTypes = __webpack_require__(15).ActionTypes;
 
 	var CRUDListActionCreators = (function () {
 	  function CRUDListActionCreators(context) {
@@ -2087,7 +2580,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 17 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2096,7 +2589,7 @@
 	  value: true
 	});
 
-	var React = __webpack_require__(2);
+	var React = __webpack_require__(3);
 
 	exports["default"] = React.createClass({
 	  displayName: "CRUDListPageSizeControl",
@@ -2169,7 +2662,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 18 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2178,7 +2671,7 @@
 	  value: true
 	});
 
-	var React = __webpack_require__(2);
+	var React = __webpack_require__(3);
 
 	exports["default"] = React.createClass({
 	  displayName: "CRUDListPaginationControl",
@@ -2269,7 +2762,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 19 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2286,9 +2779,9 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var constants = __webpack_require__(12);
-	var EventEmitter = __webpack_require__(14).EventEmitter;
-	var assign = __webpack_require__(15);
+	var constants = __webpack_require__(15);
+	var EventEmitter = __webpack_require__(17).EventEmitter;
+	var assign = __webpack_require__(18);
 	var ActionTypes = constants.ActionTypes;
 
 	var CHANGE_EVENT = 'change';
@@ -2341,7 +2834,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 20 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2358,9 +2851,9 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var constants = __webpack_require__(12);
-	var EventEmitter = __webpack_require__(14).EventEmitter;
-	var assign = __webpack_require__(15);
+	var constants = __webpack_require__(15);
+	var EventEmitter = __webpack_require__(17).EventEmitter;
+	var assign = __webpack_require__(18);
 	var ActionTypes = constants.ActionTypes;
 
 	var CHANGE_EVENT = 'change';
@@ -2442,7 +2935,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 21 */
+/* 24 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2534,7 +3027,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 22 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2546,11 +3039,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(23);
+	module.exports.Dispatcher = __webpack_require__(26);
 
 
 /***/ },
-/* 23 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -2572,7 +3065,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var invariant = __webpack_require__(25);
+	var invariant = __webpack_require__(28);
 
 	var _prefix = 'ID_';
 
@@ -2784,10 +3277,10 @@
 	})();
 
 	module.exports = Dispatcher;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -2884,7 +3377,7 @@
 
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -2936,10 +3429,10 @@
 	};
 
 	module.exports = invariant;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2950,31 +3443,31 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _react = __webpack_require__(2);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _storesCRUDStore = __webpack_require__(27);
+	var _storesCRUDStore = __webpack_require__(30);
 
 	var _storesCRUDStore2 = _interopRequireDefault(_storesCRUDStore);
 
-	var _actionsCRUDStoreActionCreators = __webpack_require__(30);
+	var _actionsCRUDStoreActionCreators = __webpack_require__(33);
 
 	var _actionsCRUDStoreActionCreators2 = _interopRequireDefault(_actionsCRUDStoreActionCreators);
 
-	var _viewbuilderImageCoverViewBuilder = __webpack_require__(31);
+	var _viewbuilderImageCoverViewBuilder = __webpack_require__(34);
 
 	var _viewbuilderImageCoverViewBuilder2 = _interopRequireDefault(_viewbuilderImageCoverViewBuilder);
 
-	var _viewbuilderTextCoverViewBuilder = __webpack_require__(36);
+	var _viewbuilderTextCoverViewBuilder = __webpack_require__(39);
 
 	var _viewbuilderTextCoverViewBuilder2 = _interopRequireDefault(_viewbuilderTextCoverViewBuilder);
 
-	var _CRUDRelModal = __webpack_require__(37);
+	var _CRUDRelModal = __webpack_require__(7);
 
 	var _CRUDRelModal2 = _interopRequireDefault(_CRUDRelModal);
 
-	var _flux = __webpack_require__(22);
+	var _flux = __webpack_require__(25);
 
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "CRUDHasManyEditor",
@@ -3299,7 +3792,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 27 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3318,16 +3811,16 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _CRUDBaseStore2 = __webpack_require__(28);
+	var _CRUDBaseStore2 = __webpack_require__(31);
 
 	var _CRUDBaseStore3 = _interopRequireDefault(_CRUDBaseStore2);
 
-	var _constantsCRUDStoreActionIds = __webpack_require__(29);
+	var _constantsCRUDStoreActionIds = __webpack_require__(32);
 
 	var _constantsCRUDStoreActionIds2 = _interopRequireDefault(_constantsCRUDStoreActionIds);
 
 	var ActionTypes = _constantsCRUDStoreActionIds2["default"].ActionTypes;
-	var EventEmitter = __webpack_require__(14).EventEmitter;
+	var EventEmitter = __webpack_require__(17).EventEmitter;
 	var CHANGE_EVENT = 'change';
 
 	/**
@@ -3482,7 +3975,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 28 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3499,7 +3992,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var EventEmitter = __webpack_require__(14).EventEmitter;
+	var EventEmitter = __webpack_require__(17).EventEmitter;
 	var CHANGE_EVENT = 'change';
 
 	/**
@@ -3646,12 +4139,12 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 29 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var keyMirror = __webpack_require__(13);
+	var keyMirror = __webpack_require__(16);
 
 	// Define action constants
 	module.exports = {
@@ -3672,7 +4165,7 @@
 	};
 
 /***/ },
-/* 30 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3685,7 +4178,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var ActionTypes = __webpack_require__(29).ActionTypes;
+	var ActionTypes = __webpack_require__(32).ActionTypes;
 
 	var CRUDStoreActionCreators = (function () {
 	  function CRUDStoreActionCreators(dispatcher) {
@@ -3725,7 +4218,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 31 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3744,19 +4237,19 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _viewbuilderBaseViewBuilder = __webpack_require__(32);
+	var _viewbuilderBaseViewBuilder = __webpack_require__(35);
 
 	var _viewbuilderBaseViewBuilder2 = _interopRequireDefault(_viewbuilderBaseViewBuilder);
 
-	var _utilsUri = __webpack_require__(33);
+	var _utilsUri = __webpack_require__(36);
 
 	var _utilsUri2 = _interopRequireDefault(_utilsUri);
 
-	var _utilsCss = __webpack_require__(34);
+	var _utilsCss = __webpack_require__(37);
 
 	var _utilsCss2 = _interopRequireDefault(_utilsCss);
 
-	var _classnames = __webpack_require__(35);
+	var _classnames = __webpack_require__(38);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -3897,7 +4390,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 32 */
+/* 35 */
 /***/ function(module, exports) {
 
 	
@@ -4161,7 +4654,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 33 */
+/* 36 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4173,14 +4666,14 @@
 	};
 
 /***/ },
-/* 34 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _uri = __webpack_require__(33);
+	var _uri = __webpack_require__(36);
 
 	var _uri2 = _interopRequireDefault(_uri);
 
@@ -4200,7 +4693,7 @@
 	};
 
 /***/ },
-/* 35 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -4254,7 +4747,7 @@
 
 
 /***/ },
-/* 36 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4273,19 +4766,19 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _viewbuilderBaseViewBuilder = __webpack_require__(32);
+	var _viewbuilderBaseViewBuilder = __webpack_require__(35);
 
 	var _viewbuilderBaseViewBuilder2 = _interopRequireDefault(_viewbuilderBaseViewBuilder);
 
-	var _utilsUri = __webpack_require__(33);
+	var _utilsUri = __webpack_require__(36);
 
 	var _utilsUri2 = _interopRequireDefault(_utilsUri);
 
-	var _utilsCss = __webpack_require__(34);
+	var _utilsCss = __webpack_require__(37);
 
 	var _utilsCss2 = _interopRequireDefault(_utilsCss);
 
-	var _classnames = __webpack_require__(35);
+	var _classnames = __webpack_require__(38);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -4542,105 +5035,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 37 */
-/***/ function(module, exports) {
-
-	/*
-	CRUDModal doesn't support different z-index
-	It was used to open the side modal.
-
-	This is different from the CRUDModal, we don't use scroll, since the modal is
-	smaller.
-
-	Usage:
-
-	    CRUDModal.open({
-	      "title": $btn.data("modalTitle") || "編輯" + this.props.modelLabel,
-	      "size": "large",
-	      "side": true,
-	      "closeOnSuccess": true,
-	      "url": this.props.baseUrl + "/crud/edit",
-	      "id": parseInt($btn.data("recordId")),
-	      "init": function(e, ui) {
-	        // the modal content init callback
-	      },
-	      "success": function(ui, resp) {
-	        // this will be triggered when the form is submitted successfully
-	        that.refs.region.updateRegion();
-	      }
-	    });
-
-	Originally implemented in bundles/crud/Assets/crud/crud_modal.coffee
-	*/
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var CRUDRelModal = {};
-
-	CRUDRelModal.open = function (title, url, args, config) {
-
-	  var defer = jQuery.Deferred();
-	  var predefinedArgs = { "_submit_btn": false, "_close_btn": false };
-	  var defaultControls = [];
-
-	  defaultControls.push({
-	    "label": "儲存", "primary": true, "onClick": function onClick(e, ui) {
-	      return ui.body.find("form").submit();
-	    }
-	  });
-
-	  var ui = ModalManager.createBlock($.extend({
-	    "title": title,
-	    "size": "large",
-	    "controls": defaultControls,
-	    "ajax": {
-	      "url": url,
-	      "args": $.extend(predefinedArgs, args)
-	    }
-	  }, config || {}));
-
-	  // Initialize the action from the form inside the modal
-	  ui.dialog.on("dialog.ajax.done", function (e, ui) {
-	    var $form = ui.body.find("form");
-	    var form = ui.body.find("form").get(0);
-	    var $msgbox = $form.prev('.action-result-container').first();
-	    var a = Action.form(form, {
-	      "clear": false,
-	      "onSuccess": function onSuccess(resp) {
-	        setTimeout(function () {
-	          // XXX: this weird, we have to find the .modal itself to close it
-	          // instead of using "ui.dialog"
-	          ui.container.find('.modal').modal('hide');
-	        }, 1000);
-	        defer.resolve(resp);
-
-	        if (config.success) {
-	          config.success.call(this, ui, resp);
-	        }
-	      }
-	    });
-	    a.plug(new ActionBootstrapHighlight());
-	    a.plug(new ActionMsgbox({
-	      'disableScroll': true,
-	      'container': $msgbox
-	    }));
-	  });
-
-	  var $m = ui.container.find('.modal');
-	  $m.modal('show'); // TODO: support modal config here
-	  $m.on('shown.bs.modal', function (event) {});
-	  $m.on('hide.bs.modal', function (event) {
-	    ui.container.remove();
-	  });
-	  return defer;
-	};
-	exports["default"] = CRUDRelModal;
-	module.exports = exports["default"];
-
-/***/ },
-/* 38 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4659,19 +5054,19 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _viewbuilderBaseViewBuilder = __webpack_require__(32);
+	var _viewbuilderBaseViewBuilder = __webpack_require__(35);
 
 	var _viewbuilderBaseViewBuilder2 = _interopRequireDefault(_viewbuilderBaseViewBuilder);
 
-	var _utilsUri = __webpack_require__(33);
+	var _utilsUri = __webpack_require__(36);
 
 	var _utilsUri2 = _interopRequireDefault(_utilsUri);
 
-	var _utilsCss = __webpack_require__(34);
+	var _utilsCss = __webpack_require__(37);
 
 	var _utilsCss2 = _interopRequireDefault(_utilsCss);
 
-	var _classnames = __webpack_require__(35);
+	var _classnames = __webpack_require__(38);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -4851,386 +5246,127 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 39 */
-/***/ function(module, exports) {
-
-	// vim:sw=2:ts=2:sts=2:
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	exports.initCRUDVendorComponents = initCRUDVendorComponents;
-	exports.initCRUDComponents = initCRUDComponents;
-	exports.initCRUDModalAction = initCRUDModalAction;
-	function convertDOMStringMapToObject(map) {
-	  var obj = {};
-	  for (var key in map) {
-	    obj[key] = map[key];
-	  }
-	  return obj;
-	}
-
-	function initMaterialDesign($region) {
-	  // for block styled checkbox, material doesn't work for inline checkbox
-	  if (typeof $.material !== "undefined") {
-	    $.material.checkbox($region.find('.checkbox > label > input[type=checkbox]'));
-	  }
-	}
-
-	function initOembed($region) {
-	  if (typeof jQuery.oembed === 'undefined') {
-	    return;
-	  }
-	  $region.find('.oembed').oembed(null, { maxHeight: 160, maxWidth: 300 });
-	}
-
-	function initHolderJs($region) {
-	  if (typeof Holder !== "undefined") {
-	    Holder.run({
-	      domain: 'crud.list'
-	    });
-	  }
-	}
-
-	function initFacebox($region) {
-	  if (typeof jQuery.fn.facebox !== "undefined") {
-	    $region.find('a[rel*=facebox]').facebox({
-	      closeImage: '/assets/facebox/src/closelabel.png',
-	      loadingImage: '/assets/facebox/src/loading.gif'
-	    });
-	  }
-	}
-
-	function initFormKit($region) {
-	  if (typeof FormKit === "undefined") {
-	    console.warn("FormKit is not loaded, please load 'formkit' asset.");
-	    return;
-	  }
-	  FormKit.initialize($region);
-	}
-
-	function initCRUDEditButton($region) {
-	  var elements = $region.find('.crud-edit-button');
-	  elements.each(function (i, el) {
-	    console.debug('crud-edit-button', i, el, el.dataset);
-
-	    var obj = convertDOMStringMapToObject(el.dataset);
-	    obj.region = $region;
-
-	    var btn = React.createElement(CRUDEditButton, obj);
-	    ReactDOM.render(btn, el);
-	  });
-	}
-
-	function initCRUDCreateButton($region) {
-	  var elements = $region.find('.crud-create-button');
-	  elements.each(function (i, el) {
-	    console.debug('crud-create-button', i, el, el.dataset);
-
-	    var obj = convertDOMStringMapToObject(el.dataset);
-	    obj.region = $region;
-
-	    var btn = React.createElement(CRUDCreateButton, obj);
-	    ReactDOM.render(btn, el);
-	  });
-	}
-
-	function initCRUDPasswordControl($region) {
-	  var elements = $region.find('.crud-password-control');
-	  elements.each(function (i, el) {
-	    console.debug('crud-password-control', i, el, el.dataset);
-	    var control = React.createElement(SetPasswordControl, {
-	      "required": elem.dataset["required"],
-	      "type": elem.dataset["type"]
-	    });
-	    ReactDOM.render(control, el);
-	  });
-	}
-
-	function initDatePicker($region) {
-	  if (typeof jQuery.fn.datepicker === "undefined") {
-	    console.warn("jQuery.datepicker is not loaded");
-	    return;
-	  }
-	  $region.find('.date-picker').datepicker({ dateFormat: 'yy-mm-dd' });
-	}
-
-	function initTabs($region) {
-
-	  // bootstrap tabs
-	  if (typeof jQuery.fn.tab !== "undefined") {
-	    $region.find('.nav-tabs li:first-child a[data-toggle="tab"]').tab('show');
-	  }
-
-	  // jQuery tabs plugin
-	  if (typeof jQuery.fn.tabs !== "undefined") {
-	    $region.find('.tabs').tabs();
-	  }
-	}
-
-	function initCollapsible($region) {
-	  if (typeof jQuery.fn.collapse === "undefined") {
-	    console.warn("jQuery.collapse is not loaded");
-	    return;
-	  }
-	  $region.find(".collapsible").collapse();
-	}
-
-	function initAccordion($region) {
-	  if (typeof jQuery.fn.accordion === "undefined") {
-	    console.warn("jQuery.accordion is not loaded");
-	    return;
-	  }
-
-	  // initialize accordion
-	  $region.find('.accordion').accordion({
-	    active: false,
-	    collapsible: true,
-	    autoHeight: false
-	  });
-	}
-
-	function initBundleI18NPlugin($region) {
-	  if (typeof I18N === "undefined") {
-	    console.warn('I18N plugin is not loaded.');
-	    return;
-	  }
-
-	  // Initialize language section switch
-	  // Add lang-switch class name to lang select dropdown to initialize lang
-	  // switch feature
-	  $region.find('select[name=lang]').addClass('lang-switch');
-	  I18N.initLangSwitch($region);
-	}
-
-	function initFieldHint($region) {
-	  $region.find(".v-field .hint").each(function (i, e) {
-	    var $hint = $(this);
-	    $hint.hide().css({ position: "absolute", zIndex: 100 });
-	    $hint.parent().css({ position: "relative" });
-	    $hint.prev().hover(function () {
-	      $hint.fadeIn();
-	    }, function () {
-	      $hint.fadeOut();
-	    });
-	  });
-	}
-
-	function initColorBox($region) {
-	  if (typeof jQuery.fn.colorbox === "undefined") {
-	    console.warn('jquery.colorbox is not loaded.');
-	    return;
-	  }
-
-	  $region.find('.colorbox-inline').colorbox({
-	    inline: true,
-	    width: "50%",
-	    fixed: true,
-	    opacity: '0.5'
-	  });
-
-	  $region.find('.btn-close-colorbox').on('click', function (e) {
-	    e.preventDefault();
-	    $.fn.colorbox.close();
-	  });
-	}
-
-	function initCRUDVendorComponents($region) {
-	  // init extra vendor components
-	  initFormKit($region);
-	  initOembed($region);
-	  initFacebox($region);
-	  initHolderJs($region);
-	  initMaterialDesign($region);
-	  initDatePicker($region);
-	  initCollapsible($region);
-	  initColorBox($region);
-
-	  if (typeof use_tinymce !== "undefined") {
-	    use_tinymce('adv1', { popup: true });
-	  }
-	}
-
-	;
-
-	function initCRUDComponents($region) {
-
-	  // init core components
-	  initCRUDPasswordControl($region);
-	  initCRUDCreateButton($region);
-	  initCRUDEditButton($region);
-
-	  // init bundle plugins
-	  initBundleI18NPlugin($region);
-	  initFieldHint($region);
-	}
-
-	;
-
-	function initCRUDModalAction(currentFormId) {
-	  var formEl = document.getElementById(currentFormId);
-
-	  console.debug('setting up form validation for ', formEl);
-
-	  var highlighter = new ActionBootstrapHighlight(formEl);
-	  var $form = $(formEl);
-	  var $msgbox = $form.prev('.action-result-container').first();
-	  var a = Action.form(formEl, {
-	    'clear': false,
-	    'onSubmit': function onSubmit() {
-	      highlighter.cleanup();
-	    },
-	    'onSuccess': function onSuccess(resp) {
-	      jQuery.scrollTo(formEl, 600, { offset: -200 });
-	      // TODO: redirect?
-	    },
-	    'onError': function onError(resp) {
-	      highlighter.fromValidations(resp.validations);
-	      if (typeof jQuery.scrollTo != "undefined") {
-	        var input = highlighter.getFirstInvalidField();
-	        if (input) {
-	          jQuery.scrollTo(input, 600, { offset: -200 });
-	        } else {
-	          jQuery.scrollTo($msgbox.get(0), 600, { offset: -200 });
-	        }
-	      }
-	    }
-	  });
-	  a.plug(ActionMsgbox, {
-	    'disableScroll': true,
-	    'container': $msgbox
-	  });
-	}
-
-	;
-
-/***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _react = __webpack_require__(2);
+	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _CRUDRelModal = __webpack_require__(37);
+	var _CRUDRelModal = __webpack_require__(7);
 
 	var _CRUDRelModal2 = _interopRequireDefault(_CRUDRelModal);
 
 	/*
-	<CRUDEditButton 
-	    label="Edit"
+	<CRUDDeleteButton 
+	    label="Create"
 	    size="large"
 	    side=false
-	    recordKey={3}
 	    baseUrl=/bs/user
 	>
-	</CRUDEditButton>
-
+	</CRUDDeleteButton>
 	*/
 	exports["default"] = _react2["default"].createClass({
-	  displayName: "CRUDEditButton",
+	    displayName: "CRUDDeleteButton",
 
-	  propTypes: {
-	    /**
-	     * label of the button
-	     */
-	    "label": _react2["default"].PropTypes.string,
+	    propTypes: {
+	        /**
+	         * label of the button
+	         */
+	        "label": _react2["default"].PropTypes.string,
 
-	    /*
-	     * the baseUrl of a CRUD handler, usually "/bs"
-	     */
-	    "baseUrl": _react2["default"].PropTypes.string,
+	        /*
+	         * the baseUrl of a CRUD handler, usually "/bs"
+	         */
+	        "baseUrl": _react2["default"].PropTypes.string,
 
-	    /**
-	     * the region DOM element used for updating.
-	     */
-	    "region": _react2["default"].PropTypes.any,
+	        "region": _react2["default"].PropTypes.any,
 
-	    // modal related options
-	    // ==============================
-	    /**
-	     * the modal size: it could be "large", "small"
-	     */
-	    "size": _react2["default"].PropTypes.string,
+	        /**
+	         * The parent record key is used for creating a new record belongs to the parent.
+	         */
+	        "recordKey": _react2["default"].PropTypes.any,
 
-	    /**
-	     * show the modal as a side modal?
-	     */
-	    "side": _react2["default"].PropTypes.bool,
+	        // modal related options
+	        // ==============================
+	        /**
+	         * the modal size: it could be "large", "small"
+	         */
+	        "size": _react2["default"].PropTypes.string,
 
-	    /**
-	     * the title of the modal
-	     */
-	    "title": _react2["default"].PropTypes.string,
+	        /**
+	         * show the modal as a side modal?
+	         */
+	        "side": _react2["default"].PropTypes.bool,
 
-	    /**
-	     * The primary key of the record. the reason we didn't use "key" is because react already uses "key" as the component key.
-	     */
-	    "recordKey": _react2["default"].PropTypes.any.isRequired,
+	        /**
+	         * the title of the modal
+	         */
+	        "title": _react2["default"].PropTypes.string,
 
-	    "onInit": _react2["default"].PropTypes.func,
+	        "onInit": _react2["default"].PropTypes.func,
 
-	    "onSuccess": _react2["default"].PropTypes.func
-	  },
+	        "onSuccess": _react2["default"].PropTypes.func
+	    },
 
-	  getDefaultProps: function getDefaultProps() {
-	    return {};
-	  },
+	    getDefaultProps: function getDefaultProps() {
+	        return {};
+	    },
 
-	  getInitialState: function getInitialState() {
-	    return {};
-	  },
+	    getInitialState: function getInitialState() {
+	        return {};
+	    },
 
-	  componentDidMount: function componentDidMount() {},
+	    componentDidMount: function componentDidMount() {},
 
-	  componentWillUnmount: function componentWillUnmount() {},
+	    componentWillUnmount: function componentWillUnmount() {},
 
-	  handleClick: function handleClick(e) {
-	    var _this = this;
+	    handleClick: function handleClick(e) {
+	        var _this = this;
 
-	    e.stopPropagation();
+	        e.stopPropagation();
+	        _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/delete", { key: this.props.recordKey }, {
+	            "size": this.props.size || "large",
+	            "side": this.props.side || false,
+	            "closeOnSuccess": true,
+	            "controls": [{
+	                "label": "刪除",
+	                "primary": true,
+	                "onClick": function onClick(e, ui) {
+	                    return ui.body.find("form").submit();
+	                }
+	            }],
+	            "init": this.props.onInit, /* function(e, ui) { */
+	            "success": function success(ui, resp) {
+	                if (_this.props.onSuccess) {
+	                    _this.props.onSuccess(ui, resp);
+	                }
+	                if (_this.props.region) {
+	                    $(_this.props.region).asRegion().refresh();
+	                }
+	            }
+	        });
+	    },
 
-	    var args = {};
-
-	    args.key = this.props.recordKey;
-
-	    _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/edit", args, {
-	      "size": this.props.size || "large",
-	      "side": this.props.side || false,
-	      "closeOnSuccess": true,
-	      "init": this.props.onInit, /* function(e, ui) { */
-	      "success": function success(ui, resp) {
-	        if (_this.props.onSuccess) {
-	          _this.props.onSuccess(ui, resp);
-	        }
-	        if (_this.props.region) {
-	          $(_this.props.region).asRegion().refresh();
-	        }
-	      }
-	    });
-	  },
-
-	  render: function render() {
-	    return _react2["default"].createElement(
-	      "div",
-	      { key: this.key, className: "btn-group" },
-	      _react2["default"].createElement(
-	        "button",
-	        { className: "btn btn-success", onClick: this.handleClick },
-	        this.props.label || '編輯'
-	      )
-	    );
-	  }
+	    render: function render() {
+	        return _react2["default"].createElement(
+	            "div",
+	            { key: this.key, className: "btn-group" },
+	            _react2["default"].createElement(
+	                "button",
+	                { className: "btn btn-success", onClick: this.handleClick },
+	                this.props.label || '刪除'
+	            )
+	        );
+	    }
 	});
 	module.exports = exports["default"];
 

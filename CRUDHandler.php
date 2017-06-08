@@ -364,6 +364,7 @@ abstract class CRUDHandler extends Controller
         $mux->add('/crud/index'  , [$this,'indexRegionAction'], $options);
         $mux->add('/crud/create' , [$this,'createRegionAction'], $options);
         $mux->add('/crud/edit'   , [$this,'editRegionAction'], $options);
+        $mux->add('/crud/delete'   , [$this,'deleteRegionAction'], $options);
         $mux->add('/crud/view'   , [$this,'viewRegionAction'], $options);
         $mux->add('/crud/item'   , [$this,'itemRegionAction'], $options);
 
@@ -1121,6 +1122,9 @@ abstract class CRUDHandler extends Controller
         return false;
     }
 
+    /**
+     * TODO: extract to CRUDUtils
+     */
     public function newRecord($args = null)
     {
         // if the record is not loaded, we can use predefined values
@@ -1138,6 +1142,8 @@ abstract class CRUDHandler extends Controller
      * Convert record object into Action object.
      *
      * @return ActionKit\RecordAction\BaseRecordAction
+     *
+     * TODO: extract to CRUDUtils
      */
     public function createRecordAction(Model $record)
     {
@@ -1395,6 +1401,8 @@ abstract class CRUDHandler extends Controller
         ]);
     }
 
+
+
     public function createRegionAction()
     {
         if (!$this->canCreate) {
@@ -1402,6 +1410,34 @@ abstract class CRUDHandler extends Controller
         }
         $this->createRegionActionPrepare();
         return $this->render($this->mustFindTemplate('edit.html.twig') , []);
+    }
+
+    public function deleteRegionActionPrepare()
+    {
+        $record = $this->getCurrentRecord();
+
+        // create action after the record data is set
+        $action = $record->asDeleteAction();
+
+        $this->assign('RecordAction', $action);
+        $this->assign('Record', $record);
+
+        // XXX: deprecated
+        $this->assignCRUDVars([
+            'Action' => $action,
+            'Record' => $record,
+        ]);
+    }
+
+
+    public function deleteRegionAction()
+    {
+        if (!$this->canDelete) {
+            throw new Exception('Deleting record requires permission.');
+        }
+
+        $this->deleteRegionActionPrepare();
+        return $this->render($this->mustFindTemplate('delete.html.twig') , []);
     }
 
 
