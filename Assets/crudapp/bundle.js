@@ -54,11 +54,11 @@
 	window.SingleDayControl = __webpack_require__(5);
 	window.CRUDCreateButton = __webpack_require__(6);
 	window.CRUDEditButton = __webpack_require__(8);
-	window.CRUDDeleteButton = __webpack_require__(41);
-	window.CRUDListEditor = __webpack_require__(9);
-	window.CRUDHasManyEditor = __webpack_require__(29);
+	window.CRUDDeleteButton = __webpack_require__(9);
+	window.CRUDListEditor = __webpack_require__(10);
+	window.CRUDHasManyEditor = __webpack_require__(30);
 	window.CRUDRelModal = __webpack_require__(7);
-	window.TableViewBuilder = __webpack_require__(40);
+	window.TableViewBuilder = __webpack_require__(41);
 
 	window.initCRUDComponents = _init.initCRUDComponents;
 	window.initCRUDVendorComponents = _init.initCRUDVendorComponents;
@@ -1143,6 +1143,131 @@
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _CRUDRelModal = __webpack_require__(7);
+
+	var _CRUDRelModal2 = _interopRequireDefault(_CRUDRelModal);
+
+	/*
+	<CRUDDeleteButton 
+	    label="Create"
+	    size="large"
+	    side=false
+	    baseUrl=/bs/user
+	>
+	</CRUDDeleteButton>
+	*/
+	exports["default"] = _react2["default"].createClass({
+	    displayName: "CRUDDeleteButton",
+
+	    propTypes: {
+	        /**
+	         * label of the button
+	         */
+	        "label": _react2["default"].PropTypes.string,
+
+	        /*
+	         * the baseUrl of a CRUD handler, usually "/bs"
+	         */
+	        "baseUrl": _react2["default"].PropTypes.string,
+
+	        "region": _react2["default"].PropTypes.any,
+
+	        /**
+	         * The parent record key is used for creating a new record belongs to the parent.
+	         */
+	        "recordKey": _react2["default"].PropTypes.any,
+
+	        // modal related options
+	        // ==============================
+	        /**
+	         * the modal size: it could be "large", "small"
+	         */
+	        "size": _react2["default"].PropTypes.string,
+
+	        /**
+	         * show the modal as a side modal?
+	         */
+	        "side": _react2["default"].PropTypes.bool,
+
+	        /**
+	         * the title of the modal
+	         */
+	        "title": _react2["default"].PropTypes.string,
+
+	        "onInit": _react2["default"].PropTypes.func,
+
+	        "onSuccess": _react2["default"].PropTypes.func
+	    },
+
+	    getDefaultProps: function getDefaultProps() {
+	        return {};
+	    },
+
+	    getInitialState: function getInitialState() {
+	        return {};
+	    },
+
+	    componentDidMount: function componentDidMount() {},
+
+	    componentWillUnmount: function componentWillUnmount() {},
+
+	    handleClick: function handleClick(e) {
+	        var _this = this;
+
+	        e.stopPropagation();
+	        _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/delete", { key: this.props.recordKey }, {
+	            "size": this.props.size || "large",
+	            "side": this.props.side || false,
+	            "closeOnSuccess": true,
+	            "controls": [{
+	                "label": "刪除",
+	                "primary": true,
+	                "onClick": function onClick(e, ui) {
+	                    return ui.body.find("form").submit();
+	                }
+	            }],
+	            "init": this.props.onInit, /* function(e, ui) { */
+	            "success": function success(ui, resp) {
+	                if (_this.props.onSuccess) {
+	                    _this.props.onSuccess(ui, resp);
+	                }
+	                if (_this.props.region) {
+	                    $(_this.props.region).asRegion().refresh();
+	                }
+	            }
+	        });
+	    },
+
+	    render: function render() {
+	        return _react2["default"].createElement(
+	            "div",
+	            { key: this.key, className: "btn-group" },
+	            _react2["default"].createElement(
+	                "button",
+	                { className: "btn btn-success", onClick: this.handleClick },
+	                this.props.label || '刪除'
+	            )
+	        );
+	    }
+	});
+	module.exports = exports["default"];
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -1151,11 +1276,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _CRUDListKeywordFilterControl = __webpack_require__(10);
+	var _CRUDListKeywordFilterControl = __webpack_require__(11);
 
 	var _CRUDListKeywordFilterControl2 = _interopRequireDefault(_CRUDListKeywordFilterControl);
 
-	var _CRUDListApp = __webpack_require__(11);
+	var _CRUDListApp = __webpack_require__(12);
 
 	var _CRUDListApp2 = _interopRequireDefault(_CRUDListApp);
 
@@ -1194,7 +1319,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1230,7 +1355,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1241,41 +1366,41 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _CRUDListKeywordFilterControl = __webpack_require__(10);
+	var _CRUDListKeywordFilterControl = __webpack_require__(11);
 
 	var _CRUDListKeywordFilterControl2 = _interopRequireDefault(_CRUDListKeywordFilterControl);
 
-	var _CRUDListSelectionSection = __webpack_require__(12);
+	var _CRUDListSelectionSection = __webpack_require__(13);
 
 	var _CRUDListSelectionSection2 = _interopRequireDefault(_CRUDListSelectionSection);
 
-	var _CRUDListRegion = __webpack_require__(13);
+	var _CRUDListRegion = __webpack_require__(14);
 
 	var _CRUDListRegion2 = _interopRequireDefault(_CRUDListRegion);
 
-	var _actionsCRUDListActionCreators = __webpack_require__(19);
+	var _actionsCRUDListActionCreators = __webpack_require__(20);
 
 	var _actionsCRUDListActionCreators2 = _interopRequireDefault(_actionsCRUDListActionCreators);
 
-	var _CRUDListPageSizeControl = __webpack_require__(20);
+	var _CRUDListPageSizeControl = __webpack_require__(21);
 
 	var _CRUDListPageSizeControl2 = _interopRequireDefault(_CRUDListPageSizeControl);
 
-	var _CRUDListPaginationControl = __webpack_require__(21);
+	var _CRUDListPaginationControl = __webpack_require__(22);
 
 	var _CRUDListPaginationControl2 = _interopRequireDefault(_CRUDListPaginationControl);
 
 	// used store
 
-	var _storesCRUDListSummaryStore = __webpack_require__(22);
+	var _storesCRUDListSummaryStore = __webpack_require__(23);
 
 	var _storesCRUDListSummaryStore2 = _interopRequireDefault(_storesCRUDListSummaryStore);
 
-	var _storesCRUDListFilterStore = __webpack_require__(14);
+	var _storesCRUDListFilterStore = __webpack_require__(15);
 
 	var _storesCRUDListFilterStore2 = _interopRequireDefault(_storesCRUDListFilterStore);
 
-	var _storesCRUDListSelectionStore = __webpack_require__(23);
+	var _storesCRUDListSelectionStore = __webpack_require__(24);
 
 	var _storesCRUDListSelectionStore2 = _interopRequireDefault(_storesCRUDListSelectionStore);
 
@@ -1283,11 +1408,11 @@
 
 	var _CRUDCreateButton2 = _interopRequireDefault(_CRUDCreateButton);
 
-	var _BulkManager = __webpack_require__(24);
+	var _BulkManager = __webpack_require__(25);
 
 	var _BulkManager2 = _interopRequireDefault(_BulkManager);
 
-	var _flux = __webpack_require__(25);
+	var _flux = __webpack_require__(26);
 
 	var _react = __webpack_require__(3);
 
@@ -1787,7 +1912,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1859,7 +1984,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1870,7 +1995,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _storesCRUDListFilterStore = __webpack_require__(14);
+	var _storesCRUDListFilterStore = __webpack_require__(15);
 
 	var _storesCRUDListFilterStore2 = _interopRequireDefault(_storesCRUDListFilterStore);
 
@@ -1950,7 +2075,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1967,9 +2092,9 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var constants = __webpack_require__(15);
-	var EventEmitter = __webpack_require__(17).EventEmitter;
-	var assign = __webpack_require__(18);
+	var constants = __webpack_require__(16);
+	var EventEmitter = __webpack_require__(18).EventEmitter;
+	var assign = __webpack_require__(19);
 	var ActionTypes = constants.ActionTypes;
 
 	var CHANGE_EVENT = 'change';
@@ -2057,12 +2182,12 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var keyMirror = __webpack_require__(16);
+	var keyMirror = __webpack_require__(17);
 
 	// Define action constants
 	module.exports = {
@@ -2077,7 +2202,7 @@
 	};
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/**
@@ -2136,7 +2261,7 @@
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -2440,7 +2565,7 @@
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 	/* eslint-disable no-unused-vars */
@@ -2485,7 +2610,7 @@
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2498,7 +2623,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var ActionTypes = __webpack_require__(15).ActionTypes;
+	var ActionTypes = __webpack_require__(16).ActionTypes;
 
 	var CRUDListActionCreators = (function () {
 	  function CRUDListActionCreators(context) {
@@ -2580,7 +2705,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2662,7 +2787,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2762,7 +2887,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2779,9 +2904,9 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var constants = __webpack_require__(15);
-	var EventEmitter = __webpack_require__(17).EventEmitter;
-	var assign = __webpack_require__(18);
+	var constants = __webpack_require__(16);
+	var EventEmitter = __webpack_require__(18).EventEmitter;
+	var assign = __webpack_require__(19);
 	var ActionTypes = constants.ActionTypes;
 
 	var CHANGE_EVENT = 'change';
@@ -2834,7 +2959,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2851,9 +2976,9 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var constants = __webpack_require__(15);
-	var EventEmitter = __webpack_require__(17).EventEmitter;
-	var assign = __webpack_require__(18);
+	var constants = __webpack_require__(16);
+	var EventEmitter = __webpack_require__(18).EventEmitter;
+	var assign = __webpack_require__(19);
 	var ActionTypes = constants.ActionTypes;
 
 	var CHANGE_EVENT = 'change';
@@ -2935,7 +3060,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3027,7 +3152,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3039,11 +3164,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(26);
+	module.exports.Dispatcher = __webpack_require__(27);
 
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -3065,7 +3190,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var invariant = __webpack_require__(28);
+	var invariant = __webpack_require__(29);
 
 	var _prefix = 'ID_';
 
@@ -3277,10 +3402,10 @@
 	})();
 
 	module.exports = Dispatcher;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28)))
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -3377,7 +3502,7 @@
 
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -3429,10 +3554,10 @@
 	};
 
 	module.exports = invariant;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28)))
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3447,19 +3572,19 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _storesCRUDStore = __webpack_require__(30);
+	var _storesCRUDStore = __webpack_require__(31);
 
 	var _storesCRUDStore2 = _interopRequireDefault(_storesCRUDStore);
 
-	var _actionsCRUDStoreActionCreators = __webpack_require__(33);
+	var _actionsCRUDStoreActionCreators = __webpack_require__(34);
 
 	var _actionsCRUDStoreActionCreators2 = _interopRequireDefault(_actionsCRUDStoreActionCreators);
 
-	var _viewbuilderImageCoverViewBuilder = __webpack_require__(34);
+	var _viewbuilderImageCoverViewBuilder = __webpack_require__(35);
 
 	var _viewbuilderImageCoverViewBuilder2 = _interopRequireDefault(_viewbuilderImageCoverViewBuilder);
 
-	var _viewbuilderTextCoverViewBuilder = __webpack_require__(39);
+	var _viewbuilderTextCoverViewBuilder = __webpack_require__(40);
 
 	var _viewbuilderTextCoverViewBuilder2 = _interopRequireDefault(_viewbuilderTextCoverViewBuilder);
 
@@ -3467,7 +3592,7 @@
 
 	var _CRUDRelModal2 = _interopRequireDefault(_CRUDRelModal);
 
-	var _flux = __webpack_require__(25);
+	var _flux = __webpack_require__(26);
 
 	exports["default"] = _react2["default"].createClass({
 	  displayName: "CRUDHasManyEditor",
@@ -3792,7 +3917,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3811,16 +3936,16 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _CRUDBaseStore2 = __webpack_require__(31);
+	var _CRUDBaseStore2 = __webpack_require__(32);
 
 	var _CRUDBaseStore3 = _interopRequireDefault(_CRUDBaseStore2);
 
-	var _constantsCRUDStoreActionIds = __webpack_require__(32);
+	var _constantsCRUDStoreActionIds = __webpack_require__(33);
 
 	var _constantsCRUDStoreActionIds2 = _interopRequireDefault(_constantsCRUDStoreActionIds);
 
 	var ActionTypes = _constantsCRUDStoreActionIds2["default"].ActionTypes;
-	var EventEmitter = __webpack_require__(17).EventEmitter;
+	var EventEmitter = __webpack_require__(18).EventEmitter;
 	var CHANGE_EVENT = 'change';
 
 	/**
@@ -3975,7 +4100,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3992,7 +4117,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var EventEmitter = __webpack_require__(17).EventEmitter;
+	var EventEmitter = __webpack_require__(18).EventEmitter;
 	var CHANGE_EVENT = 'change';
 
 	/**
@@ -4139,12 +4264,12 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var keyMirror = __webpack_require__(16);
+	var keyMirror = __webpack_require__(17);
 
 	// Define action constants
 	module.exports = {
@@ -4165,7 +4290,7 @@
 	};
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4178,7 +4303,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var ActionTypes = __webpack_require__(32).ActionTypes;
+	var ActionTypes = __webpack_require__(33).ActionTypes;
 
 	var CRUDStoreActionCreators = (function () {
 	  function CRUDStoreActionCreators(dispatcher) {
@@ -4218,7 +4343,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4237,19 +4362,19 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _viewbuilderBaseViewBuilder = __webpack_require__(35);
+	var _viewbuilderBaseViewBuilder = __webpack_require__(36);
 
 	var _viewbuilderBaseViewBuilder2 = _interopRequireDefault(_viewbuilderBaseViewBuilder);
 
-	var _utilsUri = __webpack_require__(36);
+	var _utilsUri = __webpack_require__(37);
 
 	var _utilsUri2 = _interopRequireDefault(_utilsUri);
 
-	var _utilsCss = __webpack_require__(37);
+	var _utilsCss = __webpack_require__(38);
 
 	var _utilsCss2 = _interopRequireDefault(_utilsCss);
 
-	var _classnames = __webpack_require__(38);
+	var _classnames = __webpack_require__(39);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -4390,7 +4515,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports) {
 
 	
@@ -4654,7 +4779,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4666,14 +4791,14 @@
 	};
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	var _uri = __webpack_require__(36);
+	var _uri = __webpack_require__(37);
 
 	var _uri2 = _interopRequireDefault(_uri);
 
@@ -4693,7 +4818,7 @@
 	};
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -4747,7 +4872,7 @@
 
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4766,19 +4891,19 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _viewbuilderBaseViewBuilder = __webpack_require__(35);
+	var _viewbuilderBaseViewBuilder = __webpack_require__(36);
 
 	var _viewbuilderBaseViewBuilder2 = _interopRequireDefault(_viewbuilderBaseViewBuilder);
 
-	var _utilsUri = __webpack_require__(36);
+	var _utilsUri = __webpack_require__(37);
 
 	var _utilsUri2 = _interopRequireDefault(_utilsUri);
 
-	var _utilsCss = __webpack_require__(37);
+	var _utilsCss = __webpack_require__(38);
 
 	var _utilsCss2 = _interopRequireDefault(_utilsCss);
 
-	var _classnames = __webpack_require__(38);
+	var _classnames = __webpack_require__(39);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -5035,7 +5160,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5054,19 +5179,19 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _viewbuilderBaseViewBuilder = __webpack_require__(35);
+	var _viewbuilderBaseViewBuilder = __webpack_require__(36);
 
 	var _viewbuilderBaseViewBuilder2 = _interopRequireDefault(_viewbuilderBaseViewBuilder);
 
-	var _utilsUri = __webpack_require__(36);
+	var _utilsUri = __webpack_require__(37);
 
 	var _utilsUri2 = _interopRequireDefault(_utilsUri);
 
-	var _utilsCss = __webpack_require__(37);
+	var _utilsCss = __webpack_require__(38);
 
 	var _utilsCss2 = _interopRequireDefault(_utilsCss);
 
-	var _classnames = __webpack_require__(38);
+	var _classnames = __webpack_require__(39);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -5243,131 +5368,6 @@
 	})(_viewbuilderBaseViewBuilder2["default"]);
 
 	exports["default"] = TableViewBuilder;
-	module.exports = exports["default"];
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-	var _react = __webpack_require__(3);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _CRUDRelModal = __webpack_require__(7);
-
-	var _CRUDRelModal2 = _interopRequireDefault(_CRUDRelModal);
-
-	/*
-	<CRUDDeleteButton 
-	    label="Create"
-	    size="large"
-	    side=false
-	    baseUrl=/bs/user
-	>
-	</CRUDDeleteButton>
-	*/
-	exports["default"] = _react2["default"].createClass({
-	    displayName: "CRUDDeleteButton",
-
-	    propTypes: {
-	        /**
-	         * label of the button
-	         */
-	        "label": _react2["default"].PropTypes.string,
-
-	        /*
-	         * the baseUrl of a CRUD handler, usually "/bs"
-	         */
-	        "baseUrl": _react2["default"].PropTypes.string,
-
-	        "region": _react2["default"].PropTypes.any,
-
-	        /**
-	         * The parent record key is used for creating a new record belongs to the parent.
-	         */
-	        "recordKey": _react2["default"].PropTypes.any,
-
-	        // modal related options
-	        // ==============================
-	        /**
-	         * the modal size: it could be "large", "small"
-	         */
-	        "size": _react2["default"].PropTypes.string,
-
-	        /**
-	         * show the modal as a side modal?
-	         */
-	        "side": _react2["default"].PropTypes.bool,
-
-	        /**
-	         * the title of the modal
-	         */
-	        "title": _react2["default"].PropTypes.string,
-
-	        "onInit": _react2["default"].PropTypes.func,
-
-	        "onSuccess": _react2["default"].PropTypes.func
-	    },
-
-	    getDefaultProps: function getDefaultProps() {
-	        return {};
-	    },
-
-	    getInitialState: function getInitialState() {
-	        return {};
-	    },
-
-	    componentDidMount: function componentDidMount() {},
-
-	    componentWillUnmount: function componentWillUnmount() {},
-
-	    handleClick: function handleClick(e) {
-	        var _this = this;
-
-	        e.stopPropagation();
-	        _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/delete", { key: this.props.recordKey }, {
-	            "size": this.props.size || "large",
-	            "side": this.props.side || false,
-	            "closeOnSuccess": true,
-	            "controls": [{
-	                "label": "刪除",
-	                "primary": true,
-	                "onClick": function onClick(e, ui) {
-	                    return ui.body.find("form").submit();
-	                }
-	            }],
-	            "init": this.props.onInit, /* function(e, ui) { */
-	            "success": function success(ui, resp) {
-	                if (_this.props.onSuccess) {
-	                    _this.props.onSuccess(ui, resp);
-	                }
-	                if (_this.props.region) {
-	                    $(_this.props.region).asRegion().refresh();
-	                }
-	            }
-	        });
-	    },
-
-	    render: function render() {
-	        return _react2["default"].createElement(
-	            "div",
-	            { key: this.key, className: "btn-group" },
-	            _react2["default"].createElement(
-	                "button",
-	                { className: "btn btn-success", onClick: this.handleClick },
-	                this.props.label || '刪除'
-	            )
-	        );
-	    }
-	});
 	module.exports = exports["default"];
 
 /***/ }

@@ -1,5 +1,8 @@
 ---
 collections:
+- stylesheet:
+  - css/crudapp.css
+  watch: sass --compass -wc sass:css
 - javascript:
   - bundle.js
   watch: webpack --watch --progress
