@@ -630,7 +630,7 @@ abstract class CRUDHandler extends Controller
      */
     public function getEditPageUrl(Model $record)
     {
-        return $this->getRoutePrefix() . '/edit?' . http_build_query(['id' => $record->id]);
+        return $this->getRoutePrefix() . '/edit?' . http_build_query(['key' => $record->getKey()]);
     }
 
 
@@ -641,7 +641,7 @@ abstract class CRUDHandler extends Controller
      */
     public function getViewPageUrl(Model $record)
     {
-        return $this->getRoutePrefix() . '/view?' . http_build_query(['id' => $record->id]);
+        return $this->getRoutePrefix() . '/view?' . http_build_query(['key' => $record->getKey()]);
     }
 
 
@@ -663,7 +663,7 @@ abstract class CRUDHandler extends Controller
      */
     public function getEditRegionUrl(Model $record, array $query = array())
     {
-        return $this->getRoutePrefix() . '/crud/edit?' . http_build_query(array_merge([ 'id' => $record->id ], $query));
+        return $this->getRoutePrefix() . '/crud/edit?' . http_build_query(array_merge([ 'key' => $record->getKey() ], $query));
     }
 
     /**
@@ -675,7 +675,7 @@ abstract class CRUDHandler extends Controller
      */
     public function getViewRegionUrl(Model $record, array $query = array())
     {
-        return $this->getRoutePrefix() . '/crud/view?' . http_build_query(array_merge([ 'id' => $record->id ], $query));
+        return $this->getRoutePrefix() . '/crud/view?' . http_build_query(array_merge([ 'key' => $record->getKey() ], $query));
     }
 
 
@@ -1168,7 +1168,7 @@ abstract class CRUDHandler extends Controller
     {
         $actionClass = $this->getModelActionClass($record, $prefix);
         // $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class,$type);
-        // $options['record'] = $record->id ? $record : null;
+        // $options['record'] = $record->getKey() ? $record : null;
         $options['record'] = $record;
         return new $actionClass($args , $options);
     }
