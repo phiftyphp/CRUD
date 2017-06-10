@@ -31,12 +31,14 @@ ServiceProviders:
   AssetServiceProvider:
     BaseUrl: /assets
     BaseDir: webroot/assets
-  BundleServiceProvider:
-    Paths:
-      - bundles
+BundleLoader:
+  Paths:
+    - bundles
 Bundles:
   CoreBundle:
   CommonBundle:
+  I18N:
   AdminUI:
-  UserBundle:
   CRUD:
+  UserBundle:
+  ProductBundle:
