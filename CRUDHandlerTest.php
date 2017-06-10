@@ -40,7 +40,7 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
         $route = $this->mux->dispatchRequest($req);
         $response = RouteExecutor::execute($route, $environment, []);
 
-        $record = $c->newRecord([ 'email' => 'new_user@gmail.com' ]);
+        $record = $this->handler->newRecord([ 'email' => 'new_user@gmail.com' ]);
         $this->assertInstanceOf(User::class, $record);
         $this->assertEquals('new_user@gmail.com', $record->email);
     }
@@ -54,7 +54,7 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
         $response = RouteExecutor::execute($route, $environment, []);
 
 
-        $record = $c->loadCurrentRecord();
+        $record = $this->handler->loadCurrentRecord();
         $this->assertFalse($record);
     }
 
@@ -67,7 +67,7 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
         $response = RouteExecutor::execute($route, $environment, []);
 
 
-        $collection = $c->createDefaultCollection();
+        $collection = $this->handler->createDefaultCollection();
         $this->assertInstanceOf(UserCollection::class, $collection);
     }
 
@@ -79,7 +79,7 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
         $route = $this->mux->dispatchRequest($req);
         $response = RouteExecutor::execute($route, $environment, []);
 
-        $schema = $c->getModelSchema();
+        $schema = $this->handler->getModelSchema();
         $this->assertInstanceOf(UserSchemaProxy::class, $schema);
     }
 
@@ -91,7 +91,7 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
         $route = $this->mux->dispatchRequest($req);
         $response = RouteExecutor::execute($route, $environment, []);
 
-        $prefix = $c->getRoutePrefix();
+        $prefix = $this->handler->getRoutePrefix();
         $this->assertEquals('/bs/user', $prefix);
     }
 
@@ -103,7 +103,7 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
         $route = $this->mux->dispatchRequest($req);
         $response = RouteExecutor::execute($route, $environment, []);
 
-        $collection = $c->orderCollection(new UserCollection);
+        $collection = $this->handler->orderCollection(new UserCollection);
         $this->assertInstanceOf(UserCollection::class, $collection);
 
         $sql = $collection->getCurrentQuery()->toSql(new \Magsql\Driver\MySQLDriver, new \Magsql\ArgumentArray);
