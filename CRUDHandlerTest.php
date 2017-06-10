@@ -17,23 +17,27 @@ use Pux\RouteExecutor;
 
 class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
 {
+    protected $handler;
+
+    protected $mux;
+
     public function setUp()
     {
         parent::setUp();
         $app = new \Phifty\App($this->kernel);
         $app->boot();
+
+        $this->handler = new UserCRUDHandler;
+        $this->mux = new Mux;
+        $this->mux->mount('/bs/user', $this->handler);
     }
 
     public function testNewRecordShouldReturnTheRecordWithDefaultArgs()
     {
         $environment = $this->createEnvironment('GET', '/bs/user');
 
-        $c = new UserCRUDHandler;
-        $mux = new Mux;
-        $mux->mount('/bs/user', $c);
-
         $req = RouteRequest::createFromEnv($environment);
-        $route = $mux->dispatchRequest($req);
+        $route = $this->mux->dispatchRequest($req);
         $response = RouteExecutor::execute($route, $environment, []);
 
         $record = $c->newRecord([ 'email' => 'new_user@gmail.com' ]);
@@ -45,12 +49,8 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
     {
         $environment = $this->createEnvironment('GET', '/bs/user');
 
-        $c = new UserCRUDHandler;
-        $mux = new Mux;
-        $mux->mount('/bs/user', $c);
-
         $req = RouteRequest::createFromEnv($environment);
-        $route = $mux->dispatchRequest($req);
+        $route = $this->mux->dispatchRequest($req);
         $response = RouteExecutor::execute($route, $environment, []);
 
 
@@ -62,12 +62,8 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
     {
         $environment = $this->createEnvironment('GET', '/bs/user');
 
-        $c = new UserCRUDHandler;
-        $mux = new Mux;
-        $mux->mount('/bs/user', $c);
-
         $req = RouteRequest::createFromEnv($environment);
-        $route = $mux->dispatchRequest($req);
+        $route = $this->mux->dispatchRequest($req);
         $response = RouteExecutor::execute($route, $environment, []);
 
 
@@ -79,14 +75,9 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
     {
         $environment = $this->createEnvironment('GET', '/bs/user');
 
-        $c = new UserCRUDHandler;
-        $mux = new Mux;
-        $mux->mount('/bs/user', $c);
-
         $req = RouteRequest::createFromEnv($environment);
-        $route = $mux->dispatchRequest($req);
+        $route = $this->mux->dispatchRequest($req);
         $response = RouteExecutor::execute($route, $environment, []);
-
 
         $schema = $c->getModelSchema();
         $this->assertInstanceOf(UserSchemaProxy::class, $schema);
@@ -96,12 +87,8 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
     {
         $environment = $this->createEnvironment('GET', '/bs/user');
 
-        $c = new UserCRUDHandler;
-        $mux = new Mux;
-        $mux->mount('/bs/user', $c);
-
         $req = RouteRequest::createFromEnv($environment);
-        $route = $mux->dispatchRequest($req);
+        $route = $this->mux->dispatchRequest($req);
         $response = RouteExecutor::execute($route, $environment, []);
 
         $prefix = $c->getRoutePrefix();
@@ -112,16 +99,9 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
     {
         $environment = $this->createEnvironment('GET', '/bs/user', [ '_order_column' => 'id', '_order_by' => 'ASC' ]);
 
-
-        $c = new UserCRUDHandler;
-        $mux = new Mux;
-        $mux->mount('/bs/user', $c);
-
         $req = RouteRequest::createFromEnv($environment);
-        $route = $mux->dispatchRequest($req);
+        $route = $this->mux->dispatchRequest($req);
         $response = RouteExecutor::execute($route, $environment, []);
-
-
 
         $collection = $c->orderCollection(new UserCollection);
         $this->assertInstanceOf(UserCollection::class, $collection);
@@ -152,12 +132,8 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
     {
         $environment = $this->createEnvironment('GET', $pathInfo);
 
-        $c = new UserCRUDHandler;
-        $mux = new Mux;
-        $mux->mount('/bs/user', $c);
-
         $req = RouteRequest::createFromEnv($environment);
-        $route = $mux->dispatchRequest($req);
+        $route = $this->mux->dispatchRequest($req);
 
         $this->assertNotEmpty($route);
 

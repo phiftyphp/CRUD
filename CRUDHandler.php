@@ -96,6 +96,9 @@ abstract class CRUDHandler extends Controller
 
     public $parentKeyField;
 
+
+
+
     protected $kernel;
 
     /**
@@ -1065,6 +1068,12 @@ abstract class CRUDHandler extends Controller
     /**
      * Override this if you need to set default data for the form of record 
      * creating.
+     *
+     * To create a record with its relationship:
+     *
+     *     /create?rel=category&relKey=3
+     *
+     * The above query will create the record under the category(3) when the form is submitted.
      *
      * @return array Form data.
      */
