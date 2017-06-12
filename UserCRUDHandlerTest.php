@@ -14,12 +14,18 @@ use Funk\Environment;
 use Pux\Mux;
 use Pux\RouteRequest;
 use Pux\RouteExecutor;
+use CRUD\Testing\CRUDTestCase;
 
-class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
+class UserCRUDHandlerTest extends CRUDTestCase
 {
     protected $handler;
 
     protected $mux;
+
+    public function models()
+    {
+        return [new UserSchema];
+    }
 
     public function setUp()
     {
@@ -52,7 +58,6 @@ class CRUDHandlerTest extends \CRUD\Testing\CRUDTestCase
         $req = RouteRequest::createFromEnv($environment);
         $route = $this->mux->dispatchRequest($req);
         $response = RouteExecutor::execute($route, $environment, []);
-
 
         $record = $this->handler->loadCurrentRecord();
         $this->assertFalse($record);

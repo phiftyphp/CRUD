@@ -24,6 +24,7 @@ use Pux\Mux;
 use ActionKit\Action;
 use ReflectionClass;
 use Exception;
+use InvalidArgumentException;
 use Universal\Http\HttpRequest;
 
 use ActionKit\ActionTemplate\RecordActionTemplate;
@@ -95,6 +96,10 @@ abstract class CRUDHandler extends Controller
     public $parentKeyRecordClass;
 
     public $parentKeyField;
+
+    // FIXME: support "allow relationship" to be used to create records.
+    public $allowRelations;
+
 
 
 
@@ -1079,10 +1084,21 @@ abstract class CRUDHandler extends Controller
      */
     public function getDefaultRecordArgs()
     {
-        // load parent key if it's in the request parameters
-        if ($key = $this->request->param($this->parentKeyParam)) {
+        if ($relId = $this->request->param('rel')) {
 
-            if ($this->parentKeyRecordClass) {
+            $schema = $this->getModelSchema();
+            $rel = $schema->getRelation($relId);
+            if (!$rel) {
+                throw new InvalidArgumentException("relation {$relId} is not defined.");
+            }
+            $localColumn = $rel['self_column'];
+            $relKey = $this->request->param('relKey');
+            $this->predefined[$localColumn] = $relKey;
+
+        } else if (isset($this->parentKeyRecordClass)) {
+
+            // load parent key if it's in the request parameters
+            if ($key = $this->request->param($this->parentKeyParam)) {
                 $record = $this->parentKeyRecordClass::findByPrimaryKey($key);
                 if (!$record) {
                     throw new \Exception("parent record not found.");
