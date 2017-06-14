@@ -70,6 +70,16 @@
 	  ReactDOM = { render: React.render.bind(React) };
 	}
 
+	function loadRegions($body) {
+	  $body.find('[data-region]').each(function (i, el) {
+	    console.log("found region", el, el.dataset.region, el.dataset.args, el.dataset);
+	    var path = el.dataset.region;
+	    if (path) {
+	      Region.load($(el), path, el.dataset.args || {});
+	    }
+	  });
+	}
+
 	// Unmount app manually when region is going to fetch new contents.
 	$(Region).bind('region.unmount', function (e, $region) {
 	  $region.find('.react-app').each(function () {
@@ -81,6 +91,7 @@
 	  console.debug('region.load');
 	  (0, _init.initCRUDComponents)($region);
 	  (0, _init.initCRUDVendorComponents)($region);
+	  loadRegions($region);
 	});
 
 	$(function () {
@@ -97,6 +108,8 @@
 	  $(document).bind('drop dragover', function (e) {
 	    e.preventDefault();
 	  });
+
+	  loadRegions($(document.body));
 	});
 
 /***/ },
@@ -838,6 +851,10 @@
 	         */
 	        "parentRecordKey": _react2["default"].PropTypes.any,
 
+	        "rel": _react2["default"].PropTypes.string,
+
+	        "relKey": _react2["default"].PropTypes.string,
+
 	        // modal related options
 	        // ==============================
 	        /**
@@ -880,7 +897,14 @@
 	        var args = {};
 
 	        if (this.props.parentRecordKey) {
+
 	            args['parent-key'] = this.props.parentRecordKey;
+	        } else if (this.props.rel) {
+
+	            args['rel'] = this.props.rel;
+	            if (this.props.relKey) {
+	                args['relKey'] = this.props.relKey;
+	            }
 	        }
 
 	        _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/create", args, {

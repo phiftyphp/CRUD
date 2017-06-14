@@ -44,6 +44,9 @@ export default React.createClass({
      */
     "parentRecordKey": React.PropTypes.any,
 
+    "rel": React.PropTypes.string,
+
+    "relKey": React.PropTypes.string,
 
     // modal related options
     // ==============================
@@ -87,7 +90,16 @@ export default React.createClass({
     const args = {};
 
     if (this.props.parentRecordKey) {
+
         args['parent-key'] = this.props.parentRecordKey;
+
+    } else if (this.props.rel) {
+
+        args['rel'] = this.props.rel;
+        if (this.props.relKey) {
+            args['relKey'] = this.props.relKey;
+        }
+
     }
 
     CRUDRelModal.open(

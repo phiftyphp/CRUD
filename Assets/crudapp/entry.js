@@ -22,6 +22,18 @@ if (typeof ReactDOM === "undefined") {
   ReactDOM = { render: React.render.bind(React) };
 }
 
+
+function loadRegions($body)
+{
+  $body.find('[data-region]').each(function(i, el) {
+    console.log("found region", el, el.dataset.region, el.dataset.args, el.dataset);
+    const path = el.dataset.region;
+    if (path) {
+      Region.load($(el), path, el.dataset.args || {});
+    }
+  });
+}
+
 // Unmount app manually when region is going to fetch new contents.
 $(Region).bind('region.unmount', function(e, $region) {
   $region.find('.react-app').each(function() {
@@ -33,7 +45,9 @@ $(Region).bind('region.load', function(e, $region) {
   console.debug('region.load');
   initCRUDComponents($region);
   initCRUDVendorComponents($region);
+  loadRegions($region);
 });
+
 
 
 $(function() {
@@ -50,4 +64,6 @@ $(function() {
   $(document).bind('drop dragover', function (e) {
       e.preventDefault();
   });
+
+  loadRegions($(document.body));
 });
