@@ -60,7 +60,9 @@ export default React.createClass({
   },
 
   getDefaultProps: function() {
-    return {};
+    return {
+        regionRefresh: true
+    };
   },
 
   getInitialState: function() {
@@ -91,7 +93,7 @@ export default React.createClass({
                 if (this.props.onSuccess) {
                     this.props.onSuccess(ui, resp);
                 }
-                if (this.props.region) {
+                if (this.props.regionRefresh && this.props.region) {
                     $(this.props.region).asRegion().refresh();
                 }
              }

@@ -846,6 +846,8 @@
 
 	        "region": _react2["default"].PropTypes.any,
 
+	        "regionRefresh": _react2["default"].PropTypes.bool,
+
 	        /**
 	         * The parent record key is used for creating a new record belongs to the parent.
 	         */
@@ -878,7 +880,9 @@
 	    },
 
 	    getDefaultProps: function getDefaultProps() {
-	        return {};
+	        return {
+	            regionRefresh: true
+	        };
 	    },
 
 	    getInitialState: function getInitialState() {
@@ -916,7 +920,7 @@
 	                if (_this.props.onSuccess) {
 	                    _this.props.onSuccess(ui, resp);
 	                }
-	                if (_this.props.region) {
+	                if (_this.props.regionRefresh && _this.props.region) {
 	                    $(_this.props.region).asRegion().refresh();
 	                }
 	            }
@@ -1042,7 +1046,7 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -1067,99 +1071,101 @@
 
 	*/
 	exports["default"] = _react2["default"].createClass({
-	  displayName: "CRUDEditButton",
+	    displayName: "CRUDEditButton",
 
-	  propTypes: {
-	    /**
-	     * label of the button
-	     */
-	    "label": _react2["default"].PropTypes.string,
+	    propTypes: {
+	        /**
+	         * label of the button
+	         */
+	        "label": _react2["default"].PropTypes.string,
 
-	    /*
-	     * the baseUrl of a CRUD handler, usually "/bs"
-	     */
-	    "baseUrl": _react2["default"].PropTypes.string,
+	        /*
+	         * the baseUrl of a CRUD handler, usually "/bs"
+	         */
+	        "baseUrl": _react2["default"].PropTypes.string,
 
-	    /**
-	     * the region DOM element used for updating.
-	     */
-	    "region": _react2["default"].PropTypes.any,
+	        /**
+	         * the region DOM element used for updating.
+	         */
+	        "region": _react2["default"].PropTypes.any,
 
-	    // modal related options
-	    // ==============================
-	    /**
-	     * the modal size: it could be "large", "small"
-	     */
-	    "size": _react2["default"].PropTypes.string,
+	        // modal related options
+	        // ==============================
+	        /**
+	         * the modal size: it could be "large", "small"
+	         */
+	        "size": _react2["default"].PropTypes.string,
 
-	    /**
-	     * show the modal as a side modal?
-	     */
-	    "side": _react2["default"].PropTypes.bool,
+	        /**
+	         * show the modal as a side modal?
+	         */
+	        "side": _react2["default"].PropTypes.bool,
 
-	    /**
-	     * the title of the modal
-	     */
-	    "title": _react2["default"].PropTypes.string,
+	        /**
+	         * the title of the modal
+	         */
+	        "title": _react2["default"].PropTypes.string,
 
-	    /**
-	     * The primary key of the record. the reason we didn't use "key" is because react already uses "key" as the component key.
-	     */
-	    "recordKey": _react2["default"].PropTypes.any.isRequired,
+	        /**
+	         * The primary key of the record. the reason we didn't use "key" is because react already uses "key" as the component key.
+	         */
+	        "recordKey": _react2["default"].PropTypes.any.isRequired,
 
-	    "onInit": _react2["default"].PropTypes.func,
+	        "onInit": _react2["default"].PropTypes.func,
 
-	    "onSuccess": _react2["default"].PropTypes.func
-	  },
+	        "onSuccess": _react2["default"].PropTypes.func
+	    },
 
-	  getDefaultProps: function getDefaultProps() {
-	    return {};
-	  },
+	    getDefaultProps: function getDefaultProps() {
+	        return {
+	            regionRefresh: true
+	        };
+	    },
 
-	  getInitialState: function getInitialState() {
-	    return {};
-	  },
+	    getInitialState: function getInitialState() {
+	        return {};
+	    },
 
-	  componentDidMount: function componentDidMount() {},
+	    componentDidMount: function componentDidMount() {},
 
-	  componentWillUnmount: function componentWillUnmount() {},
+	    componentWillUnmount: function componentWillUnmount() {},
 
-	  handleClick: function handleClick(e) {
-	    var _this = this;
+	    handleClick: function handleClick(e) {
+	        var _this = this;
 
-	    e.stopPropagation();
+	        e.stopPropagation();
 
-	    var args = {};
+	        var args = {};
 
-	    args.key = this.props.recordKey;
+	        args.key = this.props.recordKey;
 
-	    _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/edit", args, {
-	      "size": this.props.size || "large",
-	      "side": this.props.side || false,
-	      "closeOnSuccess": true,
-	      "init": this.props.onInit, /* function(e, ui) { */
-	      "success": function success(ui, resp) {
-	        if (_this.props.onSuccess) {
-	          _this.props.onSuccess(ui, resp);
-	        }
-	        if (_this.props.region) {
-	          $(_this.props.region).asRegion().refresh();
-	        }
-	      }
-	    });
-	  },
+	        _CRUDRelModal2["default"].open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/edit", args, {
+	            "size": this.props.size || "large",
+	            "side": this.props.side || false,
+	            "closeOnSuccess": true,
+	            "init": this.props.onInit, /* function(e, ui) { */
+	            "success": function success(ui, resp) {
+	                if (_this.props.onSuccess) {
+	                    _this.props.onSuccess(ui, resp);
+	                }
+	                if (_this.props.regionRefresh && _this.props.region) {
+	                    $(_this.props.region).asRegion().refresh();
+	                }
+	            }
+	        });
+	    },
 
-	  render: function render() {
-	    return _react2["default"].createElement(
-	      "div",
-	      { key: this.key, className: "btn-group" },
-	      _react2["default"].createElement(
-	        "button",
-	        { className: "btn btn-success", onClick: this.handleClick },
-	        this.props.label || '編輯'
-	      )
-	    );
-	  }
+	    render: function render() {
+	        return _react2["default"].createElement(
+	            "div",
+	            { key: this.key, className: "btn-group" },
+	            _react2["default"].createElement(
+	                "button",
+	                { className: "btn btn-success", onClick: this.handleClick },
+	                this.props.label || '編輯'
+	            )
+	        );
+	    }
 	});
 	module.exports = exports["default"];
 
