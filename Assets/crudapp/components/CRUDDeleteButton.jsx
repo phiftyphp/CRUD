@@ -31,6 +31,9 @@ export default React.createClass({
      */
     "recordKey": React.PropTypes.any,
 
+    "btnSize": React.PropTypes.string,
+
+    "btnStyle": React.PropTypes.string,
 
     // modal related options
     // ==============================
@@ -56,7 +59,9 @@ export default React.createClass({
   },
 
   getDefaultProps: function() {
-    return {};
+    return {
+        btnStyle: "success"
+    };
   },
 
   getInitialState: function() {
@@ -97,8 +102,18 @@ export default React.createClass({
   },
 
   render: function() {
+
+      let btnClassName = "btn";
+      if (this.props.btnStyle) {
+          btnClassName += " btn-" + this.props.btnStyle;
+      }
+      if (this.props.btnSize) {
+          btnClassName += " btn-" + this.props.btnSize;
+      }
+
+      
       return <div key={this.key} className="btn-group">
-        <button className="btn btn-success" onClick={this.handleClick}>
+        <button className={btnClassName} onClick={this.handleClick}>
             {this.props.label || '刪除'}
         </button>
       </div>;

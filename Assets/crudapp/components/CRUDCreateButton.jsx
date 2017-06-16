@@ -50,6 +50,11 @@ export default React.createClass({
 
     "relKey": React.PropTypes.string,
 
+    "btnSize": React.PropTypes.string,
+
+    "btnStyle": React.PropTypes.string,
+
+
     // modal related options
     // ==============================
     /**
@@ -63,6 +68,8 @@ export default React.createClass({
      */
     "side": React.PropTypes.bool,
 
+
+
     /**
      * the title of the modal
      */
@@ -75,7 +82,8 @@ export default React.createClass({
 
   getDefaultProps: function() {
     return {
-        regionRefresh: true
+        regionRefresh: true,
+        btnStyle: "success"
     };
   },
 
@@ -125,9 +133,19 @@ export default React.createClass({
         });
   },
 
+
   render: function() {
+      let btnClassName = "btn";
+      if (this.props.btnStyle) {
+          btnClassName += " btn-" + this.props.btnStyle;
+      }
+      if (this.props.btnSize) {
+          btnClassName += " btn-" + this.props.btnSize;
+      }
+
+      
       return <div key={this.key} className="btn-group">
-        <button className="btn btn-success" onClick={this.handleClick}>
+        <button className={btnClassName} onClick={this.handleClick}>
             {this.props.label || '建立'}
         </button>
       </div>;

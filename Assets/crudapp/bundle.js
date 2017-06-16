@@ -857,6 +857,10 @@
 
 	        "relKey": _react2["default"].PropTypes.string,
 
+	        "btnSize": _react2["default"].PropTypes.string,
+
+	        "btnStyle": _react2["default"].PropTypes.string,
+
 	        // modal related options
 	        // ==============================
 	        /**
@@ -881,7 +885,8 @@
 
 	    getDefaultProps: function getDefaultProps() {
 	        return {
-	            regionRefresh: true
+	            regionRefresh: true,
+	            btnStyle: "success"
 	        };
 	    },
 
@@ -928,12 +933,20 @@
 	    },
 
 	    render: function render() {
+	        var btnClassName = "btn";
+	        if (this.props.btnStyle) {
+	            btnClassName += " btn-" + this.props.btnStyle;
+	        }
+	        if (this.props.btnSize) {
+	            btnClassName += " btn-" + this.props.btnSize;
+	        }
+
 	        return _react2["default"].createElement(
 	            "div",
 	            { key: this.key, className: "btn-group" },
 	            _react2["default"].createElement(
 	                "button",
-	                { className: "btn btn-success", onClick: this.handleClick },
+	                { className: btnClassName, onClick: this.handleClick },
 	                this.props.label || '建立'
 	            )
 	        );
@@ -1111,6 +1124,10 @@
 	         */
 	        "recordKey": _react2["default"].PropTypes.any.isRequired,
 
+	        "btnSize": _react2["default"].PropTypes.string,
+
+	        "btnStyle": _react2["default"].PropTypes.string,
+
 	        "onInit": _react2["default"].PropTypes.func,
 
 	        "onSuccess": _react2["default"].PropTypes.func
@@ -1118,7 +1135,8 @@
 
 	    getDefaultProps: function getDefaultProps() {
 	        return {
-	            regionRefresh: true
+	            regionRefresh: true,
+	            btnStyle: "success"
 	        };
 	    },
 
@@ -1156,12 +1174,20 @@
 	    },
 
 	    render: function render() {
+	        var btnClassName = "btn";
+	        if (this.props.btnStyle) {
+	            btnClassName += " btn-" + this.props.btnStyle;
+	        }
+	        if (this.props.btnSize) {
+	            btnClassName += " btn-" + this.props.btnSize;
+	        }
+
 	        return _react2["default"].createElement(
 	            "div",
 	            { key: this.key, className: "btn-group" },
 	            _react2["default"].createElement(
 	                "button",
-	                { className: "btn btn-success", onClick: this.handleClick },
+	                { className: btnClassName, onClick: this.handleClick },
 	                this.props.label || '編輯'
 	            )
 	        );
@@ -1219,6 +1245,10 @@
 	         */
 	        "recordKey": _react2["default"].PropTypes.any,
 
+	        "btnSize": _react2["default"].PropTypes.string,
+
+	        "btnStyle": _react2["default"].PropTypes.string,
+
 	        // modal related options
 	        // ==============================
 	        /**
@@ -1242,7 +1272,9 @@
 	    },
 
 	    getDefaultProps: function getDefaultProps() {
-	        return {};
+	        return {
+	            btnStyle: "success"
+	        };
 	    },
 
 	    getInitialState: function getInitialState() {
@@ -1281,12 +1313,21 @@
 	    },
 
 	    render: function render() {
+
+	        var btnClassName = "btn";
+	        if (this.props.btnStyle) {
+	            btnClassName += " btn-" + this.props.btnStyle;
+	        }
+	        if (this.props.btnSize) {
+	            btnClassName += " btn-" + this.props.btnSize;
+	        }
+
 	        return _react2["default"].createElement(
 	            "div",
 	            { key: this.key, className: "btn-group" },
 	            _react2["default"].createElement(
 	                "button",
-	                { className: "btn btn-success", onClick: this.handleClick },
+	                { className: btnClassName, onClick: this.handleClick },
 	                this.props.label || '刪除'
 	            )
 	        );
