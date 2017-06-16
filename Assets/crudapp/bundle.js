@@ -174,7 +174,7 @@
 	}
 
 	function initCRUDDeleteButton($region) {
-	  var elements = $region.find('.crud-delete-button');
+	  var elements = $region.find('.CRUDDeleteButton');
 	  elements.each(function (i, el) {
 	    var obj = convertDOMStringMapToObject(el.dataset);
 	    obj.region = $region;
@@ -185,7 +185,7 @@
 	}
 
 	function initCRUDEditButton($region) {
-	  var elements = $region.find('.crud-edit-button');
+	  var elements = $region.find('.CRUDEditButton');
 	  elements.each(function (i, el) {
 	    var obj = convertDOMStringMapToObject(el.dataset);
 	    obj.region = $region;
@@ -196,14 +196,25 @@
 	}
 
 	function initCRUDCreateButton($region) {
-	  var elements = $region.find('.crud-create-button');
+	  var elements = $region.find('.CRUDCreateButton');
 	  elements.each(function (i, el) {
-	    console.debug('crud-create-button', i, el, el.dataset);
+	    console.debug('CRUDCreateButton', i, el, el.dataset);
 
 	    var obj = convertDOMStringMapToObject(el.dataset);
 	    obj.region = $region;
 
 	    var btn = React.createElement(CRUDCreateButton, obj);
+	    ReactDOM.render(btn, el);
+	  });
+	}
+
+	function initCRUDEditDeleteButtonGroup($region) {
+	  var elements = $region.find('.CRUDEditDeleteButtonGroup');
+	  elements.each(function (i, el) {
+	    var obj = convertDOMStringMapToObject(el.dataset);
+	    obj.region = $region;
+
+	    var btn = React.createElement(CRUDEditDeleteButton, obj);
 	    ReactDOM.render(btn, el);
 	  });
 	}
@@ -333,6 +344,7 @@
 	  initCRUDCreateButton($region);
 	  initCRUDEditButton($region);
 	  initCRUDDeleteButton($region);
+	  initCRUDEditDeleteButtonGroup($region);
 
 	  // init bundle plugins
 	  initBundleI18NPlugin($region);
