@@ -64,7 +64,7 @@ export default React.createClass({
   getDefaultProps: function() {
     return {
         regionRefresh: true,
-        btnStyle: "success"
+        btnStyle: "default"
     };
   },
 

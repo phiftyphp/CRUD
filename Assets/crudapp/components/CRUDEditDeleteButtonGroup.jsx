@@ -3,6 +3,7 @@ import CRUDRelModal from "../CRUDRelModal";
 
 import CRUDCreateButton from "./CRUDCreateButton";
 import CRUDEditButton from "./CRUDEditButton";
+import CRUDDeleteButton from "./CRUDDeleteButton";
 
 /*
 <CRUDEditButton 
@@ -52,7 +53,7 @@ export default React.createClass({
   getDefaultProps: function() {
     return {
         regionRefresh: true,
-        btnStyle: "success"
+        btnStyle: "default"
     };
   },
 
@@ -65,8 +66,8 @@ export default React.createClass({
   componentWillUnmount: function() { },
 
   render: function() {
-    return
-    <div this={this.key} className="btn-group">
+
+    return <div this={this.key} className="btn-group">
         <CRUDEditButton 
             baseUrl={this.props.baseUrl}
             region={this.props.region}
@@ -78,7 +79,7 @@ export default React.createClass({
             onSuccess={this.props.onSuccess}
             label="編輯"
         />
-        <CRUDCreateButton 
+        <CRUDDeleteButton 
             baseUrl={this.props.baseUrl}
             region={this.props.region}
             btnStyle={this.props.btnStyle} 

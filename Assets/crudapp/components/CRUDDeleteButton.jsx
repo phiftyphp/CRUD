@@ -60,7 +60,7 @@ export default React.createClass({
 
   getDefaultProps: function() {
     return {
-        btnStyle: "success"
+        btnStyle: "default"
     };
   },
 

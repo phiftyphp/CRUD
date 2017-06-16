@@ -55,6 +55,7 @@
 	window.CRUDCreateButton = __webpack_require__(6);
 	window.CRUDEditButton = __webpack_require__(8);
 	window.CRUDDeleteButton = __webpack_require__(9);
+	window.CRUDEditDeleteButtonGroup = __webpack_require__(42);
 	window.CRUDListEditor = __webpack_require__(10);
 	window.CRUDHasManyEditor = __webpack_require__(30);
 	window.CRUDRelModal = __webpack_require__(7);
@@ -214,7 +215,7 @@
 	    var obj = convertDOMStringMapToObject(el.dataset);
 	    obj.region = $region;
 
-	    var btn = React.createElement(CRUDEditDeleteButton, obj);
+	    var btn = React.createElement(CRUDEditDeleteButtonGroup, obj);
 	    ReactDOM.render(btn, el);
 	  });
 	}
@@ -1148,7 +1149,7 @@
 	    getDefaultProps: function getDefaultProps() {
 	        return {
 	            regionRefresh: true,
-	            btnStyle: "success"
+	            btnStyle: "default"
 	        };
 	    },
 
@@ -1285,7 +1286,7 @@
 
 	    getDefaultProps: function getDefaultProps() {
 	        return {
-	            btnStyle: "success"
+	            btnStyle: "default"
 	        };
 	    },
 
@@ -5451,6 +5452,131 @@
 	})(_viewbuilderBaseViewBuilder2["default"]);
 
 	exports["default"] = TableViewBuilder;
+	module.exports = exports["default"];
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _CRUDRelModal = __webpack_require__(7);
+
+	var _CRUDRelModal2 = _interopRequireDefault(_CRUDRelModal);
+
+	var _CRUDCreateButton = __webpack_require__(6);
+
+	var _CRUDCreateButton2 = _interopRequireDefault(_CRUDCreateButton);
+
+	var _CRUDEditButton = __webpack_require__(8);
+
+	var _CRUDEditButton2 = _interopRequireDefault(_CRUDEditButton);
+
+	var _CRUDDeleteButton = __webpack_require__(9);
+
+	var _CRUDDeleteButton2 = _interopRequireDefault(_CRUDDeleteButton);
+
+	/*
+	<CRUDEditButton 
+	    label="Edit"
+	    size="large"
+	    side=false
+	    recordKey={3}
+	    baseUrl=/bs/user
+	>
+	</CRUDEditButton>
+
+	*/
+	exports["default"] = _react2["default"].createClass({
+	    displayName: "CRUDEditDeleteButtonGroup",
+
+	    propTypes: {
+	        /**
+	         * The primary key of the record. the reason we didn't use "key" is because react already uses "key" as the component key.
+	         */
+	        "recordKey": _react2["default"].PropTypes.any.isRequired,
+
+	        /*
+	         * the baseUrl of a CRUD handler, usually "/bs"
+	         */
+	        "baseUrl": _react2["default"].PropTypes.string,
+
+	        /**
+	         * the region DOM element used for updating.
+	         */
+	        "region": _react2["default"].PropTypes.any,
+
+	        // modal related options
+	        // ==============================
+	        /**
+	         * the modal size: it could be "large", "small"
+	         */
+	        "size": _react2["default"].PropTypes.string,
+
+	        "btnSize": _react2["default"].PropTypes.string,
+
+	        "btnStyle": _react2["default"].PropTypes.string,
+
+	        "onInit": _react2["default"].PropTypes.func,
+
+	        "onSuccess": _react2["default"].PropTypes.func
+	    },
+
+	    getDefaultProps: function getDefaultProps() {
+	        return {
+	            regionRefresh: true,
+	            btnStyle: "default"
+	        };
+	    },
+
+	    getInitialState: function getInitialState() {
+	        return {};
+	    },
+
+	    componentDidMount: function componentDidMount() {},
+
+	    componentWillUnmount: function componentWillUnmount() {},
+
+	    render: function render() {
+
+	        return _react2["default"].createElement(
+	            "div",
+	            { "this": this.key, className: "btn-group" },
+	            _react2["default"].createElement(_CRUDEditButton2["default"], {
+	                baseUrl: this.props.baseUrl,
+	                region: this.props.region,
+	                btnStyle: this.props.btnStyle,
+	                btnSize: this.props.btnSize,
+	                size: this.props.size,
+	                recordKey: this.props.recordKey,
+	                onInit: this.props.onInit,
+	                onSuccess: this.props.onSuccess,
+	                label: "編輯"
+	            }),
+	            _react2["default"].createElement(_CRUDDeleteButton2["default"], {
+	                baseUrl: this.props.baseUrl,
+	                region: this.props.region,
+	                btnStyle: this.props.btnStyle,
+	                btnSize: this.props.btnSize,
+	                size: this.props.size,
+	                recordKey: this.props.recordKey,
+	                onInit: this.props.onInit,
+	                onSuccess: this.props.onSuccess,
+	                label: "刪除"
+	            })
+	        );
+	    }
+	});
 	module.exports = exports["default"];
 
 /***/ }

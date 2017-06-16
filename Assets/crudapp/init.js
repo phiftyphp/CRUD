@@ -102,7 +102,7 @@ function initCRUDEditDeleteButtonGroup($region)
       const obj = convertDOMStringMapToObject(el.dataset);
       obj.region = $region;
 
-      const btn = React.createElement(CRUDEditDeleteButton, obj);
+      const btn = React.createElement(CRUDEditDeleteButtonGroup, obj);
       ReactDOM.render(btn, el);
     });
 }
