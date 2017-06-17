@@ -1,15 +1,27 @@
 // vim:sw=2:ts=2:sts=2:
-window.SetPasswordControl = require("./components/SetPasswordControl");
-window.DateRangeControl  = require("./components/DateRangeControl");
-window.SingleDayControl  = require("./components/SingleDayControl");
-window.CRUDCreateButton  = require("./components/CRUDCreateButton");
-window.CRUDEditButton  = require("./components/CRUDEditButton");
-window.CRUDDeleteButton  = require("./components/CRUDDeleteButton");
-window.CRUDEditDeleteButtonGroup = require("./components/CRUDEditDeleteButtonGroup");
-window.CRUDListEditor    = require("./components/CRUDListEditor");
-window.CRUDHasManyEditor = require("./components/CRUDHasManyEditor");
-window.CRUDRelModal      = require("./CRUDRelModal");
-window.TableViewBuilder = require("./viewbuilder/TableViewBuilder");
+import SetPasswordControl from "./components/SetPasswordControl";
+import DateRangeControl  from "./components/DateRangeControl";
+import SingleDayControl  from "./components/SingleDayControl";
+import CRUDCreateButton  from "./components/CRUDCreateButton";
+import CRUDEditButton  from "./components/CRUDEditButton";
+import CRUDDeleteButton  from "./components/CRUDDeleteButton";
+import CRUDEditDeleteButtonGroup from "./components/CRUDEditDeleteButtonGroup";
+import CRUDListEditor    from "./components/CRUDListEditor";
+import CRUDHasManyEditor from "./components/CRUDHasManyEditor";
+import CRUDRelModal      from "./CRUDRelModal";
+import TableViewBuilder from "./viewbuilder/TableViewBuilder";
+
+window.SetPasswordControl        = SetPasswordControl;
+window.DateRangeControl          = DateRangeControl;
+window.SingleDayControl          = SingleDayControl;
+window.CRUDCreateButton          = CRUDCreateButton;
+window.CRUDEditButton            = CRUDEditButton;
+window.CRUDDeleteButton          = CRUDDeleteButton;
+window.CRUDEditDeleteButtonGroup = CRUDEditDeleteButtonGroup;
+window.CRUDListEditor            = CRUDListEditor;
+window.CRUDHasManyEditor         = CRUDHasManyEditor;
+window.CRUDRelModal              = CRUDRelModal;
+window.TableViewBuilder          = TableViewBuilder;
 
 import {initCRUDVendorComponents, initCRUDComponents, initCRUDModalAction} from "./init";
 
@@ -60,7 +72,7 @@ $(function() {
 
   console.debug('crudapp ready');
   initCRUDComponents($(document.body));
-  // initCRUDVendorComponents();
+  initCRUDVendorComponents($(document.body));
 
   $(document).bind('drop dragover', function (e) {
       e.preventDefault();

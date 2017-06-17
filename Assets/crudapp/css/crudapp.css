@@ -1,3 +1,10 @@
+.crud-editor .formkit-widget-textarea {
+  border-radius: 0;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  width: 100%;
+  outline: none; }
+
 .crud-controls {
   background: #ccc;
   padding: 4px;
