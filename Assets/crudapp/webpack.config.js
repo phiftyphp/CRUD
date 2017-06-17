@@ -5,19 +5,26 @@ var excludePaths = phifty.webpackExcludePaths();
 var aliases = phifty.assetAliases();
 
 module.exports = {
-  entry: __dirname + '/entry.js',
+
+  entry: __dirname + '/entry',
+
   output: { path: __dirname, filename: './bundle.js' },
+
   module: {
     loaders: [
       {
-        'test': /\.tsx?$/,
-        'loaders': ['ts-loader'],
-        'exclude': [/node_modules/,excludePaths]
+        "test": /\.tsx?$/,
+        "loader": "ts-loader",
+        "exclude": [/node_modules/,excludePaths]
       },
       {
-        'test': /\.jsx?$/,
-        'loaders': ['babel'],
-        'exclude': [/node_modules/,excludePaths]
+        "test": /\.jsx?$/,
+        "loader": "babel-loader",
+        "query": {
+            "presets": ["react", "es2015"],
+            "plugins": ["transform-class-properties"]
+        },
+        "exclude": [/node_modules/,excludePaths]
       }
     ]
   },
@@ -38,3 +45,4 @@ module.exports = {
     fallback: [ path.join(__dirname, "node_modules"), phifty.moduleDirectory]
   }
 };
+

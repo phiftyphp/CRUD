@@ -3,5 +3,6 @@ collections:
   - javascript:
     # because we're rendering react component in the browser,
     # we need addons instead of just react
-    - javascripts/react-with-addons-15.0.1.js
-    - javascripts/react-dom-15.0.1.js
+    - javascripts/react-with-addons.min.js
+    - javascripts/react.min.js
+    - javascripts/react-dom.min.js
