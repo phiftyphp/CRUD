@@ -1,6 +1,7 @@
 dist: trusty
 
-sudo: false
+# sudo: false
+sudo: required
 
 services:
 - postgresql
