@@ -1,5 +1,7 @@
 var BootstrapModalFactory = {};
 
+
+// See: CRUDRelModal since ActionBootstrapHighlight is already an action plugin.
 var CRUDBootstrapModal = {};
 CRUDBootstrapModal.open = function(title, url, args, config) {
 
