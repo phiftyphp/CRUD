@@ -1040,7 +1040,9 @@
 
 	        "onInit": _react2.default.PropTypes.func,
 
-	        "onSuccess": _react2.default.PropTypes.func
+	        "onSuccess": _react2.default.PropTypes.func,
+
+	        "redirect": _react2.default.PropTypes.any
 	    },
 
 	    getDefaultProps: function getDefaultProps() {
@@ -1061,6 +1063,9 @@
 	        var _this = this;
 
 	        e.stopPropagation();
+
+	        console.log(this.props.redirect);
+
 	        _CRUDRelModal2.default.open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/delete", { key: this.props.recordKey }, {
 	            "size": this.props.size || "large",
 	            "side": this.props.side || false,
@@ -1077,7 +1082,11 @@
 	                if (_this.props.onSuccess) {
 	                    _this.props.onSuccess(ui, resp);
 	                }
-	                if (_this.props.region) {
+	                if (typeof _this.props.redirect === "string") {
+	                    setTimeout(function () {
+	                        window.location = _this.props.redirect;
+	                    }, 500);
+	                } else if (_this.props.region) {
 	                    $(_this.props.region).asRegion().refresh();
 	                }
 	            }
@@ -5526,7 +5535,6 @@
 	exports.initCRUDComponents = initCRUDComponents;
 	exports.initCRUDModalAction = initCRUDModalAction;
 	// vim:sw=2:ts=2:sts=2:
-
 
 	function convertDOMStringMapToObject(map) {
 	  var obj = {};

@@ -56,6 +56,8 @@ export default React.createClass({
     "onInit": React.PropTypes.func,
 
     "onSuccess": React.PropTypes.func,
+
+    "redirect": React.PropTypes.any,
   },
 
   getDefaultProps: function() {
@@ -75,6 +77,11 @@ export default React.createClass({
 
   handleClick: function(e) {
     e.stopPropagation();
+
+    console.log(this.props.redirect);
+
+
+
     CRUDRelModal.open(
         this.props.title || this.props.label || 'Untitled',
         this.props.baseUrl + "/crud/delete", { key: this.props.recordKey },
@@ -94,7 +101,11 @@ export default React.createClass({
                 if (this.props.onSuccess) {
                     this.props.onSuccess(ui, resp);
                 }
-                if (this.props.region) {
+                if (typeof this.props.redirect === "string") {
+                    setTimeout(() => {
+                        window.location = this.props.redirect;
+                    }, 500);
+                } else if (this.props.region) {
                     $(this.props.region).asRegion().refresh();
                 }
              }

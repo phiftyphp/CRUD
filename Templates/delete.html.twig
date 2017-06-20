@@ -4,10 +4,11 @@
 
 {% block section_body %}
 
+<div id="{{resultContainerId}}" class="action-result-container"> </div>
+
 <form id="{{currentFormId}}" class="form-horizontal ajax-action" method="post">
     {{RecordAction.renderSignatureWidget|raw}}
     {{RecordAction.renderCSRFTokenWidget|raw}}
-
     {% if Record.hasKey %}
       {{RecordAction.renderKeyWidget|raw}}
     {% endif %}
