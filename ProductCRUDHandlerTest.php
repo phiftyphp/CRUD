@@ -15,7 +15,7 @@ use ProductBundle\Model\ProductSchema;
 use ProductBundle\Model\Category;
 use ProductBundle\Model\CategorySchema;
 
-use ProductBundle\Model\ProductCategorySchema;
+use ProductBundle\Model\ProductToCategorySchema;
 
 use ProductBundle\ProductCRUDHandler;
 use Phifty\Testing\ModelTestCase;
@@ -39,7 +39,7 @@ class ProductCRUDHandlerTest extends CRUDTestCase
 
     public function models()
     {
-        return [new ProductSchema, new CategorySchema, new ProductCategorySchema];
+        return [new ProductSchema, new CategorySchema, new ProductToCategorySchema];
     }
 
     public function testCreateWithRel()
