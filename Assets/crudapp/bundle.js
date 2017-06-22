@@ -1471,7 +1471,7 @@
 	      "side": true,
 	      "closeOnSuccess": true,
 	      "url": (this.props.basepath || this.props.baseUrl) + "/crud/edit",
-	      "id": parseInt($btn.data("recordId")),
+	      "id": parseInt($btn.data("record-key")),
 	      "init": function init(e, ui) {
 	        // the modal content init callback
 	      },
