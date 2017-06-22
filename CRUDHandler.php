@@ -21,13 +21,13 @@ use Maghead\Runtime\Collection;
 use Maghead\Runtime\Repo;
 
 use Pux\Mux;
-use ActionKit\Action;
+use WebAction\Action;
 use ReflectionClass;
 use Exception;
 use InvalidArgumentException;
 use Universal\Http\HttpRequest;
 
-use ActionKit\ActionTemplate\RecordActionTemplate;
+use WebAction\ActionTemplate\RecordActionTemplate;
 use Doctrine\Common\Inflector\Inflector;
 
 use PHPExcel_IOFactory;
@@ -1166,7 +1166,7 @@ abstract class CRUDHandler extends Controller
     /**
      * Convert record object into Action object.
      *
-     * @return ActionKit\RecordAction\BaseRecordAction
+     * @return WebAction\RecordAction\BaseRecordAction
      *
      * TODO: extract to CRUDUtils
      */
@@ -1187,12 +1187,12 @@ abstract class CRUDHandler extends Controller
      *
      * @param Maghead\Runtime\Model $record
      * @param string $prefix Action prefix
-     * @return ActionKit\RecordAction\BaseRecordAction
+     * @return WebAction\RecordAction\BaseRecordAction
      */
     protected function createModelActionClass(Model $record, $prefix, array $args = array(), $options = array())
     {
         $actionClass = $this->getModelActionClass($record, $prefix);
-        // $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class,$type);
+        // $actionClass = \WebAction\RecordAction\BaseRecordAction::createCRUDClass($class,$type);
         // $options['record'] = $record->getKey() ? $record : null;
         $options['record'] = $record;
         return new $actionClass($args , $options);
@@ -1215,7 +1215,7 @@ abstract class CRUDHandler extends Controller
             $baseAction = $prefix . 'RecordAction';
             $template = new RecordActionTemplate;
             if ($generatedAction = $template->generate($actionClass, [
-                'extends' => '\\ActionKit\\RecordAction\\' . $baseAction,
+                'extends' => '\\WebAction\\RecordAction\\' . $baseAction,
                 'properties' => [
                     'recordClass' => $recordClass,
                 ],
@@ -1235,7 +1235,7 @@ abstract class CRUDHandler extends Controller
      * getCurrentAction returns the action object of the current
      * record.
      *
-     * @return ActionKit\RecordAction\BaseRecordAction
+     * @return WebAction\RecordAction\BaseRecordAction
      */
     protected function getCurrentAction()
     {
@@ -1285,7 +1285,7 @@ abstract class CRUDHandler extends Controller
     /**
      * Create Action View from Action object.
      *
-     * @param ActionKit\RecordAction
+     * @param WebAction\RecordAction
      */
     public function createActionView(Action $action, $viewClass = NULL, array $viewOptions = NULL)
     {

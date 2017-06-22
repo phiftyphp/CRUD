@@ -1,6 +1,6 @@
 <?php
 namespace CRUD\Action;
-use ActionKit\Action;
+use WebAction\Action;
 
 /**
  * UploadSessionFile uploads the file from form and save the uploaded file path

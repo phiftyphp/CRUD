@@ -140,7 +140,7 @@ export default class BaseViewBuilder {
    * _buildItemSignatureInputs builds the hidden input fields for 
    * the inserted new record. (only one record for each call)
    *
-   * ActionKit will handle the record signature.
+   * WebAction will handle the record signature.
    *
    * @param {CRUDHasManyEditor} target
    * @param {object} record

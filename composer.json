@@ -16,8 +16,8 @@
         "phifty/i18n": "4.0.x-dev"
     },
     "require-dev": {
+        "c9s/webaction": "@dev",
         "corneltek/cliframework": "@dev",
-        "corneltek/actionkit": "@dev",
         "corneltek/assetkit": "@dev",
         "corneltek/codegen": "@dev",
         "corneltek/kendo": "@dev",
