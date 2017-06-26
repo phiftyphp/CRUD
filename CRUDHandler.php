@@ -1403,18 +1403,20 @@ abstract class CRUDHandler extends Controller
     {
         $record = $this->newRecord();
 
+        // Create action after the record data is set
+        $action = $this->getCurrentAction();
+
         // Apply predefined parameters from the query
         $request = $this->getRequest();
         if ($this->applyRequestFields) {
             foreach ($this->applyRequestFields as $fieldName) {
-                if ($param = $request->param($fieldName)) {
-                    $record->$fieldName = $param;
+                if ($fieldValue = $request->param($fieldName)) {
+                    $param = $action->getParam($fieldName);
+                    $param->setValue($fieldValue);
                 }
             }
         }
 
-        // create action after the record data is set
-        $action = $this->getCurrentAction();
 
         $this->assign('RecordAction', $action);
         $this->assign('Record', $record);
