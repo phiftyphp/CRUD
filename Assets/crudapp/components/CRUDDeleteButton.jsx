@@ -122,11 +122,12 @@ export default React.createClass({
           btnClassName += " btn-" + this.props.btnSize;
       }
 
-      
-      return <div key={this.key} className="btn-group">
+      return (
         <button className={btnClassName} onClick={this.handleClick}>
             {this.props.label || '刪除'}
         </button>
-      </div>;
+      );
   }
 });
+
+// vim:sw=2:ts=2:sts=2:

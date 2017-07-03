@@ -58,7 +58,11 @@ function initCRUDDeleteButton($region)
     const elements = $region.find('.CRUDDeleteButton');
     elements.each((i, el) => {
       const obj = convertDOMStringMapToObject(el.dataset);
-      obj.region = $region;
+
+      // looks like region
+      if ($region.data("path")) {
+        obj.region = $region;
+      }
 
       const btn = React.createElement(CRUDDeleteButton, obj);
       ReactDOM.render(btn, el);
@@ -71,7 +75,10 @@ function initCRUDEditButton($region)
     const elements = $region.find('.CRUDEditButton');
     elements.each((i, el) => {
       const obj = convertDOMStringMapToObject(el.dataset);
-      obj.region = $region;
+
+      if ($region.data("path")) {
+        obj.region = $region;
+      }
 
       const btn = React.createElement(CRUDEditButton, obj);
       ReactDOM.render(btn, el);
@@ -85,7 +92,10 @@ function initCRUDCreateButton($region)
       console.debug('CRUDCreateButton', i, el, el.dataset);
 
       const obj = convertDOMStringMapToObject(el.dataset);
-      obj.region = $region;
+
+      if ($region.data("path")) {
+        obj.region = $region;
+      }
 
       const btn = React.createElement(CRUDCreateButton, obj);
       ReactDOM.render(btn, el);
@@ -97,7 +107,10 @@ function initCRUDEditDeleteButtonGroup($region)
     const elements = $region.find('.CRUDEditDeleteButtonGroup');
     elements.each((i, el) => {
       const obj = convertDOMStringMapToObject(el.dataset);
-      obj.region = $region;
+
+      if ($region.data("path")) {
+        obj.region = $region;
+      }
 
       const btn = React.createElement(CRUDEditDeleteButtonGroup, obj);
       ReactDOM.render(btn, el);
@@ -218,7 +231,6 @@ export function initCRUDVendorComponents($region) {
 };
 
 export function initCRUDComponents($region) {
-
   // init core components
   initCRUDPasswordControl($region);
   initCRUDCreateButton($region);

@@ -119,7 +119,10 @@
 
 	function loadRegions($body) {
 	  $body.find('[data-region]').each(function (i, el) {
-	    console.log("found region", el, el.dataset.region, el.dataset.args, el.dataset);
+	    // console.log("found region", el, el.dataset.region, el.dataset.args, el.dataset);
+	    if (el.dataset.defer) {
+	      return;
+	    }
 	    var path = el.dataset.region;
 	    if (path) {
 	      Region.load($(el), path, el.dataset.args || {});
@@ -135,7 +138,6 @@
 	});
 
 	$(Region).bind('region.load', function (e, $region) {
-	  console.debug('region.load');
 	  (0, _init.initCRUDComponents)($region);
 	  (0, _init.initCRUDVendorComponents)($region);
 	  loadRegions($region);
@@ -148,7 +150,6 @@
 	    FormKit.install();
 	  }
 
-	  console.debug('crudapp ready');
 	  (0, _init.initCRUDComponents)($(document.body));
 	  (0, _init.initCRUDVendorComponents)($(document.body));
 
@@ -646,6 +647,8 @@
 	         */
 	        "side": _react2.default.PropTypes.bool,
 
+	        "reload": _react2.default.PropTypes.bool,
+
 	        /**
 	         * the title of the modal
 	         */
@@ -659,6 +662,7 @@
 	    getDefaultProps: function getDefaultProps() {
 	        return {
 	            regionRefresh: true,
+	            reload: false,
 	            btnStyle: "success"
 	        };
 	    },
@@ -700,6 +704,9 @@
 	                }
 	                if (_this.props.regionRefresh && _this.props.region) {
 	                    $(_this.props.region).asRegion().refresh();
+	                }
+	                if (_this.props.reload) {
+	                    window.location.reload();
 	                }
 	            }
 	        });
@@ -797,8 +804,10 @@
 	        setTimeout(function () {
 	          // XXX: this weird, we have to find the .modal itself to close it
 	          // instead of using "ui.dialog"
-	          ui.container.find('.modal').modal('hide');
+	          ui.container.find(".modal").modal("hide");
+	          $(document.body).removeClass("modal-open");
 	        }, 1000);
+
 	        defer.resolve(resp);
 
 	        if (config.success) {
@@ -815,9 +824,14 @@
 
 	  var $m = ui.container.find('.modal');
 	  $m.modal('show'); // TODO: support modal config here
-	  $m.on('shown.bs.modal', function (event) {});
-	  $m.on('hide.bs.modal', function (event) {
+	  $m.on("shown.bs.modal", function (event) {
+	    console.log("shown.bs.modal", event);
+	  });
+
+	  $m.on("hide.bs.modal", function (event) {
+	    console.log("hide.bs.modal", event);
 	    ui.container.remove();
+	    $(document.body).removeClass("modal-open");
 	  });
 	  return defer;
 	};
@@ -886,6 +900,8 @@
 	         */
 	        "side": _react2.default.PropTypes.bool,
 
+	        "partial": _react2.default.PropTypes.string, // partial ID selector
+
 	        /**
 	         * the title of the modal
 	         */
@@ -938,8 +954,19 @@
 	                if (_this.props.onSuccess) {
 	                    _this.props.onSuccess(ui, resp);
 	                }
-	                if (_this.props.regionRefresh && _this.props.region) {
-	                    $(_this.props.region).asRegion().refresh();
+	                if (_this.props.regionRefresh) {
+	                    if (_this.props.region) {
+	                        $(_this.props.region).asRegion().refresh();
+	                    } else if (_this.props.partial) {
+	                        var el = document.getElementById(_this.props.partial);
+	                        if (!el) {
+	                            return;
+	                        }
+	                        var path = el.dataset.region;
+	                        if (path) {
+	                            Region.load($(el), path, el.dataset.args || {});
+	                        }
+	                    }
 	                }
 	            }
 	        });
@@ -955,16 +982,13 @@
 	        }
 
 	        return _react2.default.createElement(
-	            "div",
-	            { key: this.key, className: "btn-group" },
-	            _react2.default.createElement(
-	                "button",
-	                { className: btnClassName, onClick: this.handleClick },
-	                this.props.label || '編輯'
-	            )
+	            "button",
+	            { className: btnClassName, onClick: this.handleClick },
+	            this.props.label || '編輯'
 	        );
 	    }
 	});
+	// vim:sw=2:ts=2:sts=2:
 
 /***/ }),
 /* 8 */
@@ -1104,16 +1128,14 @@
 	        }
 
 	        return _react2.default.createElement(
-	            "div",
-	            { key: this.key, className: "btn-group" },
-	            _react2.default.createElement(
-	                "button",
-	                { className: btnClassName, onClick: this.handleClick },
-	                this.props.label || '刪除'
-	            )
+	            "button",
+	            { className: btnClassName, onClick: this.handleClick },
+	            this.props.label || '刪除'
 	        );
 	    }
 	});
+
+	// vim:sw=2:ts=2:sts=2:
 
 /***/ }),
 /* 9 */
@@ -5587,7 +5609,11 @@
 	  var elements = $region.find('.CRUDDeleteButton');
 	  elements.each(function (i, el) {
 	    var obj = convertDOMStringMapToObject(el.dataset);
-	    obj.region = $region;
+
+	    // looks like region
+	    if ($region.data("path")) {
+	      obj.region = $region;
+	    }
 
 	    var btn = React.createElement(CRUDDeleteButton, obj);
 	    ReactDOM.render(btn, el);
@@ -5598,7 +5624,10 @@
 	  var elements = $region.find('.CRUDEditButton');
 	  elements.each(function (i, el) {
 	    var obj = convertDOMStringMapToObject(el.dataset);
-	    obj.region = $region;
+
+	    if ($region.data("path")) {
+	      obj.region = $region;
+	    }
 
 	    var btn = React.createElement(CRUDEditButton, obj);
 	    ReactDOM.render(btn, el);
@@ -5611,7 +5640,10 @@
 	    console.debug('CRUDCreateButton', i, el, el.dataset);
 
 	    var obj = convertDOMStringMapToObject(el.dataset);
-	    obj.region = $region;
+
+	    if ($region.data("path")) {
+	      obj.region = $region;
+	    }
 
 	    var btn = React.createElement(CRUDCreateButton, obj);
 	    ReactDOM.render(btn, el);
@@ -5622,7 +5654,10 @@
 	  var elements = $region.find('.CRUDEditDeleteButtonGroup');
 	  elements.each(function (i, el) {
 	    var obj = convertDOMStringMapToObject(el.dataset);
-	    obj.region = $region;
+
+	    if ($region.data("path")) {
+	      obj.region = $region;
+	    }
 
 	    var btn = React.createElement(CRUDEditDeleteButtonGroup, obj);
 	    ReactDOM.render(btn, el);
@@ -5746,7 +5781,6 @@
 	};
 
 	function initCRUDComponents($region) {
-
 	  // init core components
 	  initCRUDPasswordControl($region);
 	  initCRUDCreateButton($region);

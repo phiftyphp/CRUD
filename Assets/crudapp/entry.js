@@ -39,7 +39,10 @@ if (typeof ReactDOM === "undefined") {
 function loadRegions($body)
 {
   $body.find('[data-region]').each(function(i, el) {
-    console.log("found region", el, el.dataset.region, el.dataset.args, el.dataset);
+    // console.log("found region", el, el.dataset.region, el.dataset.args, el.dataset);
+    if (el.dataset.defer) {
+      return;
+    }
     const path = el.dataset.region;
     if (path) {
       Region.load($(el), path, el.dataset.args || {});
@@ -55,7 +58,6 @@ $(Region).bind('region.unmount', function(e, $region) {
 });
 
 $(Region).bind('region.load', function(e, $region) {
-  console.debug('region.load');
   initCRUDComponents($region);
   initCRUDVendorComponents($region);
   loadRegions($region);
@@ -70,7 +72,6 @@ $(function() {
     FormKit.install();
   }
 
-  console.debug('crudapp ready');
   initCRUDComponents($(document.body));
   initCRUDVendorComponents($(document.body));
 

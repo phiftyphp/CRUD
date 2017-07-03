@@ -42,6 +42,8 @@ export default React.createClass({
      */
     "side": React.PropTypes.bool,
 
+    "partial": React.PropTypes.string, // partial ID selector
+
     /**
      * the title of the modal
      */
@@ -96,8 +98,19 @@ export default React.createClass({
                 if (this.props.onSuccess) {
                     this.props.onSuccess(ui, resp);
                 }
-                if (this.props.regionRefresh && this.props.region) {
-                    $(this.props.region).asRegion().refresh();
+                if (this.props.regionRefresh) {
+                    if (this.props.region) {
+                        $(this.props.region).asRegion().refresh();
+                    } else if (this.props.partial) {
+                        const el = document.getElementById(this.props.partial);
+                        if (!el) {
+                          return;
+                        }
+                        const path = el.dataset.region;
+                        if (path) {
+                          Region.load($(el), path, el.dataset.args || {});
+                        }
+                    }
                 }
              }
         });
@@ -112,10 +125,11 @@ export default React.createClass({
           btnClassName += " btn-" + this.props.btnSize;
       }
 
-      return <div key={this.key} className="btn-group">
+      return (
         <button className={btnClassName} onClick={this.handleClick}>
             {this.props.label || '編輯'}
         </button>
-      </div>;
+      );
   }
 });
+// vim:sw=2:ts=2:sts=2:

@@ -55,11 +55,14 @@ CRUDRelModal.open = function(title, url, args, config) {
     var a = Action.form(form, {
       "clear": false,
       "onSuccess": function(resp) {
-        setTimeout((function() {
+        setTimeout((() => {
           // XXX: this weird, we have to find the .modal itself to close it
           // instead of using "ui.dialog"
-          ui.container.find('.modal').modal('hide')
+          ui.container.find(".modal").modal("hide");
+          $(document.body).removeClass("modal-open");
+
         }), 1000);
+
         defer.resolve(resp);
 
         if (config.success) {
@@ -76,11 +79,14 @@ CRUDRelModal.open = function(title, url, args, config) {
 
   const $m = ui.container.find('.modal')
   $m.modal('show'); // TODO: support modal config here
-  $m.on('shown.bs.modal', (event) => {
-
+  $m.on("shown.bs.modal", (event) => {
+    console.log("shown.bs.modal", event);
   });
-  $m.on('hide.bs.modal', (event) => {
+
+  $m.on("hide.bs.modal", (event) => {
+    console.log("hide.bs.modal", event);
     ui.container.remove();
+    $(document.body).removeClass("modal-open");
   });
   return defer;
 };

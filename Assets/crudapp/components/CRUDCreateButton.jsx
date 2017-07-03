@@ -68,7 +68,7 @@ export default React.createClass({
      */
     "side": React.PropTypes.bool,
 
-
+    "reload": React.PropTypes.bool,
 
     /**
      * the title of the modal
@@ -83,6 +83,7 @@ export default React.createClass({
   getDefaultProps: function() {
     return {
         regionRefresh: true,
+        reload: false,
         btnStyle: "success"
     };
   },
@@ -128,6 +129,9 @@ export default React.createClass({
                 }
                 if (this.props.regionRefresh && this.props.region) {
                     $(this.props.region).asRegion().refresh();
+                }
+                if (this.props.reload) {
+                    window.location.reload();
                 }
              }
         });
