@@ -60,8 +60,8 @@ function initCRUDDeleteButton($region)
       const obj = convertDOMStringMapToObject(el.dataset);
 
       // looks like region
-      if ($region.data("path")) {
-        obj.region = $region;
+      if ($region.data("partial")) {
+        obj.partial = $region;
       }
 
       const btn = React.createElement(CRUDDeleteButton, obj);
@@ -76,8 +76,8 @@ function initCRUDEditButton($region)
     elements.each((i, el) => {
       const obj = convertDOMStringMapToObject(el.dataset);
 
-      if ($region.data("path")) {
-        obj.region = $region;
+      if ($region.data("partial")) {
+        obj.partial = $region;
       }
 
       const btn = React.createElement(CRUDEditButton, obj);
@@ -93,8 +93,8 @@ function initCRUDCreateButton($region)
 
       const obj = convertDOMStringMapToObject(el.dataset);
 
-      if ($region.data("path")) {
-        obj.region = $region;
+      if ($region.data("partial")) {
+        obj.partial = $region;
       }
 
       const btn = React.createElement(CRUDCreateButton, obj);
@@ -108,8 +108,8 @@ function initCRUDEditDeleteButtonGroup($region)
     elements.each((i, el) => {
       const obj = convertDOMStringMapToObject(el.dataset);
 
-      if ($region.data("path")) {
-        obj.region = $region;
+      if ($region.data("partial")) {
+        obj.partial = $region;
       }
 
       const btn = React.createElement(CRUDEditDeleteButtonGroup, obj);

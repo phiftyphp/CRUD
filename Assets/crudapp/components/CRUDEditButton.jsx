@@ -26,9 +26,12 @@ export default React.createClass({
     "baseUrl": React.PropTypes.string,
 
     /**
-     * the region DOM element used for updating.
+     * the partial DOM element used for updating.
      */
-    "region": React.PropTypes.any,
+    "partial": React.PropTypes.any,
+
+    "partialRefresh": React.PropTypes.bool,
+
 
     // modal related options
     // ==============================
@@ -41,8 +44,6 @@ export default React.createClass({
      * show the modal as a side modal?
      */
     "side": React.PropTypes.bool,
-
-    "partial": React.PropTypes.string, // partial ID selector
 
     /**
      * the title of the modal
@@ -65,8 +66,8 @@ export default React.createClass({
 
   getDefaultProps: function() {
     return {
-        regionRefresh: true,
-        btnStyle: "default"
+        "partialRefresh": true,
+        "btnStyle": "default"
     };
   },
 
@@ -98,15 +99,15 @@ export default React.createClass({
                 if (this.props.onSuccess) {
                     this.props.onSuccess(ui, resp);
                 }
-                if (this.props.regionRefresh) {
-                    if (this.props.region) {
-                        $(this.props.region).asRegion().refresh();
+                if (this.props.partialRefresh) {
+                    if (this.props.partial) {
+                        $(this.props.partial).asRegion().refresh();
                     } else if (this.props.partial) {
                         const el = document.getElementById(this.props.partial);
                         if (!el) {
                           return;
                         }
-                        const path = el.dataset.region;
+                        const path = el.dataset.partial;
                         if (path) {
                           Region.load($(el), path, el.dataset.args || {});
                         }

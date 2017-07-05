@@ -1,6 +1,4 @@
 import React from "react";
-
-
 import CRUDRelModal from "../CRUDRelModal";
 
 /*
@@ -23,6 +21,11 @@ import CRUDRelModal from "../CRUDRelModal";
 </CRUDCreateButton>
 
 
+<span class="CRUDCreateButton" 
+    data-base-url="/bs/recipe-category"
+    data-rel="parent" data-rel-key="{{category.key}}"
+    data-label="建立子分類"> </span>
+
 */
 export default React.createClass({
 
@@ -32,14 +35,41 @@ export default React.createClass({
      */
     "label": React.PropTypes.string,
 
-    /*
+    /**
      * the baseUrl of a CRUD handler, usually "/bs"
      */
     "baseUrl": React.PropTypes.string,
 
-    "region": React.PropTypes.any,
 
-    "regionRefresh": React.PropTypes.bool,
+    /**
+     * The selector of the target partial for reload.
+     */
+    "partial": React.PropTypes.any,
+
+    /**
+     * The path of the partial to be loaded.
+     */
+    "partialPath" : React.PropTypes.string,
+
+    /**
+     * Refresh the target partiion {props.partial}
+     */
+    "partialRefresh": React.PropTypes.bool,
+
+    /**
+     * Append the partial to the element of the container.
+     */
+    "partialAppend": React.PropTypes.string,
+
+    "partialPrepend": React.PropTypes.string,
+
+
+    /**
+     * option for reloading the whole page.
+     */
+    "reload": React.PropTypes.bool,
+
+
 
     /**
      * The parent record key is used for creating a new record belongs to the parent.
@@ -68,7 +98,8 @@ export default React.createClass({
      */
     "side": React.PropTypes.bool,
 
-    "reload": React.PropTypes.bool,
+
+
 
     /**
      * the title of the modal
@@ -82,9 +113,9 @@ export default React.createClass({
 
   getDefaultProps: function() {
     return {
-        regionRefresh: true,
-        reload: false,
-        btnStyle: "success"
+        "partialRefresh": true,
+        "reload": false,
+        "btnStyle": "success"
     };
   },
 
@@ -127,11 +158,25 @@ export default React.createClass({
                 if (this.props.onSuccess) {
                     this.props.onSuccess(ui, resp);
                 }
-                if (this.props.regionRefresh && this.props.region) {
-                    $(this.props.region).asRegion().refresh();
-                }
                 if (this.props.reload) {
                     window.location.reload();
+                } else if (this.props.partialPath && this.props.partial && (this.props.partialAppend || this.props.partialPrepend)) {
+
+                    let partialPath = this.props.partialPath;
+                    for (let key in resp.data) {
+                        partialPath = partialPath.replace(`%${key}%`, resp.data[key]);
+                    }
+
+                    if (this.props.partialAppend) {
+                        Region.append($(this.props.partial), partialPath);
+                    } else if (this.props.partialPrepend) {
+                        Region.prepend($(this.props.partial), partialPath);
+                    }
+
+                    // $(this.props.partial).asRegion().refresh();
+
+                } else if (this.props.partialRefresh && this.props.partial) {
+                    $(this.props.partial).asRegion().refresh();
                 }
              }
         });

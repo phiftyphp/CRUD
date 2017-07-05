@@ -119,11 +119,10 @@
 
 	function loadRegions($body) {
 	  $body.find('[data-region]').each(function (i, el) {
-	    // console.log("found region", el, el.dataset.region, el.dataset.args, el.dataset);
 	    if (el.dataset.defer) {
 	      return;
 	    }
-	    var path = el.dataset.region;
+	    var path = el.dataset.region || el.dataset.partial;
 	    if (path) {
 	      Region.load($(el), path, el.dataset.args || {});
 	    }
@@ -602,6 +601,11 @@
 	</CRUDCreateButton>
 
 
+	<span class="CRUDCreateButton" 
+	    data-base-url="/bs/recipe-category"
+	    data-rel="parent" data-rel-key="{{category.key}}"
+	    data-label="建立子分類"> </span>
+
 	*/
 	exports.default = _react2.default.createClass({
 	    displayName: "CRUDCreateButton",
@@ -613,14 +617,37 @@
 	         */
 	        "label": _react2.default.PropTypes.string,
 
-	        /*
+	        /**
 	         * the baseUrl of a CRUD handler, usually "/bs"
 	         */
 	        "baseUrl": _react2.default.PropTypes.string,
 
-	        "region": _react2.default.PropTypes.any,
+	        /**
+	         * The selector of the target partial for reload.
+	         */
+	        "partial": _react2.default.PropTypes.any,
 
-	        "regionRefresh": _react2.default.PropTypes.bool,
+	        /**
+	         * The path of the partial to be loaded.
+	         */
+	        "partialPath": _react2.default.PropTypes.string,
+
+	        /**
+	         * Refresh the target partiion {props.partial}
+	         */
+	        "partialRefresh": _react2.default.PropTypes.bool,
+
+	        /**
+	         * Append the partial to the element of the container.
+	         */
+	        "partialAppend": _react2.default.PropTypes.string,
+
+	        "partialPrepend": _react2.default.PropTypes.string,
+
+	        /**
+	         * option for reloading the whole page.
+	         */
+	        "reload": _react2.default.PropTypes.bool,
 
 	        /**
 	         * The parent record key is used for creating a new record belongs to the parent.
@@ -647,8 +674,6 @@
 	         */
 	        "side": _react2.default.PropTypes.bool,
 
-	        "reload": _react2.default.PropTypes.bool,
-
 	        /**
 	         * the title of the modal
 	         */
@@ -661,9 +686,9 @@
 
 	    getDefaultProps: function getDefaultProps() {
 	        return {
-	            regionRefresh: true,
-	            reload: false,
-	            btnStyle: "success"
+	            "partialRefresh": true,
+	            "reload": false,
+	            "btnStyle": "success"
 	        };
 	    },
 
@@ -702,11 +727,24 @@
 	                if (_this.props.onSuccess) {
 	                    _this.props.onSuccess(ui, resp);
 	                }
-	                if (_this.props.regionRefresh && _this.props.region) {
-	                    $(_this.props.region).asRegion().refresh();
-	                }
 	                if (_this.props.reload) {
 	                    window.location.reload();
+	                } else if (_this.props.partialPath && _this.props.partial && (_this.props.partialAppend || _this.props.partialPrepend)) {
+
+	                    var partialPath = _this.props.partialPath;
+	                    for (var key in resp.data) {
+	                        partialPath = partialPath.replace("%" + key + "%", resp.data[key]);
+	                    }
+
+	                    if (_this.props.partialAppend) {
+	                        Region.append($(_this.props.partial), partialPath);
+	                    } else if (_this.props.partialPrepend) {
+	                        Region.prepend($(_this.props.partial), partialPath);
+	                    }
+
+	                    // $(this.props.partial).asRegion().refresh();
+	                } else if (_this.props.partialRefresh && _this.props.partial) {
+	                    $(_this.props.partial).asRegion().refresh();
 	                }
 	            }
 	        });
@@ -884,9 +922,11 @@
 	        "baseUrl": _react2.default.PropTypes.string,
 
 	        /**
-	         * the region DOM element used for updating.
+	         * the partial DOM element used for updating.
 	         */
-	        "region": _react2.default.PropTypes.any,
+	        "partial": _react2.default.PropTypes.any,
+
+	        "partialRefresh": _react2.default.PropTypes.bool,
 
 	        // modal related options
 	        // ==============================
@@ -899,8 +939,6 @@
 	         * show the modal as a side modal?
 	         */
 	        "side": _react2.default.PropTypes.bool,
-
-	        "partial": _react2.default.PropTypes.string, // partial ID selector
 
 	        /**
 	         * the title of the modal
@@ -923,8 +961,8 @@
 
 	    getDefaultProps: function getDefaultProps() {
 	        return {
-	            regionRefresh: true,
-	            btnStyle: "default"
+	            "partialRefresh": true,
+	            "btnStyle": "default"
 	        };
 	    },
 
@@ -954,15 +992,15 @@
 	                if (_this.props.onSuccess) {
 	                    _this.props.onSuccess(ui, resp);
 	                }
-	                if (_this.props.regionRefresh) {
-	                    if (_this.props.region) {
-	                        $(_this.props.region).asRegion().refresh();
+	                if (_this.props.partialRefresh) {
+	                    if (_this.props.partial) {
+	                        $(_this.props.partial).asRegion().refresh();
 	                    } else if (_this.props.partial) {
 	                        var el = document.getElementById(_this.props.partial);
 	                        if (!el) {
 	                            return;
 	                        }
-	                        var path = el.dataset.region;
+	                        var path = el.dataset.partial;
 	                        if (path) {
 	                            Region.load($(el), path, el.dataset.args || {});
 	                        }
@@ -1034,7 +1072,9 @@
 	         */
 	        "baseUrl": _react2.default.PropTypes.string,
 
-	        "region": _react2.default.PropTypes.any,
+	        "partial": _react2.default.PropTypes.any,
+
+	        "partialRemove": _react2.default.PropTypes.bool,
 
 	        /**
 	         * The parent record key is used for creating a new record belongs to the parent.
@@ -1088,8 +1128,6 @@
 
 	        e.stopPropagation();
 
-	        console.log(this.props.redirect);
-
 	        _CRUDRelModal2.default.open(this.props.title || this.props.label || 'Untitled', this.props.baseUrl + "/crud/delete", { key: this.props.recordKey }, {
 	            "size": this.props.size || "large",
 	            "side": this.props.side || false,
@@ -1110,8 +1148,17 @@
 	                    setTimeout(function () {
 	                        window.location = _this.props.redirect;
 	                    }, 500);
-	                } else if (_this.props.region) {
-	                    $(_this.props.region).asRegion().refresh();
+	                } else if (_this.props.partial) {
+	                    if (_this.props.partialRemove) {
+	                        if (typeof _this.props.partial === "string") {
+	                            $(document.getElementById(_this.props.partial)).remove();
+	                        } else {
+	                            $(_this.props.partial).remove();
+	                        }
+	                    } else {
+	                        // partialRefresh
+	                        $(_this.props.partial).asRegion().refresh();
+	                    }
 	                }
 	            }
 	        });
@@ -1196,9 +1243,9 @@
 	        "baseUrl": _react2.default.PropTypes.string,
 
 	        /**
-	         * the region DOM element used for updating.
+	         * the partial DOM element used for updating.
 	         */
-	        "region": _react2.default.PropTypes.any,
+	        "partial": _react2.default.PropTypes.any,
 
 	        // modal related options
 	        // ==============================
@@ -1218,8 +1265,8 @@
 
 	    getDefaultProps: function getDefaultProps() {
 	        return {
-	            regionRefresh: true,
-	            btnStyle: "default"
+	            "partialRefresh": true,
+	            "btnStyle": "default"
 	        };
 	    },
 
@@ -1238,7 +1285,7 @@
 	            { "this": this.key, className: "btn-group" },
 	            _react2.default.createElement(_CRUDEditButton2.default, {
 	                baseUrl: this.props.baseUrl,
-	                region: this.props.region,
+	                partial: this.props.partial,
 	                btnStyle: this.props.btnStyle,
 	                btnSize: this.props.btnSize,
 	                size: this.props.size,
@@ -1249,7 +1296,7 @@
 	            }),
 	            _react2.default.createElement(_CRUDDeleteButton2.default, {
 	                baseUrl: this.props.baseUrl,
-	                region: this.props.region,
+	                partial: this.props.partial,
 	                btnStyle: this.props.btnStyle,
 	                btnSize: this.props.btnSize,
 	                size: this.props.size,
@@ -5611,8 +5658,8 @@
 	    var obj = convertDOMStringMapToObject(el.dataset);
 
 	    // looks like region
-	    if ($region.data("path")) {
-	      obj.region = $region;
+	    if ($region.data("partial")) {
+	      obj.partial = $region;
 	    }
 
 	    var btn = React.createElement(CRUDDeleteButton, obj);
@@ -5625,8 +5672,8 @@
 	  elements.each(function (i, el) {
 	    var obj = convertDOMStringMapToObject(el.dataset);
 
-	    if ($region.data("path")) {
-	      obj.region = $region;
+	    if ($region.data("partial")) {
+	      obj.partial = $region;
 	    }
 
 	    var btn = React.createElement(CRUDEditButton, obj);
@@ -5641,8 +5688,8 @@
 
 	    var obj = convertDOMStringMapToObject(el.dataset);
 
-	    if ($region.data("path")) {
-	      obj.region = $region;
+	    if ($region.data("partial")) {
+	      obj.partial = $region;
 	    }
 
 	    var btn = React.createElement(CRUDCreateButton, obj);
@@ -5655,8 +5702,8 @@
 	  elements.each(function (i, el) {
 	    var obj = convertDOMStringMapToObject(el.dataset);
 
-	    if ($region.data("path")) {
-	      obj.region = $region;
+	    if ($region.data("partial")) {
+	      obj.partial = $region;
 	    }
 
 	    var btn = React.createElement(CRUDEditDeleteButtonGroup, obj);

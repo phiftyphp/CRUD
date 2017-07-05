@@ -30,9 +30,9 @@ export default React.createClass({
     "baseUrl": React.PropTypes.string,
 
     /**
-     * the region DOM element used for updating.
+     * the partial DOM element used for updating.
      */
-    "region": React.PropTypes.any,
+    "partial": React.PropTypes.any,
 
     // modal related options
     // ==============================
@@ -52,8 +52,8 @@ export default React.createClass({
 
   getDefaultProps: function() {
     return {
-        regionRefresh: true,
-        btnStyle: "default"
+        "partialRefresh": true,
+        "btnStyle": "default"
     };
   },
 
@@ -70,7 +70,7 @@ export default React.createClass({
     return <div this={this.key} className="btn-group">
         <CRUDEditButton 
             baseUrl={this.props.baseUrl}
-            region={this.props.region}
+            partial={this.props.partial}
             btnStyle={this.props.btnStyle} 
             btnSize={this.props.btnSize}
             size={this.props.size}
@@ -81,7 +81,7 @@ export default React.createClass({
         />
         <CRUDDeleteButton 
             baseUrl={this.props.baseUrl}
-            region={this.props.region}
+            partial={this.props.partial}
             btnStyle={this.props.btnStyle} 
             btnSize={this.props.btnSize}
             size={this.props.size}

@@ -24,7 +24,9 @@ export default React.createClass({
      */
     "baseUrl": React.PropTypes.string,
 
-    "region": React.PropTypes.any,
+    "partial": React.PropTypes.any,
+
+    "partialRemove": React.PropTypes.bool,
 
     /**
      * The parent record key is used for creating a new record belongs to the parent.
@@ -78,10 +80,6 @@ export default React.createClass({
   handleClick: function(e) {
     e.stopPropagation();
 
-    console.log(this.props.redirect);
-
-
-
     CRUDRelModal.open(
         this.props.title || this.props.label || 'Untitled',
         this.props.baseUrl + "/crud/delete", { key: this.props.recordKey },
@@ -105,8 +103,17 @@ export default React.createClass({
                     setTimeout(() => {
                         window.location = this.props.redirect;
                     }, 500);
-                } else if (this.props.region) {
-                    $(this.props.region).asRegion().refresh();
+                } else if (this.props.partial) {
+                    if (this.props.partialRemove) {
+                        if (typeof this.props.partial === "string") {
+                            $(document.getElementById(this.props.partial)).remove();
+                        } else {
+                            $(this.props.partial).remove();
+                        }
+                    } else {
+                        // partialRefresh
+                        $(this.props.partial).asRegion().refresh();
+                    }
                 }
              }
         });

@@ -39,11 +39,10 @@ if (typeof ReactDOM === "undefined") {
 function loadRegions($body)
 {
   $body.find('[data-region]').each(function(i, el) {
-    // console.log("found region", el, el.dataset.region, el.dataset.args, el.dataset);
     if (el.dataset.defer) {
       return;
     }
-    const path = el.dataset.region;
+    const path = el.dataset.region || el.dataset.partial;
     if (path) {
       Region.load($(el), path, el.dataset.args || {});
     }
