@@ -623,6 +623,11 @@
 	        "baseUrl": _react2.default.PropTypes.string,
 
 	        /**
+	         * The region element
+	         */
+	        "region": _react2.default.PropTypes.any,
+
+	        /**
 	         * The selector of the target partial for reload.
 	         */
 	        "partial": _react2.default.PropTypes.any,
@@ -741,16 +746,25 @@
 	                    } else if (_this.props.partialPrepend) {
 	                        Region.prepend($(_this.props.partial), partialPath);
 	                    }
+	                } else if (typeof _this.props.partialRefresh === "boolean") {
+	                    // we have the target partial
+	                    if (_this.props.partial) {
+	                        $(_this.props.partial).asRegion().refresh();
+	                    } else {
+	                        // find the closest data-region to refresh
+	                        $(_this.button).closest('[data-region]').asRegion().refresh();
+	                    }
+	                } else if (typeof _this.props.partialRefresh === "string") {
 
-	                    // $(this.props.partial).asRegion().refresh();
-	                } else if (_this.props.partialRefresh && _this.props.partial) {
-	                    $(_this.props.partial).asRegion().refresh();
+	                    $(_this.button).closest(_this.props.partialRefresh).asRegion().refresh();
 	                }
 	            }
 	        });
 	    },
 
 	    render: function render() {
+	        var _this2 = this;
+
 	        var btnClassName = "btn";
 	        if (this.props.btnStyle) {
 	            btnClassName += " btn-" + this.props.btnStyle;
@@ -764,7 +778,12 @@
 	            { key: this.key, className: "btn-group" },
 	            _react2.default.createElement(
 	                "button",
-	                { className: btnClassName, onClick: this.handleClick },
+	                {
+	                    className: btnClassName,
+	                    ref: function ref(button) {
+	                        _this2.button = button;
+	                    },
+	                    onClick: this.handleClick },
 	                this.props.label || '建立'
 	            )
 	        );
@@ -922,6 +941,11 @@
 	        "baseUrl": _react2.default.PropTypes.string,
 
 	        /**
+	         * The region element
+	         */
+	        "region": _react2.default.PropTypes.any,
+
+	        /**
 	         * the partial DOM element used for updating.
 	         */
 	        "partial": _react2.default.PropTypes.any,
@@ -992,18 +1016,11 @@
 	                if (_this.props.onSuccess) {
 	                    _this.props.onSuccess(ui, resp);
 	                }
-	                if (_this.props.partialRefresh) {
+	                if (typeof _this.props.partialRefresh === "boolean") {
 	                    if (_this.props.partial) {
 	                        $(_this.props.partial).asRegion().refresh();
-	                    } else if (_this.props.partial) {
-	                        var el = document.getElementById(_this.props.partial);
-	                        if (!el) {
-	                            return;
-	                        }
-	                        var path = el.dataset.partial;
-	                        if (path) {
-	                            Region.load($(el), path, el.dataset.args || {});
-	                        }
+	                    } else {
+	                        $(_this.button).closest('[data-region]').asRegion().refresh();
 	                    }
 	                }
 	            }
@@ -1011,6 +1028,8 @@
 	    },
 
 	    render: function render() {
+	        var _this2 = this;
+
 	        var btnClassName = "btn";
 	        if (this.props.btnStyle) {
 	            btnClassName += " btn-" + this.props.btnStyle;
@@ -1021,7 +1040,11 @@
 
 	        return _react2.default.createElement(
 	            "button",
-	            { className: btnClassName, onClick: this.handleClick },
+	            { className: btnClassName,
+	                ref: function ref(button) {
+	                    _this2.button = button;
+	                },
+	                onClick: this.handleClick },
 	            this.props.label || '編輯'
 	        );
 	    }
@@ -1071,6 +1094,8 @@
 	         * the baseUrl of a CRUD handler, usually "/bs"
 	         */
 	        "baseUrl": _react2.default.PropTypes.string,
+
+	        "region": _react2.default.PropTypes.any,
 
 	        "partial": _react2.default.PropTypes.any,
 
@@ -1148,23 +1173,24 @@
 	                    setTimeout(function () {
 	                        window.location = _this.props.redirect;
 	                    }, 500);
-	                } else if (_this.props.partial) {
-	                    if (_this.props.partialRemove) {
-	                        if (typeof _this.props.partial === "string") {
-	                            $(document.getElementById(_this.props.partial)).remove();
-	                        } else {
-	                            $(_this.props.partial).remove();
-	                        }
-	                    } else {
-	                        // partialRefresh
-	                        $(_this.props.partial).asRegion().refresh();
+	                } else if (typeof _this.props.partialRemove === "boolean") {
+	                    if (_this.props.partial) {
+	                        $(_this.props.partial).remove();
+	                    } else if (_this.button) {
+	                        $(_this.button).closest('[data-region]').remove();
+	                    } else if (_this.props.region) {
+	                        _this.props.region.remove();
 	                    }
+	                } else if (typeof _this.props.partialRemove === "string") {
+
+	                    $(_this.button).closest(_this.props.partialRemove).remove();
 	                }
 	            }
 	        });
 	    },
 
 	    render: function render() {
+	        var _this2 = this;
 
 	        var btnClassName = "btn";
 	        if (this.props.btnStyle) {
@@ -1176,7 +1202,11 @@
 
 	        return _react2.default.createElement(
 	            "button",
-	            { className: btnClassName, onClick: this.handleClick },
+	            { className: btnClassName,
+	                ref: function ref(button) {
+	                    _this2.button = button;
+	                },
+	                onClick: this.handleClick },
 	            this.props.label || '刪除'
 	        );
 	    }
@@ -5595,20 +5625,29 @@
 /* 42 */
 /***/ (function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.convertDOMStringMapToObject = convertDOMStringMapToObject;
 	exports.initCRUDVendorComponents = initCRUDVendorComponents;
 	exports.initCRUDComponents = initCRUDComponents;
 	exports.initCRUDModalAction = initCRUDModalAction;
 	// vim:sw=2:ts=2:sts=2:
-
 	function convertDOMStringMapToObject(map) {
 	  var obj = {};
 	  for (var key in map) {
-	    obj[key] = map[key];
+	    var val = map[key];
+
+	    switch (val.toUpperCase()) {
+	      case "TRUE":
+	        val = true;break;
+	      case "FALSE":
+	        val = false;break;
+	    }
+
+	    obj[key] = val;
 	  }
 	  return obj;
 	}
@@ -5657,9 +5696,9 @@
 	  elements.each(function (i, el) {
 	    var obj = convertDOMStringMapToObject(el.dataset);
 
-	    // looks like region
-	    if ($region.data("partial")) {
-	      obj.partial = $region;
+	    // looks like region object element
+	    if ($region.data("regionObj")) {
+	      obj.region = $region;
 	    }
 
 	    var btn = React.createElement(CRUDDeleteButton, obj);
@@ -5672,8 +5711,9 @@
 	  elements.each(function (i, el) {
 	    var obj = convertDOMStringMapToObject(el.dataset);
 
-	    if ($region.data("partial")) {
-	      obj.partial = $region;
+	    // looks like region object element
+	    if ($region.data("regionObj")) {
+	      obj.region = $region;
 	    }
 
 	    var btn = React.createElement(CRUDEditButton, obj);
@@ -5688,8 +5728,9 @@
 
 	    var obj = convertDOMStringMapToObject(el.dataset);
 
-	    if ($region.data("partial")) {
-	      obj.partial = $region;
+	    // looks like region object element
+	    if ($region.data("regionObj")) {
+	      obj.region = $region;
 	    }
 
 	    var btn = React.createElement(CRUDCreateButton, obj);
@@ -5702,8 +5743,9 @@
 	  elements.each(function (i, el) {
 	    var obj = convertDOMStringMapToObject(el.dataset);
 
-	    if ($region.data("partial")) {
-	      obj.partial = $region;
+	    // looks like region object element
+	    if ($region.data("regionObj")) {
+	      obj.region = $region;
 	    }
 
 	    var btn = React.createElement(CRUDEditDeleteButtonGroup, obj);

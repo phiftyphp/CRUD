@@ -40,6 +40,10 @@ export default React.createClass({
      */
     "baseUrl": React.PropTypes.string,
 
+    /**
+     * The region element
+     */
+    "region": React.PropTypes.any,
 
     /**
      * The selector of the target partial for reload.
@@ -173,9 +177,18 @@ export default React.createClass({
                         Region.prepend($(this.props.partial), partialPath);
                     }
 
-                    // $(this.props.partial).asRegion().refresh();
-                } else if (this.props.partialRefresh && this.props.partial) {
-                    $(this.props.partial).asRegion().refresh();
+                } else if (typeof this.props.partialRefresh === "boolean") {
+                    // we have the target partial
+                    if (this.props.partial) {
+                        $(this.props.partial).asRegion().refresh();
+                    } else {
+                        // find the closest data-region to refresh
+                        $(this.button).closest('[data-region]').asRegion().refresh();
+                    }
+                } else if (typeof this.props.partialRefresh === "string") {
+
+                    $(this.button).closest(this.props.partialRefresh).asRegion().refresh();
+
                 }
              }
         });
@@ -193,7 +206,10 @@ export default React.createClass({
 
       
       return <div key={this.key} className="btn-group">
-        <button className={btnClassName} onClick={this.handleClick}>
+        <button 
+            className={btnClassName} 
+            ref={ (button) => { this.button = button; } }
+            onClick={this.handleClick}>
             {this.props.label || '建立'}
         </button>
       </div>;

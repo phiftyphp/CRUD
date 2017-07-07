@@ -24,6 +24,8 @@ export default React.createClass({
      */
     "baseUrl": React.PropTypes.string,
 
+    "region": React.PropTypes.any,
+
     "partial": React.PropTypes.any,
 
     "partialRemove": React.PropTypes.bool,
@@ -103,17 +105,18 @@ export default React.createClass({
                     setTimeout(() => {
                         window.location = this.props.redirect;
                     }, 500);
-                } else if (this.props.partial) {
-                    if (this.props.partialRemove) {
-                        if (typeof this.props.partial === "string") {
-                            $(document.getElementById(this.props.partial)).remove();
-                        } else {
-                            $(this.props.partial).remove();
-                        }
-                    } else {
-                        // partialRefresh
-                        $(this.props.partial).asRegion().refresh();
+                } else if (typeof this.props.partialRemove === "boolean") {
+                    if (this.props.partial) {
+                        $(this.props.partial).remove();
+                    } else if (this.button) {
+                        $(this.button).closest('[data-region]').remove();
+                    } else if (this.props.region) {
+                        this.props.region.remove();
                     }
+                } else if (typeof this.props.partialRemove === "string") {
+
+                    $(this.button).closest(this.props.partialRemove).remove();
+
                 }
              }
         });
@@ -130,7 +133,9 @@ export default React.createClass({
       }
 
       return (
-        <button className={btnClassName} onClick={this.handleClick}>
+        <button className={btnClassName}
+            ref={ (button) => { this.button = button; } }
+            onClick={this.handleClick}>
             {this.props.label || '刪除'}
         </button>
       );

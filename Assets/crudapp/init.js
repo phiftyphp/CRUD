@@ -1,10 +1,17 @@
 // vim:sw=2:ts=2:sts=2:
-
-function convertDOMStringMapToObject(map)
+export function convertDOMStringMapToObject(map)
 {
   const obj = {};
   for (var key in map) {
-    obj[key] = map[key];
+    let val = map[key];
+
+    switch (val.toUpperCase()) {
+        case "TRUE": val = true; break;
+        case "FALSE": val = false; break;
+    }
+
+
+    obj[key] = val;
   }
   return obj;
 }
@@ -59,9 +66,9 @@ function initCRUDDeleteButton($region)
     elements.each((i, el) => {
       const obj = convertDOMStringMapToObject(el.dataset);
 
-      // looks like region
-      if ($region.data("partial")) {
-        obj.partial = $region;
+      // looks like region object element
+      if ($region.data("regionObj")) {
+        obj.region = $region;
       }
 
       const btn = React.createElement(CRUDDeleteButton, obj);
@@ -76,8 +83,9 @@ function initCRUDEditButton($region)
     elements.each((i, el) => {
       const obj = convertDOMStringMapToObject(el.dataset);
 
-      if ($region.data("partial")) {
-        obj.partial = $region;
+      // looks like region object element
+      if ($region.data("regionObj")) {
+        obj.region = $region;
       }
 
       const btn = React.createElement(CRUDEditButton, obj);
@@ -93,8 +101,9 @@ function initCRUDCreateButton($region)
 
       const obj = convertDOMStringMapToObject(el.dataset);
 
-      if ($region.data("partial")) {
-        obj.partial = $region;
+      // looks like region object element
+      if ($region.data("regionObj")) {
+        obj.region = $region;
       }
 
       const btn = React.createElement(CRUDCreateButton, obj);
@@ -108,8 +117,9 @@ function initCRUDEditDeleteButtonGroup($region)
     elements.each((i, el) => {
       const obj = convertDOMStringMapToObject(el.dataset);
 
-      if ($region.data("partial")) {
-        obj.partial = $region;
+      // looks like region object element
+      if ($region.data("regionObj")) {
+        obj.region = $region;
       }
 
       const btn = React.createElement(CRUDEditDeleteButtonGroup, obj);

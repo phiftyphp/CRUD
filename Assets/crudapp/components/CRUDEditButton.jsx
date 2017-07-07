@@ -25,6 +25,12 @@ export default React.createClass({
      */
     "baseUrl": React.PropTypes.string,
 
+
+    /**
+     * The region element
+     */
+    "region": React.PropTypes.any,
+
     /**
      * the partial DOM element used for updating.
      */
@@ -99,18 +105,11 @@ export default React.createClass({
                 if (this.props.onSuccess) {
                     this.props.onSuccess(ui, resp);
                 }
-                if (this.props.partialRefresh) {
+                if (typeof this.props.partialRefresh === "boolean") {
                     if (this.props.partial) {
                         $(this.props.partial).asRegion().refresh();
-                    } else if (this.props.partial) {
-                        const el = document.getElementById(this.props.partial);
-                        if (!el) {
-                          return;
-                        }
-                        const path = el.dataset.partial;
-                        if (path) {
-                          Region.load($(el), path, el.dataset.args || {});
-                        }
+                    } else {
+                        $(this.button).closest('[data-region]').asRegion().refresh();
                     }
                 }
              }
@@ -127,7 +126,10 @@ export default React.createClass({
       }
 
       return (
-        <button className={btnClassName} onClick={this.handleClick}>
+        <button className={btnClassName} 
+            ref={ (button) => { this.button = button; } }
+            onClick={this.handleClick}>
+
             {this.props.label || '編輯'}
         </button>
       );
