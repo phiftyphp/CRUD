@@ -122,7 +122,7 @@
 	    if (el.dataset.defer) {
 	      return;
 	    }
-	    var path = el.dataset.region || el.dataset.partial;
+	    var path = el.dataset.region || el.dataset.path;
 	    if (path) {
 	      Region.load($(el), path, el.dataset.args || {});
 	    }

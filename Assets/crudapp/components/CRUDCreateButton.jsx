@@ -174,7 +174,6 @@ export default React.createClass({
                     }
 
                     // $(this.props.partial).asRegion().refresh();
-
                 } else if (this.props.partialRefresh && this.props.partial) {
                     $(this.props.partial).asRegion().refresh();
                 }

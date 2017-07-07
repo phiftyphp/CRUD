@@ -42,7 +42,7 @@ function loadRegions($body)
     if (el.dataset.defer) {
       return;
     }
-    const path = el.dataset.region || el.dataset.partial;
+    const path = el.dataset.region || el.dataset.path;
     if (path) {
       Region.load($(el), path, el.dataset.args || {});
     }
