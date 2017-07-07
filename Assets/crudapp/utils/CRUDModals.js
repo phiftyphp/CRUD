@@ -1,13 +1,5 @@
 
-class CRUDUrl {
-    static regionCreate(prefix, crudId) {
-        return `${prefix}/${crudId}/crud/create`;
-    }
-
-    static regionEdit(prefix, crudId) {
-        return `${prefix}/${crudId}/crud/edit`;
-    }
-}
+import CRUDUrl from "./CRUDUrl";
 
 export default class CRUDModals {
     static defaultOptions = {
