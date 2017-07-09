@@ -1084,16 +1084,17 @@ abstract class CRUDHandler extends Controller
      */
     public function getDefaultRecordArgs()
     {
+        // The "rel" could be an ID of the relationship or a field name of the column.
         if ($relId = $this->request->param('rel')) {
 
-            $schema = $this->getModelSchema();
-            $rel = $schema->getRelation($relId);
-            if (!$rel) {
-                throw new InvalidArgumentException("relation {$relId} is not defined.");
-            }
-            $localColumn = $rel['self_column'];
             $relKey = $this->request->param('relKey');
-            $this->predefined[$localColumn] = $relKey;
+            $schema = $this->getModelSchema();
+            if ($rel = $schema->getRelation($relId)) {
+                $localColumn = $rel['self_column'];
+                $this->predefined[$localColumn] = $relKey;
+            } else if ($schema->column($relId)) {
+                $this->predefined[$relId] = $relKey;
+            }
 
         } else if (isset($this->parentKeyRecordClass)) {
 
