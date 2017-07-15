@@ -19,7 +19,7 @@ trait CRUDSearchActions {
 
 
     /**
-     * search method applied request query to collection
+     * Search method applied request query to collection
      */
     protected function search(HttpRequest $request)
     {
@@ -33,6 +33,13 @@ trait CRUDSearchActions {
                     ;
             }
         }
+
+        if ($this->quicksearchFields) {
+            if ($q = $this->request->param('_q')) {
+                $this->appendCollectionConditions($collection->where(), $q);
+            }
+        }
+
         return $collection;
     }
 
@@ -44,15 +51,14 @@ trait CRUDSearchActions {
         $c = 0;
         foreach ($this->quicksearchFields as $field) {
             if ($c++ < 1) {
-                $where = $where->like( $field , '%' . $q . '%' );
+                $where = $where->like($field, "%{$q}%");
             } else {
-                $where = $where->or()->like( $field , '%' . $q . '%' );
+                $where = $where->or()->like($field, "%{$q}%");
             }
         }
     }
 
-
-    protected function composite(Collection $collection)
+    protected function searchComposite(Collection $collection)
     {
         return $collection->toInflatedArray();
     }
@@ -65,6 +71,7 @@ trait CRUDSearchActions {
     public function searchAction()
     {
         $collection = $this->search($this->getRequest());
-        return $this->toJson($this->composite($collection));
+        $this->orderCollection($collection);
+        return $this->toJson($this->searchComposite($collection));
     }
 }

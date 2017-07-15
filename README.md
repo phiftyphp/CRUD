@@ -1,18 +1,22 @@
 
 
+## CRUDSearchAction
+
+To modify or composite the result data, simply override the searchComposite method:
+
+    protected function searchComposite(Collection $collection)
+    {
+        return $collection->toInflatedArray();
+    }
 
 
-
-
-
-
-React List App
+## React List App
 
 To enable react list app, define the property here:
 
     protected $reactListApp = '....';
 
-Has Many Editor
+## Has Many Editor
 
     use CRUD\CRUDReactHasManyEditor;
 

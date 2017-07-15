@@ -56,6 +56,8 @@ $(Region).bind('region.unmount', function(e, $region) {
   });
 });
 
+
+
 $(Region).bind('region.load', function(e, $region) {
   initCRUDComponents($region);
   initCRUDVendorComponents($region);

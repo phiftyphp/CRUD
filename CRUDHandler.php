@@ -931,6 +931,8 @@ abstract class CRUDHandler extends Controller
                 $this->appendCollectionConditions($collection->where(), $q);
             }
         }
+
+
         $this->orderCollection($collection);
         return $collection;
     }
@@ -958,6 +960,10 @@ abstract class CRUDHandler extends Controller
 
         if ($orderColumn && in_array(strtolower($orderBy), ['asc','desc'])) {
             return [$orderColumn, $orderBy];
+        }
+
+        if ($this->getModelSchema()->getColumn("ordering")) {
+            return ["ordering", "ASC"];
         }
 
         return $this->defaultOrder;
