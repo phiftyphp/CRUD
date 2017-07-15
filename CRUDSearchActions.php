@@ -1,6 +1,9 @@
 <?php
+
 namespace CRUD;
+
 use Universal\Http\HttpRequest;
+use Maghead\Runtime\Collection;
 
 trait CRUDSearchActions {
 
@@ -48,6 +51,13 @@ trait CRUDSearchActions {
         }
     }
 
+
+    protected function composite(Collection $collection)
+    {
+        return $collection->toInflatedArray();
+    }
+
+
     /**
      * Provide the search functionality to return matched collection in JSON
      * format response.
@@ -55,6 +65,6 @@ trait CRUDSearchActions {
     public function searchAction()
     {
         $collection = $this->search($this->getRequest());
-        return $this->toJson($collection->toArray());
+        return $this->toJson($this->composite($collection));
     }
 }
