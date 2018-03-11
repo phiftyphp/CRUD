@@ -2,7 +2,7 @@
 
 namespace CRUD;
 
-use LazyRecord\BaseModel;
+use Maghead\Runtime\Model;
 use WebAction\Action;
 use Exception;
 use PJSON\JsSymbol;
@@ -49,11 +49,11 @@ trait CRUDReactHasManyEditor
     /**
      * Build reference info from parent record.
      *
-     * @param BaseModel $parentRecord
+     * @param Model $parentRecord
      * @param string $relationId
      * @return array
      */
-    protected function buildRecordReferences(BaseModel $parentRecord, $relationId)
+    protected function buildRecordReferences(Model $parentRecord, $relationId)
     {
         $parentSchema = $parentRecord->getSchema();
         $relationship = $parentSchema->getRelation($relationId);
@@ -67,7 +67,7 @@ trait CRUDReactHasManyEditor
     }
 
 
-    public function buildReactHasManyEditorConfig(BaseModel $parentRecord, $relationId)
+    public function buildReactHasManyEditorConfig(Model $parentRecord, $relationId)
     {
         $modelClass = $this->getModelClass();
         $model = new $modelClass();
